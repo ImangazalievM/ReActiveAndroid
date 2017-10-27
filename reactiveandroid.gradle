@@ -1,0 +1,11 @@
+ext.reactiveandroid = [
+        libraryVersion          : '1.0.0',
+        libraryVersionCode      : 1,
+        group                   : 'com.reactiveandroid',
+
+        minSdk                  : 14,
+        targetSdk               : 26,
+        compileSdk              : 26,
+        buildTools              : '26.0.2',
+        website                 : 'https://github.com/ImangazalievM/ReActiveAndroid'
+]

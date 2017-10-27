@@ -1,0 +1,26 @@
+apply from: 'reactiveandroid.gradle'
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.3.3'
+        classpath 'com.novoda:bintray-release:0.4.0'
+    }
+}
+
+allprojects {
+    repositories {
+        jcenter()
+    }
+
+    //disable Javadoc checking when uploading to Bintray
+    tasks.withType(Javadoc).all {
+        enabled = false
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
