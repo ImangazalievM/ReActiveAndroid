@@ -1,5 +1,7 @@
 package com.reactiveandroid.query;
 
+import android.database.Cursor;
+
 import com.reactiveandroid.test.BaseTest;
 import com.reactiveandroid.test.DataBaseTestRule;
 import com.reactiveandroid.test.models.TestModel;
@@ -115,15 +117,16 @@ public class AvgTest extends BaseTest {
         cleanTable();
         populateTable();
 
-        float avg = Select
+        Cursor avgCursor = Select
                 .avg("intField")
                 .from(TestModel.class)
                 .groupBy("stringField")
-                .fetchValue(float.class);
+                .fetchCursor();
 
-        //Should return the average of the values which belong to the first category in selection
-        //May seem weird, just test it in an SQL browser
-        assertEquals(2f, avg, 0);
+        avgCursor.moveToFirst(); //avg for "Category 1"
+        assertEquals(2f, avgCursor.getFloat(0), 0);
+        avgCursor.moveToNext(); //avg for "Category 2"
+        assertEquals(4f, avgCursor.getFloat(0), 0);
     }
 
     private void cleanTable() {
