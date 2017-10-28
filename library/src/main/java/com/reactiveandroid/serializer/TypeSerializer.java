@@ -1,5 +1,7 @@
 package com.reactiveandroid.serializer;
 
+import android.support.annotation.Nullable;
+
 import java.lang.reflect.ParameterizedType;
 
 public abstract class TypeSerializer<DeserializedType, SerializedType> {
@@ -25,8 +27,10 @@ public abstract class TypeSerializer<DeserializedType, SerializedType> {
         return serializedTypeClass;
     }
 
+    @Nullable
     public abstract SerializedType serialize(DeserializedType data);
 
+    @Nullable
     public abstract DeserializedType deserialize(SerializedType data);
 
 }

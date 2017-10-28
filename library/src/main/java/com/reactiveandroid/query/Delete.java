@@ -1,5 +1,7 @@
 package com.reactiveandroid.query;
 
+import android.support.annotation.NonNull;
+
 import com.reactiveandroid.Model;
 import com.reactiveandroid.ReActiveAndroid;
 
@@ -16,6 +18,7 @@ public final class Delete extends QueryBase {
 		return new From<>(new Delete(), table);
 	}
 
+	@NonNull
 	@Override
 	public String getPartSql() {
 		return "DELETE";
@@ -35,6 +38,7 @@ public final class Delete extends QueryBase {
 			return new Where<>(this, table, where, args);
 		}
 
+		@NonNull
 		@Override
 		public String getPartSql() {
 			return "FROM " + ReActiveAndroid.getTableName(table);
@@ -53,11 +57,13 @@ public final class Delete extends QueryBase {
 			whereArgs = args;
 		}
 
+		@NonNull
 		@Override
 		public String getPartSql() {
 			return "WHERE " + where;
 		}
 
+		@NonNull
 		@Override
 		public String[] getPartArgs() {
 			return toStringArray(whereArgs);

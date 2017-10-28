@@ -16,6 +16,8 @@ package com.reactiveandroid.internal.cache;
  * limitations under the License.
  */
 
+import android.support.annotation.Nullable;
+
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -36,17 +38,11 @@ public class LruCache<K, V> {
      * Size of this cache in units. Not necessarily the number of elements.
      */
     private int size;
-
     private int maxSize;
-
     private int putCount;
-
     private int createCount;
-
     private int evictionCount;
-
     private int hitCount;
-
     private int missCount;
 
     /**
@@ -135,6 +131,7 @@ public class LruCache<K, V> {
      *
      * @return the previous value mapped by {@code key}.
      */
+    @Nullable
     public final V put(K key, V value) {
         if (key == null || value == null) {
             throw new NullPointerException("key == null || value == null");
@@ -193,6 +190,7 @@ public class LruCache<K, V> {
      *
      * @return the previous value mapped by {@code key}.
      */
+    @Nullable
     public final V remove(K key) {
         if (key == null) {
             throw new NullPointerException("key == null");

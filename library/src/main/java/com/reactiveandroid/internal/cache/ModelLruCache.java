@@ -1,6 +1,7 @@
 package com.reactiveandroid.internal.cache;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.reactiveandroid.Model;
 import com.reactiveandroid.annotation.Table;
@@ -31,6 +32,7 @@ public class ModelLruCache<ModelClass extends Model> implements ModelCache<Model
         }
     }
 
+    @Nullable
     @Override
     public ModelClass removeModel(long id) {
         ModelClass model;
@@ -52,6 +54,7 @@ public class ModelLruCache<ModelClass extends Model> implements ModelCache<Model
         cache.resize(size);
     }
 
+    @Nullable
     @Override
     public ModelClass get(long id) {
         return cache.get(id);

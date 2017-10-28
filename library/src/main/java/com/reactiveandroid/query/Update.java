@@ -1,5 +1,7 @@
 package com.reactiveandroid.query;
 
+import android.support.annotation.NonNull;
+
 import com.reactiveandroid.Model;
 import com.reactiveandroid.ReActiveAndroid;
 
@@ -16,7 +18,8 @@ public final class Update extends QueryBase {
 		return new Table<>(new Update(), table);
 	}
 
-	@Override
+	@NonNull
+    @Override
 	public String getPartSql() {
 		return "UPDATE";
 	}
@@ -35,7 +38,8 @@ public final class Update extends QueryBase {
 			return new Set(this, table, set, args);
 		}
 
-		@Override
+		@NonNull
+        @Override
 		protected String getPartSql() {
 			return ReActiveAndroid.getTableName(table);
 		}
@@ -61,11 +65,13 @@ public final class Update extends QueryBase {
 			return new Where(this, table, where, args);
 		}
 
-		@Override
+		@NonNull
+        @Override
 		public String getPartSql() {
 			return "SET " + set;
 		}
 
+		@NonNull
 		@Override
 		public String[] getPartArgs() {
 			return toStringArray(setArgs);
@@ -84,11 +90,13 @@ public final class Update extends QueryBase {
 			whereArgs = args;
 		}
 
-		@Override
+		@NonNull
+        @Override
 		public String getPartSql() {
 			return "WHERE " + where;
 		}
 
+		@NonNull
 		@Override
 		public String[] getPartArgs() {
 			return toStringArray(whereArgs);

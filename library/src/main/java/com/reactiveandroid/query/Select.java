@@ -1,5 +1,6 @@
 package com.reactiveandroid.query;
 
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.reactiveandroid.Model;
@@ -53,6 +54,7 @@ public final class Select<T extends Model> extends QueryBase<T> {
         return columns("SUM(" + columnName + ")");
     }
 
+    @NonNull
     @Override
     public String getPartSql() {
         return "SELECT";
@@ -75,6 +77,7 @@ public final class Select<T extends Model> extends QueryBase<T> {
             return new Columns<>(this, table, null).from(table);
         }
 
+        @NonNull
         @Override
         public String getPartSql() {
             return distinct ? "DISTINCT" : "ALL";
@@ -94,6 +97,7 @@ public final class Select<T extends Model> extends QueryBase<T> {
             return new From<>(this, table);
         }
 
+        @NonNull
         @Override
         public String getPartSql() {
             StringBuilder builder = new StringBuilder();
@@ -191,6 +195,7 @@ public final class Select<T extends Model> extends QueryBase<T> {
             return join;
         }
 
+        @NonNull
         @Override
         public String getPartSql() {
             StringBuilder builder = new StringBuilder("FROM ");
@@ -259,6 +264,7 @@ public final class Select<T extends Model> extends QueryBase<T> {
             return (From<P>) parent;
         }
 
+        @NonNull
         @Override
         public String getPartSql() {
             StringBuilder builder = new StringBuilder(type.getKeyword());
@@ -298,11 +304,13 @@ public final class Select<T extends Model> extends QueryBase<T> {
             return new Offset<>(this, table, offset);
         }
 
+        @NonNull
         @Override
         public String getPartSql() {
             return "WHERE " + where;
         }
 
+        @NonNull
         @Override
         public String[] getPartArgs() {
             return toStringArray(whereArgs);
@@ -331,6 +339,7 @@ public final class Select<T extends Model> extends QueryBase<T> {
             return new Limit<>(this, table, limits);
         }
 
+        @NonNull
         @Override
         public String getPartSql() {
             return "GROUP BY " + groupBy;
@@ -359,6 +368,7 @@ public final class Select<T extends Model> extends QueryBase<T> {
             return new Offset<>(this, table, offset);
         }
 
+        @NonNull
         @Override
         public String getPartSql() {
             return "HAVING " + having;
@@ -383,6 +393,7 @@ public final class Select<T extends Model> extends QueryBase<T> {
             return new Offset<>(this, table, offset);
         }
 
+        @NonNull
         @Override
         public String getPartSql() {
             return "ORDER BY " + orderBy;
@@ -403,6 +414,7 @@ public final class Select<T extends Model> extends QueryBase<T> {
             return new Offset<>(this, table, offset);
         }
 
+        @NonNull
         @Override
         public String getPartSql() {
             return "LIMIT " + limit;
@@ -418,6 +430,7 @@ public final class Select<T extends Model> extends QueryBase<T> {
             this.offset = offset;
         }
 
+        @NonNull
         @Override
         protected String getPartSql() {
             return "OFFSET " + offset;

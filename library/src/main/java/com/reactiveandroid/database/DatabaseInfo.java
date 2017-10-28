@@ -2,6 +2,8 @@ package com.reactiveandroid.database;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.reactiveandroid.Model;
 import com.reactiveandroid.database.table.TableInfo;
@@ -47,18 +49,22 @@ public class DatabaseInfo {
         ReActiveLog.i(LogLevel.BASIC, "Tables info for database " + databaseConfig.databaseName + " loaded.");
     }
 
+    @NonNull
     public ReActiveOpenHelper getOpenHelper() {
         return reActiveOpenHelper;
     }
 
+    @NonNull
     public SQLiteDatabase getWritableDatabase() {
         return reActiveOpenHelper.getWritableDatabase();
     }
 
+    @NonNull
     public Collection<TableInfo> getTableInfos() {
         return tableInfos.values();
     }
 
+    @NonNull
     public TableInfo getTableInfo(Class<? extends Model> table) {
         TableInfo tableInfo = tableInfos.get(table);
         if (tableInfo == null) {
@@ -67,6 +73,7 @@ public class DatabaseInfo {
         return tableInfo;
     }
 
+    @Nullable
     public TypeSerializer getTypeSerializer(Class<?> type) {
         return typeSerializers.get(type);
     }

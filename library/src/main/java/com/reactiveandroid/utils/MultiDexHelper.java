@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.support.annotation.NonNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,6 +33,7 @@ public final class MultiDexHelper {
      * @throws PackageManager.NameNotFoundException
      * @throws IOException
      */
+    @NonNull
     public static List<String> getSourcePaths(Context context) throws PackageManager.NameNotFoundException, IOException {
         ApplicationInfo applicationInfo = context.getPackageManager().getApplicationInfo(context.getPackageName(), 0);
         File sourceApk = new File(applicationInfo.sourceDir);
@@ -72,6 +74,7 @@ public final class MultiDexHelper {
      * @throws PackageManager.NameNotFoundException
      * @throws IOException
      */
+    @NonNull
     public static List<String> getAllClasses(Context context) throws PackageManager.NameNotFoundException, IOException {
         List<String> classNames = new ArrayList<>();
         for (String path : getSourcePaths(context)) {

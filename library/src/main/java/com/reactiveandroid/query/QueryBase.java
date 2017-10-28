@@ -1,5 +1,8 @@
 package com.reactiveandroid.query;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import com.reactiveandroid.Model;
 import com.reactiveandroid.query.Query;
 
@@ -13,6 +16,7 @@ public abstract class QueryBase<T extends Model> implements Query {
 		this.table = table;
 	}
 
+	@NonNull
 	@Override
 	public final String getSql() {
 		if (parent != null) {
@@ -21,6 +25,7 @@ public abstract class QueryBase<T extends Model> implements Query {
 		return getPartSql().trim();
 	}
 
+	@NonNull
 	@Override
 	public final String[] getArgs() {
 		if (parent != null) {
@@ -29,14 +34,17 @@ public abstract class QueryBase<T extends Model> implements Query {
 		return getPartArgs();
 	}
 
+	@NonNull
 	protected String getPartSql() {
-		return null;
+		return "";
 	}
 
+	@NonNull
 	protected String[] getPartArgs() {
 		return new String[]{};
 	}
 
+	@NonNull
 	protected final String[] toStringArray(final Object[] array) {
 		if (array == null) {
 			return null;
