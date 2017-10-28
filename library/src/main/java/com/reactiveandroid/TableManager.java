@@ -49,7 +49,7 @@ public class TableManager<TableClass extends Model> {
         return Select.from(type).where(tableInfo.getIdName() + "=?", id).fetchSingle();
     }
 
-    public void save(TableClass model, boolean notifyChange) {
+    public void save(TableClass model) {
         SQLiteDatabase db = getDatabase();
         ContentValues values = new ContentValues();
         ContentUtils.fillContentValues(model, tableInfo, values);
@@ -58,10 +58,6 @@ public class TableManager<TableClass extends Model> {
             model.id = db.insert(tableInfo.getTableName(), null, values);
         } else {
             db.update(tableInfo.getTableName(), values, tableInfo.getIdName() + "=" + model.id, null);
-        }
-
-        if (notifyChange) {
-            notifyProviderChange(model);
         }
     }
 
@@ -76,7 +72,7 @@ public class TableManager<TableClass extends Model> {
         try {
             sqliteDatabase.beginTransaction();
             for (Model model : models) {
-                tableManager.save(model, false);
+                tableManager.save(model);
             }
             sqliteDatabase.setTransactionSuccessful();
 
@@ -92,8 +88,6 @@ public class TableManager<TableClass extends Model> {
             modelCache.removeModel(model.id);
         }
         model.id = null;
-
-        notifyProviderChange(model);
     }
 
     public void delete(Class<TableClass> type, long id) {
@@ -205,11 +199,6 @@ public class TableManager<TableClass extends Model> {
     @NonNull
     private SQLiteDatabase getDatabase() {
         return ReActiveAndroid.getWritableDatabaseForTable(tableInfo.getTableClass());
-    }
-
-    private void notifyProviderChange(Model model) {
-        ReActiveAndroid.getContext().getContentResolver()
-                .notifyChange(ContentUtils.createUri(ReActiveContentProvider.getAuthority(), tableInfo.getTableClass(), model.id), null);
     }
 
 }
