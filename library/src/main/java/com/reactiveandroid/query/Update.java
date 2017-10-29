@@ -54,7 +54,7 @@ public final class Update extends QueryBase {
 		private Set(Query parent, Class<T> table, String set, Object... args) {
 			super(parent, table);
 			this.set = set;
-			setArgs = args;
+			this.setArgs = args;
 		}
 
 		public Where<T> where(String where) {

@@ -140,8 +140,6 @@ public class TableManager<TableClass extends Model> {
                     fieldType = typeSerializer.getSerializedType();
                 }
 
-                // TODO: Find a smarter way to do this? This if block is necessary because we
-                // can't know the type until runtime.
                 if (columnIsNull) {
                     field = null;
                 } else if (fieldType.equals(Byte.class) || fieldType.equals(byte.class)) {

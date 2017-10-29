@@ -33,7 +33,7 @@ public abstract class Model {
      */
     @NonNull
     public Long save() {
-        getTableManager().save(this, true);
+        getTableManager().save(this);
         return id;
     }
 
