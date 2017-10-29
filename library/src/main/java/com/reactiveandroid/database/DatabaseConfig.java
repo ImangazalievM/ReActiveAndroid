@@ -61,22 +61,12 @@ public class DatabaseConfig {
             Database databaseAnnotation = databaseClass.getAnnotation(Database.class);
 
             this.databaseClass = databaseClass;
-            this.databaseName = databaseAnnotation.name();
+            this.databaseName = databaseAnnotation.name() + ".db";
             this.databaseVersion = databaseAnnotation.version();
             this.modelClasses = new ArrayList<>();
             this.typeSerializers = new ArrayList<>();
             this.migrationContainer = new MigrationContainer();
             this.requireMigration = false;
-        }
-
-        public Builder setDatabaseName(String databaseName) {
-            this.databaseName = databaseName;
-            return this;
-        }
-
-        public Builder setDatabaseVersion(int databaseVersion) {
-            this.databaseVersion = databaseVersion;
-            return this;
         }
 
         public Builder addModelClasses(Class<? extends Model>... modelClasses) {
@@ -100,7 +90,6 @@ public class DatabaseConfig {
         }
 
         public DatabaseConfig build() {
-
             return new DatabaseConfig(databaseClass,
                     databaseName,
                     databaseVersion,
