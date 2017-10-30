@@ -4,10 +4,9 @@ import com.reactiveandroid.test.BaseTest;
 import com.reactiveandroid.test.TestUtils;
 import com.reactiveandroid.test.databases.TestDatabase;
 import com.reactiveandroid.test.models.AbstractTestModel;
-import com.reactiveandroid.test.models.JoinModel;
+import com.reactiveandroid.test.models.JoinModelCustomer;
 import com.reactiveandroid.test.models.TestModel;
 
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -24,13 +23,13 @@ public class DatabaseInfoTest extends BaseTest {
         DatabaseConfig config = new DatabaseConfig.Builder(TestDatabase.class).build();
         DatabaseInfo databaseInfo = new DatabaseInfo(TestUtils.getApplication(), config);
 
-        assertEquals(9, databaseInfo.getTableInfos().size());
+        assertEquals(10, databaseInfo.getTableInfos().size());
     }
 
     @Test
     public void testTablesFromConfig() {
         DatabaseConfig config = new DatabaseConfig.Builder(TestDatabase.class)
-                .addModelClasses(TestModel.class, JoinModel.class)
+                .addModelClasses(TestModel.class, JoinModelCustomer.class)
                 .build();
         DatabaseInfo databaseInfo = new DatabaseInfo(TestUtils.getApplication(), config);
 
@@ -45,8 +44,8 @@ public class DatabaseInfoTest extends BaseTest {
         DatabaseInfo databaseInfo = new DatabaseInfo(TestUtils.getApplication(), config);
 
         thrown.expect(IllegalStateException.class);
-        thrown.expectMessage("Table info for class JoinModel not found");
-        databaseInfo.getTableInfo(JoinModel.class);
+        thrown.expectMessage("Table info for class AbstractTestModel not found");
+        databaseInfo.getTableInfo(AbstractTestModel.class);
     }
 
 }

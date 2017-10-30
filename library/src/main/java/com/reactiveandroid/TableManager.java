@@ -83,10 +83,8 @@ public class TableManager<TableClass extends Model> {
     }
 
     public void delete(Model model) {
+        modelCache.removeModel(model.id);
         getDatabase().delete(tableInfo.getTableName(), tableInfo.getIdName() + "=?", new String[]{model.id.toString()});
-        if (tableInfo.isCachingEnabled()) {
-            modelCache.removeModel(model.id);
-        }
         model.id = null;
     }
 
@@ -112,10 +110,7 @@ public class TableManager<TableClass extends Model> {
     }
 
     public void loadFromCursor(TableClass model, Cursor cursor) {
-        /**
-         * Obtain the columns ordered to fix issue #106 (https://github.com/pardom/ActiveAndroid/issues/106)
-         * when the cursor have multiple columns with same name obtained from join tables.
-         */
+
         List<String> columnsOrdered = new ArrayList<>(Arrays.asList(cursor.getColumnNames()));
         for (Field field : tableInfo.getFields()) {
             Class<?> fieldType = field.getType();
@@ -173,9 +168,6 @@ public class TableManager<TableClass extends Model> {
                     }
 
                     value = entity;
-                } else if (ReflectionUtils.isSubclassOf(fieldType, Enum.class)) {
-                    final Class<? extends Enum> enumType = (Class<? extends Enum>) fieldType;
-                    value = Enum.valueOf(enumType, cursor.getString(columnIndex));
                 }
 
                 // Use a deserializer if one is available

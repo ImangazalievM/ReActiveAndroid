@@ -5,10 +5,14 @@ import com.reactiveandroid.annotation.Column;
 import com.reactiveandroid.annotation.Table;
 import com.reactiveandroid.test.databases.TestDatabase;
 
-@Table(name = "JoinModel", database = TestDatabase.class)
-public class JoinModel extends Model {
+@Table(database = TestDatabase.class)
+public class JoinModelCity extends Model {
 
-    @Column
-    public int intField;
+    @Column(name = "name")
+    public String name;
+
+    public JoinModelCity(String name) {
+        this.name = name;
+    }
 
 }

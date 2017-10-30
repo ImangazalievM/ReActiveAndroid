@@ -120,7 +120,7 @@ public final class Select<T extends Model> extends QueryBase<T> {
             super(parent, table);
         }
 
-        public From as(String alias) {
+        public From<T> as(String alias) {
             this.alias = alias;
             return this;
         }
@@ -249,7 +249,7 @@ public final class Select<T extends Model> extends QueryBase<T> {
             this.type = type;
         }
 
-        public Join as(String alias) {
+        public Join<P, T> as(String alias) {
             this.alias = alias;
             return this;
         }

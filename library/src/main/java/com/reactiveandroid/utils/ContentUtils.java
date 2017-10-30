@@ -114,9 +114,8 @@ public class ContentUtils {
                     values.put(fieldName, (byte[]) value);
                 } else if (ReflectionUtils.isModel(fieldType)) {
                     values.put(fieldName, ((Model) value).getId());
-                } else if (ReflectionUtils.isSubclassOf(fieldType, Enum.class)) {
-                    values.put(fieldName, ((Enum<?>) value).name());
                 }
+
             } catch (IllegalArgumentException | IllegalAccessException e) {
                 ReActiveLog.e(LogLevel.BASIC, e.getClass().getName(), e);
             }

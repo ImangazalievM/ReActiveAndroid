@@ -21,8 +21,6 @@ public class DataBaseTestRule implements TestRule {
             @Override
             public void evaluate() throws Throwable {
                 DatabaseConfig testDatabaseConfig = new DatabaseConfig.Builder(TestDatabase.class)
-                        .setDatabaseName("TestDatabase.db")
-                        .setDatabaseVersion(1)
                         .build();
 
                 ReActiveAndroid.init(new ReActiveConfig.Builder(TestUtils.getApplication())

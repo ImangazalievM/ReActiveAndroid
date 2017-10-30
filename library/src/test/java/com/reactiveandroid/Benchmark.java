@@ -19,8 +19,7 @@ public class Benchmark extends BaseTest {
     @Test
     public void insertModels() {
         List<BenchmarkModel> models = BenchmarkModel.createFilledModels(100);
-
-        long startTime = getNow();
+        long startTime = getCurrentTime();
         TestUtils.saveModels(models);
         printResult("Insert time", startTime);
     }
@@ -28,8 +27,7 @@ public class Benchmark extends BaseTest {
     @Test
     public void insertModelsWithTransaction() {
         List<BenchmarkModel> models = BenchmarkModel.createFilledModels(100);
-
-        long startTime = getNow();
+        long startTime = getCurrentTime();
         TestUtils.saveModels(models);
         printResult("Insert time", startTime);
     }
@@ -43,7 +41,7 @@ public class Benchmark extends BaseTest {
             model.dateField = new Date();
         }
 
-        long startTime = getNow();
+        long startTime = getCurrentTime();
         TestUtils.saveModels(models);
         printResult("Insert time", startTime);
     }
@@ -52,8 +50,7 @@ public class Benchmark extends BaseTest {
     public void readModels() {
         cleanTable();
         populateTable();
-
-        long startTime = getNow();
+        long startTime = getCurrentTime();
         List<TestModel> models = Select.from(TestModel.class).fetch();
         printResult("Read time", startTime);
     }
@@ -63,7 +60,7 @@ public class Benchmark extends BaseTest {
         cleanTable();
         populateTable();
 
-        long startTime = getNow();
+        long startTime = getCurrentTime();
         Delete.from(BenchmarkModel.class).execute();
         printResult("Delete time", startTime);
     }
@@ -77,12 +74,12 @@ public class Benchmark extends BaseTest {
         TestUtils.saveModels(models);
     }
 
-    private long getNow() {
+    private long getCurrentTime() {
         return System.nanoTime();
     }
 
     private void printResult(String text, long startTime) {
-        System.out.print(text + ": " + TimeUnit.NANOSECONDS.toMillis(getNow() - startTime));
+        System.out.print(text + ": " + TimeUnit.NANOSECONDS.toMillis(getCurrentTime() - startTime));
     }
 
 }

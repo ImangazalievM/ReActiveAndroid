@@ -4,8 +4,7 @@ import android.database.Cursor;
 
 import com.reactiveandroid.test.BaseTest;
 import com.reactiveandroid.test.TestUtils;
-import com.reactiveandroid.test.models.JoinModel;
-import com.reactiveandroid.test.models.JoinModel2;
+import com.reactiveandroid.test.models.JoinModelCustomer;
 import com.reactiveandroid.test.models.TestModel;
 
 import org.junit.Test;
@@ -93,33 +92,6 @@ public class SelectTest extends BaseTest {
         assertSqlEquals(SELECT_PREFIX + "WHERE id > ? AND id < ?", query);
     }
 
-
-    @Test
-    public void testSingleJoin() {
-        assertSqlEquals(SELECT_PREFIX + "JOIN JoinModel ON TestModel.id = JoinModel.id",
-                from().join(JoinModel.class).on("TestModel.id = JoinModel.id"));
-
-        assertSqlEquals(SELECT_PREFIX + "AS a JOIN JoinModel AS b ON a.id = b.id",
-                from().as("a").join(JoinModel.class).as("b").on("a.id = b.id"));
-
-        assertSqlEquals(SELECT_PREFIX + "JOIN JoinModel USING (id, other)",
-                from().join(JoinModel.class).using("id", "other"));
-    }
-
-    @Test
-    public void testJoins() {
-        assertSqlEquals(SELECT_PREFIX + "JOIN JoinModel ON id JOIN JoinModel2 ON id",
-                from().join(JoinModel.class).on("id")
-                        .join(JoinModel2.class).on("id"));
-    }
-
-    @Test
-    public void testJoinTypes() {
-        assertSqlEquals(SELECT_PREFIX + "INNER JOIN JoinModel ON", from().innerJoin(JoinModel.class).on(""));
-        assertSqlEquals(SELECT_PREFIX + "LEFT OUTER JOIN JoinModel ON", from().leftOuterJoin(JoinModel.class).on(""));
-        assertSqlEquals(SELECT_PREFIX + "CROSS JOIN JoinModel ON", from().crossJoin(JoinModel.class).on(""));
-    }
-
     @Test
     public void testGroupByHaving() {
         assertSqlEquals(SELECT_PREFIX + "GROUP BY id", from().groupBy("id"));
@@ -150,12 +122,12 @@ public class SelectTest extends BaseTest {
 
     @Test
     public void testAllOperators() {
-        final String expectedSql = SELECT_PREFIX + "AS a JOIN JoinModel USING (id) WHERE id > 5 GROUP BY id HAVING id < 10 LIMIT 5 OFFSET 10";
+        final String expectedSql = SELECT_PREFIX + "AS a JOIN JoinModelCustomer USING (id) WHERE id > 5 GROUP BY id HAVING id < 10 LIMIT 5 OFFSET 10";
 
         // Try a few different orderings, shouldn't change the output
         assertSqlEquals(expectedSql, from()
                 .as("a")
-                .join(JoinModel.class)
+                .join(JoinModelCustomer.class)
                 .using("id")
                 .where("id > 5")
                 .groupBy("id")

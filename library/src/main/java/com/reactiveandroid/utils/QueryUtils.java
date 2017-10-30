@@ -7,12 +7,16 @@ import android.support.annotation.NonNull;
 import com.reactiveandroid.Model;
 import com.reactiveandroid.ReActiveAndroid;
 import com.reactiveandroid.TableManager;
+import com.reactiveandroid.database.table.ColumnInfo;
 import com.reactiveandroid.database.table.TableInfo;
 import com.reactiveandroid.internal.cache.ModelCache;
 import com.reactiveandroid.internal.log.LogLevel;
 import com.reactiveandroid.internal.log.ReActiveLog;
+import com.reactiveandroid.query.Select;
+import com.reactiveandroid.serializer.TypeSerializer;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -28,7 +32,7 @@ public class QueryUtils {
     }
 
     @NonNull
-    public static <TableClass extends Model> List<TableClass> rawQuery(Class<? extends Model> table,
+    public static <TableClass extends Model> List<TableClass> rawQuery(Class<TableClass> table,
                                                                        String sql, String[] selectionArgs,
                                                                        boolean disableCacheForThisQuery) {
         SQLiteDatabase database = ReActiveAndroid.getWritableDatabaseForTable(table);
@@ -38,42 +42,30 @@ public class QueryUtils {
         return entities;
     }
 
-    public static int intQuery(SQLiteDatabase database, String sql, String[] selectionArgs) {
-        Cursor cursor = database.rawQuery(sql, selectionArgs);
-        int number = cursor.moveToFirst() ?  cursor.getInt(0) : 0;
-        cursor.close();
-        return number;
-    }
-
-    public static float floatQuery(SQLiteDatabase database, String sql, String[] selectionArgs) {
-        Cursor cursor = database.rawQuery(sql, selectionArgs);
-        float number = cursor.moveToFirst() ?  cursor.getFloat(0) : 0f;
-        cursor.close();
-        return number;
-    }
-
     @NonNull
     @SuppressWarnings("unchecked")
-    public static <T extends Model> List<T> processCursor(Class<? extends Model> table, Cursor cursor, boolean disableCacheForThisQuery) {
+    public static <TableClass extends Model> List<TableClass> processCursor(Class<TableClass> table,
+                                                                            Cursor cursor,
+                                                                            boolean disableCacheForThisQuery) {
         TableManager tableManager = ReActiveAndroid.getTableManager(table);
         TableInfo tableInfo = tableManager.getTableInfo();
         ModelCache modelCache = tableManager.getModelCache();
         String idName = tableInfo.getIdName();
-        List<T> entities = new ArrayList<>();
+        List<TableClass> entities = new ArrayList<>();
 
         try {
-            Constructor<?> entityConstructor = table.getConstructor();
+            Constructor<TableClass> entityConstructor = table.getConstructor();
             if (cursor.moveToFirst()) {
-                List<String> columnsOrdered = new ArrayList<>(Arrays.asList(cursor.getColumnNames()));
+                int idColumnIndex = cursor.getColumnIndex(idName);
                 do {
-                    long entityId = cursor.getLong(columnsOrdered.indexOf(idName));
+                    long entityId = cursor.getLong(idColumnIndex);
                     Model entityFromCache = tableInfo.isCachingEnabled() ? modelCache.get(entityId) : null;
-                    Model entity = entityFromCache != null ? entityFromCache : (Model) entityConstructor.newInstance();
+                    Model entity = entityFromCache != null ? entityFromCache : entityConstructor.newInstance();
                     entity.loadFromCursor(cursor);
-                    entities.add((T) entity);
+                    entities.add((TableClass) entity);
 
                     //if the model was not previously in the cache, then add it to the cache
-                    if (entityFromCache == null && disableCacheForThisQuery) {
+                    if (entityFromCache == null && !disableCacheForThisQuery) {
                         modelCache.addModel(entityId, entity);
                     }
                 } while (cursor.moveToNext());
@@ -93,6 +85,5 @@ public class QueryUtils {
 
         return entities;
     }
-
 
 }

@@ -1,20 +1,11 @@
 package com.reactiveandroid.query;
 
-import android.database.Cursor;
-
 import com.reactiveandroid.test.BaseTest;
-import com.reactiveandroid.test.TestUtils;
-import com.reactiveandroid.test.models.JoinModel;
-import com.reactiveandroid.test.models.JoinModel2;
 import com.reactiveandroid.test.models.TestModel;
 
 import org.junit.Test;
 
-import java.util.List;
-
 import static com.reactiveandroid.test.TestUtils.assertSqlEquals;
-import static junit.framework.Assert.assertEquals;
-import static org.junit.Assert.assertArrayEquals;
 
 public class InsertTest extends BaseTest {
 

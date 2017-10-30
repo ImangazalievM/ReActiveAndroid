@@ -198,5 +198,4 @@ public final class SQLiteUtils {
         return sb.toString();
     }
 
-
 }

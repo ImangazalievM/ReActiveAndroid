@@ -7,9 +7,8 @@ import android.support.annotation.Nullable;
 
 import com.reactiveandroid.database.DatabaseConfig;
 import com.reactiveandroid.database.DatabaseInfo;
+import com.reactiveandroid.database.table.QueryTableInfo;
 import com.reactiveandroid.database.table.TableInfo;
-import com.reactiveandroid.internal.cache.ModelCache;
-import com.reactiveandroid.internal.cache.ModelLruCache;
 import com.reactiveandroid.internal.log.LogLevel;
 import com.reactiveandroid.internal.log.ReActiveLog;
 import com.reactiveandroid.serializer.TypeSerializer;
@@ -23,7 +22,6 @@ public final class ReActiveAndroid {
     private static Context context;
     private static Map<Class<?>, DatabaseInfo> databaseMap;
     private static Map<Class<?>, DatabaseInfo> tableDatabaseMap;
-    private static Map<Class<? extends Model>, TableManager> tableManagerMap;
     private static boolean isInitialized = false;
 
     private ReActiveAndroid() {
@@ -43,15 +41,17 @@ public final class ReActiveAndroid {
         context = reActiveConfig.context;
         databaseMap = new HashMap<>();
         tableDatabaseMap = new HashMap<>();
-        tableManagerMap = new HashMap<>();
 
         for (DatabaseConfig databaseConfig : reActiveConfig.databaseConfigMap.values()) {
             DatabaseInfo reActiveDatabase = new DatabaseInfo(context, databaseConfig);
             databaseMap.put(databaseConfig.databaseClass, reActiveDatabase);
+
             for (TableInfo tableInfo : reActiveDatabase.getTableInfos()) {
-                Class<? extends Model> tableClass = tableInfo.getTableClass();
-                tableDatabaseMap.put(tableClass, reActiveDatabase);
-                tableManagerMap.put(tableClass, new TableManager(tableInfo, new ModelLruCache(tableInfo.getCacheSize())));
+                tableDatabaseMap.put(tableInfo.getTableClass(), reActiveDatabase);
+            }
+
+            for (QueryTableInfo queryTableInfo : reActiveDatabase.getQueryTableInfos()) {
+                tableDatabaseMap.put(queryTableInfo.getModelClass(), reActiveDatabase);
             }
         }
 
@@ -70,7 +70,6 @@ public final class ReActiveAndroid {
         context = null;
         databaseMap = null;
         tableDatabaseMap = null;
-        tableManagerMap = null;
         isInitialized = false;
 
         ReActiveLog.v(LogLevel.BASIC, "ReActiveAndroid disposed. Call init to use library.");
@@ -138,11 +137,16 @@ public final class ReActiveAndroid {
      */
     @NonNull
     public static TableManager getTableManager(Class<? extends Model> table) {
-        TableManager tableManager = tableManagerMap.get(table);
-        if (tableManager == null) {
-            throw new IllegalArgumentException("Cannot find TableManager for " + table.getName());
-        }
-        return tableManager;
+        return getDatabaseForTable(table).getTableManager(table);
+    }
+
+    /**
+     * @param table Query table class
+     * @return {@link QueryModelManager} for specified table
+     */
+    @NonNull
+    public static QueryModelManager getQueryTableManager(Class<? extends Model> table) {
+        return getDatabaseForTable(table).getQueryModelManager(table);
     }
 
     /**
@@ -156,7 +160,7 @@ public final class ReActiveAndroid {
 
     /**
      * @param table Table class
-     * @param type Deserialized type class
+     * @param type  Deserialized type class
      * @return {@link TypeSerializer} for specified type
      */
     @Nullable

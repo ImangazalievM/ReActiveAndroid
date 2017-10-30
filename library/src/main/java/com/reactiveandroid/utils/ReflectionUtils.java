@@ -16,9 +16,11 @@ import java.util.Set;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.support.annotation.NonNull;
 
 import com.reactiveandroid.Model;
 import com.reactiveandroid.annotation.Column;
+import com.reactiveandroid.annotation.QueryModel;
 import com.reactiveandroid.annotation.Table;
 import com.reactiveandroid.internal.log.LogLevel;
 import com.reactiveandroid.internal.log.ReActiveLog;
@@ -46,54 +48,72 @@ public final class ReflectionUtils {
         return isSubclassOf(type, TypeSerializer.class);
     }
 
+
     public static Set<Field> getDeclaredColumnFields(Class<?> type) {
-        Set<Field> declaredColumnFields = Collections.emptySet();
-
-        if (ReflectionUtils.isSubclassOf(type, Model.class) || Model.class.equals(type)) {
-            declaredColumnFields = new LinkedHashSet<>();
-
-            Field[] fields = type.getDeclaredFields();
-            Arrays.sort(fields, new Comparator<Field>() {
-                @Override
-                public int compare(Field field1, Field field2) {
-                    return field2.getName().compareTo(field1.getName());
-                }
-            });
-
-            for (Field field : fields) {
-                if (field.isAnnotationPresent(Column.class)) {
-                    declaredColumnFields.add(field);
-                }
+        Set<Field> declaredColumnFields = new LinkedHashSet<>();
+        Field[] fields = type.getDeclaredFields();
+        Arrays.sort(fields, new Comparator<Field>() {
+            @Override
+            public int compare(Field field1, Field field2) {
+                return field2.getName().compareTo(field1.getName());
             }
+        });
 
-            Class<?> parentType = type.getSuperclass();
-            if (parentType != null) {
-                declaredColumnFields.addAll(getDeclaredColumnFields(parentType));
+        for (Field field : fields) {
+            if (field.isAnnotationPresent(Column.class)) {
+                declaredColumnFields.add(field);
             }
         }
 
+        Class<?> parentType = type.getSuperclass();
+        if (parentType != null) {
+            declaredColumnFields.addAll(getDeclaredColumnFields(parentType));
+        }
         return declaredColumnFields;
     }
 
-    public static List<Class> getDatabaseModelClasses(Context context, Class<?> databaseClass) {
+    public static List<Class> getDatabaseModelClasses(List<Class> allClasses, Class<?> databaseClass) {
         List<Class> modelClasses = new ArrayList<>();
-        try {
-            for (String className : getAllClasses(context)) {
-                Class<?> modelClass = getModelClass(className);
-                if (modelClass != null) {
-                    Table tableAnnotation = getTableAnnotationOrThrow(modelClass);
-                    if (tableAnnotation.database() == databaseClass) {
-                        modelClasses.add(modelClass);
-                    }
+        for (Class modelClass : allClasses) {
+            if (isModel(modelClass)) {
+                ReActiveLog.e(LogLevel.BASIC, "Model loaded: " + modelClass.getSimpleName());
+                Table tableAnnotation = getTableAnnotationOrThrow(modelClass);
+                if (tableAnnotation.database() == databaseClass) {
+                    modelClasses.add(modelClass);
                 }
             }
-        } catch (IOException | PackageManager.NameNotFoundException e) {
-            ReActiveLog.e(LogLevel.BASIC, "Models loading error", e);
         }
         return modelClasses;
     }
 
-    private static List<String> getAllClasses(Context context) throws PackageManager.NameNotFoundException, IOException {
+    @NonNull
+    public static List<Class> getDatabaseQueryModelClasses(List<Class> allClasses, Class<?> databaseClass) {
+        List<Class> queryTableClasses = new ArrayList<>();
+        for (Class<?> targetClass : allClasses) {
+            QueryModel queryModelAnnotation = targetClass.getAnnotation(QueryModel.class);
+            if (queryModelAnnotation == null) {
+                continue;
+            }
+            if (queryModelAnnotation.database() == databaseClass) {
+                queryTableClasses.add(targetClass);
+            }
+        }
+        return queryTableClasses;
+    }
+
+    @NonNull
+    public static List<Class> getAllClasses(Context context) {
+        try {
+            List<String> allClassNames = getAllClassNames(context);
+            return loadClasses(context, allClassNames);
+        } catch (IOException | PackageManager.NameNotFoundException e) {
+            ReActiveLog.e(LogLevel.BASIC, "Classes loading error", e);
+        }
+        return new ArrayList<>();
+    }
+
+
+    private static List<String> getAllClassNames(Context context) throws PackageManager.NameNotFoundException, IOException {
         String packageName = context.getPackageName();
         List<String> classNames = new ArrayList<>();
         try {
@@ -119,25 +139,7 @@ public final class ReflectionUtils {
                 }
             }
         }
-
         return classNames;
-    }
-
-    private static Class<?> getModelClass(String className) {
-        Class<?> discoveredClass = null;
-        try {
-            discoveredClass = Class.forName(className, true, Thread.currentThread().getContextClassLoader());
-        } catch (Throwable e) {
-            String error = (e.getMessage() == null) ? "getModelClass " + className + " error" : e.getMessage();
-            ReActiveLog.e(LogLevel.BASIC, error);
-        }
-
-        if ((discoveredClass != null) && isModel(discoveredClass)) {
-            ReActiveLog.i(LogLevel.BASIC, "Model class: " + discoveredClass.getSimpleName());
-            return discoveredClass;
-        } else {
-            return null;
-        }
     }
 
     private static void populateFiles(File path, List<String> fileNames, String parent) {
@@ -162,11 +164,28 @@ public final class ReflectionUtils {
         }
     }
 
-    private static Table getTableAnnotationOrThrow(Class<?> modelClass) {
-        if (!modelClass.isAnnotationPresent(Table.class)) {
-            throw new IllegalArgumentException("Table annotation not found  in class " + modelClass.getName());
+    private static List<Class> loadClasses(Context context, List<String> classNames) {
+        String packageName = context.getPackageName();
+        List<Class> discoveredClasses = new ArrayList<>();
+        for (String className : classNames) {
+            try {
+                if (className.startsWith(packageName)) {
+                    Class<?> discoveredClass = Class.forName(className, true, Thread.currentThread().getContextClassLoader());
+                    discoveredClasses.add(discoveredClass);
+                }
+            } catch (Throwable e) {
+                ReActiveLog.e(LogLevel.BASIC, "Class when loading " + className);
+                e.printStackTrace();
+            }
         }
-        return modelClass.getAnnotation(Table.class);
+        return discoveredClasses;
+    }
+
+    private static Table getTableAnnotationOrThrow(Class<?> tableClass) {
+        if (!tableClass.isAnnotationPresent(Table.class)) {
+            throw new IllegalArgumentException("Table annotation not found  in class " + tableClass.getName());
+        }
+        return tableClass.getAnnotation(Table.class);
     }
 
 }

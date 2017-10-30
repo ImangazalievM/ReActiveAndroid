@@ -1,17 +1,15 @@
 package com.reactiveandroid.query;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.reactiveandroid.Model;
-import com.reactiveandroid.query.Query;
 
-public abstract class QueryBase<T extends Model> implements Query {
+public abstract class QueryBase<TableClass extends Model> implements Query {
 
 	protected Query parent;
-	protected Class<T> table;
+	protected Class<TableClass> table;
 
-	public QueryBase(Query parent, Class<T> table) {
+	public QueryBase(Query parent, Class<TableClass> table) {
 		this.parent = parent;
 		this.table = table;
 	}

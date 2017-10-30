@@ -19,15 +19,18 @@ package com.reactiveandroid.query;
 import android.database.Cursor;
 
 import com.reactiveandroid.Model;
+import com.reactiveandroid.QueryModelManager;
 import com.reactiveandroid.ReActiveAndroid;
+import com.reactiveandroid.database.DatabaseInfo;
 import com.reactiveandroid.utils.QueryUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
 import io.reactivex.Single;
 
-public abstract class ResultQueryBase<T extends Model> extends QueryBase<T> {
+public abstract class ResultQueryBase<TableClass extends Model> extends QueryBase<TableClass> {
 
     private boolean disableCacheForThisQuery = false;
 
@@ -35,51 +38,63 @@ public abstract class ResultQueryBase<T extends Model> extends QueryBase<T> {
         this.disableCacheForThisQuery = true;
     }
 
-    public ResultQueryBase(Query parent, Class<T> table) {
+    public ResultQueryBase(Query parent, Class<TableClass> table) {
         super(parent, table);
     }
 
-    public <CustomClass extends Model> List<CustomClass> fetchAs(Class<CustomClass> customType) {
-        return QueryUtils.rawQuery(customType, getSql(), getArgs(), disableCacheForThisQuery);
+    public List<TableClass> fetch() {
+        return QueryUtils.rawQuery(table, getSql(), getArgs(), disableCacheForThisQuery);
     }
 
-    public List<T> fetch() {
-        return fetchAs(table);
-    }
-
-    public <CustomClass extends Model> CustomClass fetchSingleAs(Class<CustomClass> customType) {
-        List<CustomClass> results = QueryUtils.rawQuery(customType, getSql(), getArgs(), disableCacheForThisQuery);
+    public TableClass fetchSingle() {
+        List<TableClass> results = QueryUtils.rawQuery(table, getSql(), getArgs(), disableCacheForThisQuery);
         if (!results.isEmpty()) {
             return results.get(0);
         }
         return null;
     }
 
-    public T fetchSingle() {
-        return fetchSingleAs(table);
+    public <CustomClass> List<CustomClass> fetchAs(Class<CustomClass> customType) {
+        DatabaseInfo databaseInfo = ReActiveAndroid.getDatabaseForTable(customType);
+        QueryModelManager<CustomClass> queryModelManager = databaseInfo.getQueryModelManager(customType);
+        Cursor cursor = databaseInfo.getWritableDatabase().rawQuery(getSql(), getArgs());
+        cursor.moveToFirst();
+        List<CustomClass> entities = new ArrayList<>();
+        do {
+            entities.add(queryModelManager.createFromCursor(cursor));
+        } while (cursor.moveToNext());
+        return entities;
     }
 
-    public <E> E fetchValue(Class<E> type) {
+    public <CustomClass> CustomClass fetchSingleAs(Class<CustomClass> modelType) {
+        List<CustomClass> results = fetchAs(modelType);
+        if (!results.isEmpty()) {
+            return results.get(0);
+        }
+        return null;
+    }
+
+    public <ValueType> ValueType fetchValue(Class<ValueType> type) {
         Cursor cursor = ReActiveAndroid.getWritableDatabaseForTable(table).rawQuery(getSql(), getArgs());
         if (!cursor.moveToFirst()) {
             return null;
         }
 
-        E value = null;
+        ValueType value = null;
         if (type.equals(Byte[].class) || type.equals(byte[].class)) {
-            value = (E) cursor.getBlob(0);
+            value = (ValueType) cursor.getBlob(0);
         } else if (type.equals(double.class) || type.equals(Double.class)) {
-            value = (E) Double.valueOf(cursor.getDouble(0));
+            value = (ValueType) Double.valueOf(cursor.getDouble(0));
         } else if (type.equals(float.class) || type.equals(Float.class)) {
-            value = (E) Float.valueOf(cursor.getFloat(0));
+            value = (ValueType) Float.valueOf(cursor.getFloat(0));
         } else if (type.equals(int.class) || type.equals(Integer.class)) {
-            value = (E) Integer.valueOf(cursor.getInt(0));
+            value = (ValueType) Integer.valueOf(cursor.getInt(0));
         } else if (type.equals(long.class) || type.equals(Long.class)) {
-            value = (E) Long.valueOf(cursor.getLong(0));
+            value = (ValueType) Long.valueOf(cursor.getLong(0));
         } else if (type.equals(short.class) || type.equals(Short.class)) {
-            value = (E) Short.valueOf(cursor.getShort(0));
+            value = (ValueType) Short.valueOf(cursor.getShort(0));
         } else if (type.equals(String.class)) {
-            value = (E) cursor.getString(0);
+            value = (ValueType) cursor.getString(0);
         }
 
         cursor.close();
@@ -88,6 +103,15 @@ public abstract class ResultQueryBase<T extends Model> extends QueryBase<T> {
 
     public Cursor fetchCursor() {
         return ReActiveAndroid.getWritableDatabaseForTable(table).rawQuery(getSql(), getArgs());
+    }
+
+    public Single<List<TableClass>> fetchAsync() {
+        return Single.fromCallable(new Callable<List<TableClass>>() {
+            @Override
+            public List<TableClass> call() throws Exception {
+                return fetch();
+            }
+        });
     }
 
     public <CustomClass extends Model> Single<List<CustomClass>> fetchAsAsync(final Class<CustomClass> customType) {
@@ -99,8 +123,13 @@ public abstract class ResultQueryBase<T extends Model> extends QueryBase<T> {
         });
     }
 
-    public Single<List<T>> fetchAsync() {
-        return fetchAsAsync(table);
+    public Single<TableClass> fetchSingleAsync() {
+        return Single.fromCallable(new Callable<TableClass>() {
+            @Override
+            public TableClass call() throws Exception {
+                return fetchSingle();
+            }
+        });
     }
 
     public <CustomClass extends Model> Single<CustomClass> fetchSingleAsAsync(final Class<CustomClass> customType) {
@@ -110,10 +139,6 @@ public abstract class ResultQueryBase<T extends Model> extends QueryBase<T> {
                 return fetchSingleAs(customType);
             }
         });
-    }
-
-    public Single<T> fetchSingleAsync() {
-        return fetchSingleAsAsync(table);
     }
 
     public <E> Single<E> fetchValueAsync(final Class<E> type) {

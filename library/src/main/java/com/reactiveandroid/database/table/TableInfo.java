@@ -29,7 +29,7 @@ public final class TableInfo {
     private Class<?> databaseClass;
     private Class<? extends Model> tableClass;
     private String tableName;
-    private String idName = Table.DEFAULT_ID_NAME;
+    private String idName;
 
     private List<Field> modelFields = new ArrayList<>();
     private Map<Field, ColumnInfo> columns = new LinkedHashMap<>();
@@ -58,16 +58,13 @@ public final class TableInfo {
 
         List<Field> fields = new LinkedList<>(ReflectionUtils.getDeclaredColumnFields(tableClass));
         Collections.reverse(fields);
-
         for (Field field : fields) {
-            if (field.isAnnotationPresent(Column.class)) {
-                Column column = field.getAnnotation(Column.class);
-                ColumnInfo columnInfo = createColumnInfo(field, typeSerializers);
-                createColumnUnique(columnInfo, column);
-                createColumnIndex(columnInfo, column);
-                modelFields.add(field);
-                columns.put(field, columnInfo);
-            }
+            Column columnAnnotation = field.getAnnotation(Column.class);
+            ColumnInfo columnInfo = createColumnInfo(field, columnAnnotation, typeSerializers);
+            createColumnUnique(columnInfo, columnAnnotation);
+            createColumnIndex(columnInfo, columnAnnotation);
+            modelFields.add(field);
+            columns.put(field, columnInfo);
         }
     }
 
@@ -148,16 +145,15 @@ public final class TableInfo {
         return null;
     }
 
-    private ColumnInfo createColumnInfo(Field field, Map<Class<?>, TypeSerializer> typeSerializers) {
-        Column columnAnnotation = field.getAnnotation(Column.class);
+    private ColumnInfo createColumnInfo(Field field, Column columnAnnotation, Map<Class<?>, TypeSerializer> typeSerializers) {
         String columnName = TextUtils.isEmpty(columnAnnotation.name()) ? field.getName() : columnAnnotation.name();
         SQLiteType sqliteType = getFieldSQLiteType(field, typeSerializers);
         boolean notNull = columnAnnotation.notNull();
         return new ColumnInfo(columnName, sqliteType, notNull, 0);
     }
 
-    private void createColumnUnique(ColumnInfo columnInfo, Column column) {
-        int[] groups = column.uniqueGroups();
+    private void createColumnUnique(ColumnInfo columnInfo, Column columnAnnotation) {
+        int[] groups = columnAnnotation.uniqueGroups();
         for (int group : groups) {
             UniqueGroupInfo uniqueGroupInfo = uniqueGroups.get(group);
             if (uniqueGroupInfo != null) {
@@ -168,8 +164,8 @@ public final class TableInfo {
         }
     }
 
-    private void createColumnIndex(ColumnInfo columnInfo, Column column) {
-        int[] groups = column.indexGroups();
+    private void createColumnIndex(ColumnInfo columnInfo, Column columnAnnotation) {
+        int[] groups = columnAnnotation.indexGroups();
         for (int group : groups) {
             IndexGroupInfo indexGroupInfo = indexGroups.get(group);
             if (indexGroupInfo != null) {
@@ -193,8 +189,6 @@ public final class TableInfo {
             sqliteType = SQLiteType.getSQLiteTypeForClass(fieldType);
         } else if (ReflectionUtils.isModel(fieldType)) {
             sqliteType = SQLiteType.INTEGER;
-        } else if (ReflectionUtils.isSubclassOf(fieldType, Enum.class)) {
-            sqliteType = SQLiteType.TEXT;
         }
 
         return sqliteType;
