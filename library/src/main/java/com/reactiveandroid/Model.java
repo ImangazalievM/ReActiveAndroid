@@ -13,14 +13,14 @@ import io.reactivex.functions.Action;
 @SuppressWarnings("unchecked")
 public abstract class Model {
 
-    private TableManager tableManager;
+    private ModelAdapter modelAdapter;
 
     /**
      * Saves model to database
      */
     @NonNull
     public Long save() {
-        return getTableManager().save(this);
+        return getModelAdapter().save(this);
     }
 
     public Single<Long> saveAsync() {
@@ -36,7 +36,7 @@ public abstract class Model {
      * Deletes model from database
      */
     public void delete() {
-        getTableManager().delete(this);
+        getModelAdapter().delete(this);
     }
 
     @NonNull
@@ -55,7 +55,7 @@ public abstract class Model {
      * @param cursor Cursor with data
      */
     public void loadFromCursor(Cursor cursor) {
-        getTableManager().loadFromCursor(this, cursor);
+        getModelAdapter().loadFromCursor(this, cursor);
     }
 
     /**
@@ -123,11 +123,11 @@ public abstract class Model {
         });
     }
 
-    private TableManager getTableManager() {
-        if (tableManager == null) {
-            tableManager = ReActiveAndroid.getTableManager(getClass());
+    private ModelAdapter getModelAdapter() {
+        if (modelAdapter == null) {
+            modelAdapter = ReActiveAndroid.getTableManager(getClass());
         }
-        return tableManager;
+        return modelAdapter;
     }
 
 }

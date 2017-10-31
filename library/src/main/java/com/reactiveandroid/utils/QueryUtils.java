@@ -4,9 +4,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 
-import com.reactiveandroid.QueryModelManager;
+import com.reactiveandroid.QueryModelAdapter;
 import com.reactiveandroid.ReActiveAndroid;
-import com.reactiveandroid.TableManager;
+import com.reactiveandroid.ModelAdapter;
 import com.reactiveandroid.database.DatabaseInfo;
 import com.reactiveandroid.database.table.TableInfo;
 import com.reactiveandroid.internal.cache.ModelCache;
@@ -43,12 +43,12 @@ public class QueryUtils {
     public static <CustomClass> List<CustomClass> rawQueryCustom(Class<CustomClass> customType,
                                                                  String sql, String[] selectionArgs) {
         DatabaseInfo databaseInfo = ReActiveAndroid.getDatabaseForTable(customType);
-        QueryModelManager<CustomClass> queryModelManager = databaseInfo.getQueryModelManager(customType);
+        QueryModelAdapter<CustomClass> queryModelAdapter = databaseInfo.getQueryModelManager(customType);
         Cursor cursor = databaseInfo.getWritableDatabase().rawQuery(sql, selectionArgs);
         cursor.moveToFirst();
         List<CustomClass> entities = new ArrayList<>();
         do {
-            entities.add(queryModelManager.createFromCursor(cursor));
+            entities.add(queryModelAdapter.createFromCursor(cursor));
         } while (cursor.moveToNext());
         cursor.close();
         return entities;
@@ -58,9 +58,9 @@ public class QueryUtils {
     private static <TableClass> List<TableClass> processCursor(Class<TableClass> table,
                                                                Cursor cursor,
                                                                boolean disableCacheForThisQuery) {
-        TableManager tableManager = ReActiveAndroid.getTableManager(table);
-        TableInfo tableInfo = tableManager.getTableInfo();
-        ModelCache modelCache = tableManager.getModelCache();
+        ModelAdapter modelAdapter = ReActiveAndroid.getTableManager(table);
+        TableInfo tableInfo = modelAdapter.getTableInfo();
+        ModelCache modelCache = modelAdapter.getModelCache();
         String idName = tableInfo.getPrimaryKeyColumnName();
         List<TableClass> entities = new ArrayList<>();
 
@@ -73,7 +73,7 @@ public class QueryUtils {
                     TableClass entity = tableInfo.isCachingEnabled() ? (TableClass) modelCache.get(entityId) : null;
                     if (entity == null) {
                         entity = entityConstructor.newInstance();
-                        tableManager.loadFromCursor(entity, cursor);
+                        modelAdapter.loadFromCursor(entity, cursor);
                         entities.add(entity);
                         if (!disableCacheForThisQuery) {
                             modelCache.addModel(entityId, entity);

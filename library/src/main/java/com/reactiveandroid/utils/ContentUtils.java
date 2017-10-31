@@ -5,7 +5,7 @@ import android.content.ContentValues;
 import android.net.Uri;
 
 import com.reactiveandroid.ReActiveAndroid;
-import com.reactiveandroid.TableManager;
+import com.reactiveandroid.ModelAdapter;
 import com.reactiveandroid.annotation.Column;
 import com.reactiveandroid.database.table.TableInfo;
 import com.reactiveandroid.internal.log.LogLevel;
@@ -111,8 +111,8 @@ public class ContentUtils {
                 } else if (fieldType.equals(Byte[].class) || fieldType.equals(byte[].class)) {
                     contentValues.put(fieldName, (byte[]) value);
                 } else if (ReflectionUtils.isModel(fieldType)) {
-                    TableManager tableManager = ReActiveAndroid.getTableManager(fieldType);
-                    contentValues.put(fieldName, tableManager.getModelId(value));
+                    ModelAdapter modelAdapter = ReActiveAndroid.getTableManager(fieldType);
+                    contentValues.put(fieldName, modelAdapter.getModelId(value));
                 }
 
             } catch (IllegalArgumentException | IllegalAccessException e) {

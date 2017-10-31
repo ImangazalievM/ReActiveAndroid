@@ -17,11 +17,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class QueryModelManager<QueryModelClass> {
+public class QueryModelAdapter<QueryModelClass> {
 
     private QueryTableInfo queryTableInfo;
 
-    public QueryModelManager(QueryTableInfo queryTableInfo) {
+    public QueryModelAdapter(QueryTableInfo queryTableInfo) {
         this.queryTableInfo = queryTableInfo;
     }
 

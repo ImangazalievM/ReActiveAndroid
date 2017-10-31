@@ -4,7 +4,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.reactiveandroid.Model;
 import com.reactiveandroid.ReActiveAndroid;
-import com.reactiveandroid.Query;
+import com.reactiveandroid.query.Query;
 
 import org.robolectric.RuntimeEnvironment;
 
@@ -16,10 +16,6 @@ public class TestUtils {
 
     public static TestApp getApplication() {
         return (TestApp) RuntimeEnvironment.application;
-    }
-
-    public static void assertSqlEquals(String expected, com.reactiveandroid.query.Query actual) {
-        assertEquals(expected, actual.getSql());
     }
 
     public static void assertSqlEquals(String expected, Query actual) {

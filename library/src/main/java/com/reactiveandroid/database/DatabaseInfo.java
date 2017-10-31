@@ -5,8 +5,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.reactiveandroid.QueryModelManager;
-import com.reactiveandroid.TableManager;
+import com.reactiveandroid.QueryModelAdapter;
+import com.reactiveandroid.ModelAdapter;
 import com.reactiveandroid.database.table.QueryTableInfo;
 import com.reactiveandroid.database.table.TableInfo;
 import com.reactiveandroid.internal.cache.ModelLruCache;
@@ -32,9 +32,9 @@ public class DatabaseInfo {
 
     private ReActiveOpenHelper reActiveOpenHelper;
     private Map<Class<?>, TableInfo> tableInfos = new HashMap<>();
-    private Map<Class<?>, TableManager> tableManagerMap = new HashMap<>();
+    private Map<Class<?>, ModelAdapter> tableManagerMap = new HashMap<>();
     private Map<Class<?>, QueryTableInfo> queryTableInfos = new HashMap<>();
-    private Map<Class<?>, QueryModelManager> queryTableManagerMap = new HashMap<>();
+    private Map<Class<?>, QueryModelAdapter> queryTableManagerMap = new HashMap<>();
     private Map<Class<?>, TypeSerializer> typeSerializers = new HashMap<Class<?>, TypeSerializer>() {{
         put(Calendar.class, new CalendarSerializer());
         put(java.sql.Date.class, new SqlDateSerializer());
@@ -85,21 +85,21 @@ public class DatabaseInfo {
     }
 
     @NonNull
-    public TableManager getTableManager(Class<?> table) {
-        TableManager tableManager = tableManagerMap.get(table);
-        if (tableManager == null) {
+    public ModelAdapter getTableManager(Class<?> table) {
+        ModelAdapter modelAdapter = tableManagerMap.get(table);
+        if (modelAdapter == null) {
             throw new IllegalArgumentException("Cannot find TableManager for " + table.getName());
         }
-        return tableManager;
+        return modelAdapter;
     }
 
     @NonNull
-    public QueryModelManager getQueryModelManager(Class<?> table) {
-        QueryModelManager queryModelManager = queryTableManagerMap.get(table);
-        if (queryModelManager == null) {
+    public QueryModelAdapter getQueryModelManager(Class<?> table) {
+        QueryModelAdapter queryModelAdapter = queryTableManagerMap.get(table);
+        if (queryModelAdapter == null) {
             throw new IllegalArgumentException("Cannot find TableManager for " + table.getName());
         }
-        return queryModelManager;
+        return queryModelAdapter;
     }
 
     @Nullable
@@ -143,13 +143,13 @@ public class DatabaseInfo {
         for (Class tableClass : tableClasses) {
             TableInfo tableInfo = new TableInfo(tableClass, typeSerializers);
             tableInfos.put(tableClass, tableInfo);
-            tableManagerMap.put(tableClass, new TableManager(tableInfo, new ModelLruCache(tableInfo.getCacheSize())));
+            tableManagerMap.put(tableClass, new ModelAdapter(tableInfo, new ModelLruCache(tableInfo.getCacheSize())));
         }
 
         for (Class queryTableClass : queryTableClasses) {
             QueryTableInfo queryTableInfo = new QueryTableInfo(queryTableClass, typeSerializers);
             queryTableInfos.put(queryTableClass, queryTableInfo);
-            queryTableManagerMap.put(queryTableClass, new QueryModelManager(queryTableInfo));
+            queryTableManagerMap.put(queryTableClass, new QueryModelAdapter(queryTableInfo));
         }
     }
 

@@ -133,19 +133,19 @@ public final class ReActiveAndroid {
 
     /**
      * @param table Table class
-     * @return {@link TableManager} for specified table
+     * @return {@link ModelAdapter} for specified table
      */
     @NonNull
-    public static TableManager getTableManager(Class<?> table) {
+    public static ModelAdapter getTableManager(Class<?> table) {
         return getDatabaseForTable(table).getTableManager(table);
     }
 
     /**
      * @param table Query table class
-     * @return {@link QueryModelManager} for specified table
+     * @return {@link QueryModelAdapter} for specified table
      */
     @NonNull
-    public static QueryModelManager getQueryTableManager(Class<?> table) {
+    public static QueryModelAdapter getQueryTableManager(Class<?> table) {
         return getDatabaseForTable(table).getQueryModelManager(table);
     }
 

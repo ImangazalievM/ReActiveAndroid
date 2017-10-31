@@ -23,13 +23,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class TableManager<TableClass> {
+public class ModelAdapter<TableClass> {
 
     private TableInfo tableInfo;
     private ModelCache<TableClass> modelCache;
     private SQLiteDatabase sqLiteDatabase;
 
-    public TableManager(TableInfo tableInfo, ModelCache<TableClass> modelCache) {
+    public ModelAdapter(TableInfo tableInfo, ModelCache<TableClass> modelCache) {
         this.tableInfo = tableInfo;
         this.modelCache = modelCache;
     }
