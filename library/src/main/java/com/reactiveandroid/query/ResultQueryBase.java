@@ -18,12 +18,9 @@ package com.reactiveandroid.query;
 
 import android.database.Cursor;
 
-import com.reactiveandroid.QueryModelManager;
 import com.reactiveandroid.ReActiveAndroid;
-import com.reactiveandroid.database.DatabaseInfo;
 import com.reactiveandroid.utils.QueryUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -46,7 +43,7 @@ public abstract class ResultQueryBase<TableClass> extends QueryBase<TableClass> 
     }
 
     public TableClass fetchSingle() {
-        List<TableClass> results = QueryUtils.rawQuery(table, getSql(), getArgs(), disableCacheForThisQuery);
+        List<TableClass> results = QueryUtils.rawQuery(table, getSingleSql(), getArgs(), disableCacheForThisQuery);
         if (!results.isEmpty()) {
             return results.get(0);
         }
@@ -54,19 +51,11 @@ public abstract class ResultQueryBase<TableClass> extends QueryBase<TableClass> 
     }
 
     public <CustomClass> List<CustomClass> fetchAs(Class<CustomClass> customType) {
-        DatabaseInfo databaseInfo = ReActiveAndroid.getDatabaseForTable(customType);
-        QueryModelManager<CustomClass> queryModelManager = databaseInfo.getQueryModelManager(customType);
-        Cursor cursor = databaseInfo.getWritableDatabase().rawQuery(getSql(), getArgs());
-        cursor.moveToFirst();
-        List<CustomClass> entities = new ArrayList<>();
-        do {
-            entities.add(queryModelManager.createFromCursor(cursor));
-        } while (cursor.moveToNext());
-        return entities;
+        return QueryUtils.rawQueryCustom(customType, getSql(), getArgs());
     }
 
-    public <CustomClass> CustomClass fetchSingleAs(Class<CustomClass> modelType) {
-        List<CustomClass> results = fetchAs(modelType);
+    public <CustomClass> CustomClass fetchSingleAs(Class<CustomClass> customType) {
+        List<CustomClass> results = QueryUtils.rawQueryCustom(customType, getSingleSql(), getArgs());
         if (!results.isEmpty()) {
             return results.get(0);
         }
@@ -156,6 +145,16 @@ public abstract class ResultQueryBase<TableClass> extends QueryBase<TableClass> 
                 return fetchCursor();
             }
         });
+    }
+
+    //sets LIMIT 1 to optimize queries with single result
+    private String getSingleSql() {
+        String originalSql = getSql();
+        if (originalSql.contains("LIMIT")) {
+            return getSql().replaceAll("LIMIT [0-9]*]", "LIMIT 1");
+        } else {
+            return originalSql + " LIMIT 1";
+        }
     }
 
 }

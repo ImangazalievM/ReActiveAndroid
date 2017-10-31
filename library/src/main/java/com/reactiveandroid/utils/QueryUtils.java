@@ -4,8 +4,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 
+import com.reactiveandroid.QueryModelManager;
 import com.reactiveandroid.ReActiveAndroid;
 import com.reactiveandroid.TableManager;
+import com.reactiveandroid.database.DatabaseInfo;
 import com.reactiveandroid.database.table.TableInfo;
 import com.reactiveandroid.internal.cache.ModelCache;
 import com.reactiveandroid.internal.log.LogLevel;
@@ -15,6 +17,7 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class QueryUtils {
 
     public static void execSQL(Class<?> table, String sql) {
@@ -37,10 +40,24 @@ public class QueryUtils {
     }
 
     @NonNull
-    @SuppressWarnings("unchecked")
-    public static <TableClass> List<TableClass> processCursor(Class<TableClass> table,
-                                                              Cursor cursor,
-                                                              boolean disableCacheForThisQuery) {
+    public static <CustomClass> List<CustomClass> rawQueryCustom(Class<CustomClass> customType,
+                                                                 String sql, String[] selectionArgs) {
+        DatabaseInfo databaseInfo = ReActiveAndroid.getDatabaseForTable(customType);
+        QueryModelManager<CustomClass> queryModelManager = databaseInfo.getQueryModelManager(customType);
+        Cursor cursor = databaseInfo.getWritableDatabase().rawQuery(sql, selectionArgs);
+        cursor.moveToFirst();
+        List<CustomClass> entities = new ArrayList<>();
+        do {
+            entities.add(queryModelManager.createFromCursor(cursor));
+        } while (cursor.moveToNext());
+        cursor.close();
+        return entities;
+    }
+
+    @NonNull
+    private static <TableClass> List<TableClass> processCursor(Class<TableClass> table,
+                                                               Cursor cursor,
+                                                               boolean disableCacheForThisQuery) {
         TableManager tableManager = ReActiveAndroid.getTableManager(table);
         TableInfo tableInfo = tableManager.getTableInfo();
         ModelCache modelCache = tableManager.getModelCache();
