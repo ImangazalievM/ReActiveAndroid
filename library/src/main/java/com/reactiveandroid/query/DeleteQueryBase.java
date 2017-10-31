@@ -1,6 +1,6 @@
 package com.reactiveandroid.query;
 
-import com.reactiveandroid.utils.QueryUtils;
+import com.reactiveandroid.internal.utils.QueryUtils;
 
 abstract class DeleteQueryBase<T> extends ExecutableQueryBase<T> {
 

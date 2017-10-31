@@ -1,4 +1,4 @@
-package com.reactiveandroid.utils;
+package com.reactiveandroid.internal.utils;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -10,7 +10,7 @@ import com.reactiveandroid.annotation.Column;
 import com.reactiveandroid.database.table.TableInfo;
 import com.reactiveandroid.internal.log.LogLevel;
 import com.reactiveandroid.internal.log.ReActiveLog;
-import com.reactiveandroid.serializer.TypeSerializer;
+import com.reactiveandroid.internal.serializer.TypeSerializer;
 
 import java.lang.reflect.Field;
 import java.util.List;

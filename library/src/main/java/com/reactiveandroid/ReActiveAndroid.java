@@ -11,7 +11,7 @@ import com.reactiveandroid.database.table.QueryTableInfo;
 import com.reactiveandroid.database.table.TableInfo;
 import com.reactiveandroid.internal.log.LogLevel;
 import com.reactiveandroid.internal.log.ReActiveLog;
-import com.reactiveandroid.serializer.TypeSerializer;
+import com.reactiveandroid.internal.serializer.TypeSerializer;
 
 import java.util.Collection;
 import java.util.HashMap;

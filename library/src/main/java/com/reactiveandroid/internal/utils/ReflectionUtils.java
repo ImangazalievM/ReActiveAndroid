@@ -1,4 +1,4 @@
-package com.reactiveandroid.utils;
+package com.reactiveandroid.internal.utils;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -10,7 +10,7 @@ import com.reactiveandroid.annotation.QueryModel;
 import com.reactiveandroid.annotation.Table;
 import com.reactiveandroid.internal.log.LogLevel;
 import com.reactiveandroid.internal.log.ReActiveLog;
-import com.reactiveandroid.serializer.TypeSerializer;
+import com.reactiveandroid.internal.serializer.TypeSerializer;
 
 import java.io.File;
 import java.io.IOException;

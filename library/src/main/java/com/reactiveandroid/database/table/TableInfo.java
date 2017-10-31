@@ -11,8 +11,8 @@ import com.reactiveandroid.annotation.PrimaryKey;
 import com.reactiveandroid.annotation.Table;
 import com.reactiveandroid.annotation.Unique;
 import com.reactiveandroid.annotation.UniqueGroup;
-import com.reactiveandroid.serializer.TypeSerializer;
-import com.reactiveandroid.utils.ReflectionUtils;
+import com.reactiveandroid.internal.serializer.TypeSerializer;
+import com.reactiveandroid.internal.utils.ReflectionUtils;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;

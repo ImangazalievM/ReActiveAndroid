@@ -3,7 +3,7 @@ package com.reactiveandroid.database;
 import com.reactiveandroid.annotation.Database;
 import com.reactiveandroid.database.migration.Migration;
 import com.reactiveandroid.database.migration.MigrationContainer;
-import com.reactiveandroid.serializer.TypeSerializer;
+import com.reactiveandroid.internal.serializer.TypeSerializer;
 
 import java.util.ArrayList;
 import java.util.Arrays;

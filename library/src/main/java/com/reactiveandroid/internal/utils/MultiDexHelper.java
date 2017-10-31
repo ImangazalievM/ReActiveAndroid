@@ -1,4 +1,4 @@
-package com.reactiveandroid.utils;
+package com.reactiveandroid.internal.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;

@@ -28,7 +28,7 @@
 -keep class com.reactiveandroid.** { *; }
 -keep class com.reactiveandroid.**.** { *; }
 -keep class * extends com.reactiveandroid.Model
--keep class * extends com.reactiveandroid.serializer.TypeSerializer
+-keep class * extends com.reactiveandroid.internal.serializer.TypeSerializer
 -keepattributes *Annotation*
 -keepattributes Column
 -keepattributes Table

@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.reactiveandroid.ReActiveAndroid;
 import com.reactiveandroid.database.migration.Migration;
 import com.reactiveandroid.database.table.TableInfo;
-import com.reactiveandroid.utils.SQLiteUtils;
+import com.reactiveandroid.internal.utils.SQLiteUtils;
 
 import java.util.List;
 
@@ -85,7 +85,6 @@ public final class ReActiveOpenHelper extends SQLiteOpenHelper {
         try {
             for (TableInfo tableInfo : ReActiveAndroid.getDatabaseTablesInfos(databaseConfig.databaseClass)) {
                 String tableDefinition = SQLiteUtils.createTableDefinition(tableInfo);
-                System.out.println(tableInfo.getModelClass().getSimpleName());
                 db.execSQL(tableDefinition);
             }
             db.setTransactionSuccessful();

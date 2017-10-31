@@ -19,7 +19,7 @@ package com.reactiveandroid.query;
 import android.database.Cursor;
 
 import com.reactiveandroid.ReActiveAndroid;
-import com.reactiveandroid.utils.QueryUtils;
+import com.reactiveandroid.internal.utils.QueryUtils;
 
 import java.util.List;
 import java.util.concurrent.Callable;

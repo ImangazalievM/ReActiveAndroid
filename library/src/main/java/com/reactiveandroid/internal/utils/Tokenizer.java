@@ -1,5 +1,5 @@
 
-package com.reactiveandroid.utils;
+package com.reactiveandroid.internal.utils;
 
 import java.io.IOException;
 import java.io.InputStream;

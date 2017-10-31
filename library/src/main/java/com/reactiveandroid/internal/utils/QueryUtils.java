@@ -1,4 +1,4 @@
-package com.reactiveandroid.utils;
+package com.reactiveandroid.internal.utils;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;

@@ -1,4 +1,4 @@
-package com.reactiveandroid.serializer;
+package com.reactiveandroid.internal.serializer;
 
 import com.reactiveandroid.test.BaseTest;
 

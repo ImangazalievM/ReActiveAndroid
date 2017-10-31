@@ -1,7 +1,7 @@
-package com.reactiveandroid.utils;
+package com.reactiveandroid.internal.utils;
 
 import com.reactiveandroid.Model;
-import com.reactiveandroid.serializer.UtilDateSerializer;
+import com.reactiveandroid.internal.serializer.UtilDateSerializer;
 import com.reactiveandroid.test.BaseTest;
 import com.reactiveandroid.test.ReActiveAndroidTestRunner;
 import com.reactiveandroid.test.databases.EmptyDatabase;

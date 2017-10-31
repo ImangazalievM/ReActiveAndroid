@@ -5,8 +5,8 @@ import android.text.TextUtils;
 
 import com.reactiveandroid.annotation.Column;
 import com.reactiveandroid.annotation.QueryModel;
-import com.reactiveandroid.serializer.TypeSerializer;
-import com.reactiveandroid.utils.ReflectionUtils;
+import com.reactiveandroid.internal.serializer.TypeSerializer;
+import com.reactiveandroid.internal.utils.ReflectionUtils;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;

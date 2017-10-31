@@ -12,12 +12,12 @@ import com.reactiveandroid.database.table.TableInfo;
 import com.reactiveandroid.internal.cache.ModelLruCache;
 import com.reactiveandroid.internal.log.LogLevel;
 import com.reactiveandroid.internal.log.ReActiveLog;
-import com.reactiveandroid.serializer.CalendarSerializer;
-import com.reactiveandroid.serializer.FileSerializer;
-import com.reactiveandroid.serializer.SqlDateSerializer;
-import com.reactiveandroid.serializer.TypeSerializer;
-import com.reactiveandroid.serializer.UtilDateSerializer;
-import com.reactiveandroid.utils.ReflectionUtils;
+import com.reactiveandroid.internal.serializer.CalendarSerializer;
+import com.reactiveandroid.internal.serializer.FileSerializer;
+import com.reactiveandroid.internal.serializer.SqlDateSerializer;
+import com.reactiveandroid.internal.serializer.TypeSerializer;
+import com.reactiveandroid.internal.serializer.UtilDateSerializer;
+import com.reactiveandroid.internal.utils.ReflectionUtils;
 
 import java.util.Calendar;
 import java.util.Collection;

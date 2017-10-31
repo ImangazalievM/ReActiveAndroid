@@ -9,8 +9,8 @@ import com.reactiveandroid.database.table.QueryTableInfo;
 import com.reactiveandroid.internal.log.LogLevel;
 import com.reactiveandroid.internal.log.ReActiveLog;
 import com.reactiveandroid.query.Select;
-import com.reactiveandroid.serializer.TypeSerializer;
-import com.reactiveandroid.utils.ReflectionUtils;
+import com.reactiveandroid.internal.serializer.TypeSerializer;
+import com.reactiveandroid.internal.utils.ReflectionUtils;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
