@@ -18,7 +18,6 @@ package com.reactiveandroid.query;
 
 import android.database.Cursor;
 
-import com.reactiveandroid.Model;
 import com.reactiveandroid.QueryModelManager;
 import com.reactiveandroid.ReActiveAndroid;
 import com.reactiveandroid.database.DatabaseInfo;
@@ -30,7 +29,7 @@ import java.util.concurrent.Callable;
 
 import io.reactivex.Single;
 
-public abstract class ResultQueryBase<TableClass extends Model> extends QueryBase<TableClass> {
+public abstract class ResultQueryBase<TableClass> extends QueryBase<TableClass> {
 
     private boolean disableCacheForThisQuery = false;
 
@@ -114,7 +113,7 @@ public abstract class ResultQueryBase<TableClass extends Model> extends QueryBas
         });
     }
 
-    public <CustomClass extends Model> Single<List<CustomClass>> fetchAsAsync(final Class<CustomClass> customType) {
+    public <CustomClass> Single<List<CustomClass>> fetchAsAsync(final Class<CustomClass> customType) {
         return Single.fromCallable(new Callable<List<CustomClass>>() {
             @Override
             public List<CustomClass> call() throws Exception {
@@ -132,7 +131,7 @@ public abstract class ResultQueryBase<TableClass extends Model> extends QueryBas
         });
     }
 
-    public <CustomClass extends Model> Single<CustomClass> fetchSingleAsAsync(final Class<CustomClass> customType) {
+    public <CustomClass> Single<CustomClass> fetchSingleAsAsync(final Class<CustomClass> customType) {
         return Single.fromCallable(new Callable<CustomClass>() {
             @Override
             public CustomClass call() throws Exception {

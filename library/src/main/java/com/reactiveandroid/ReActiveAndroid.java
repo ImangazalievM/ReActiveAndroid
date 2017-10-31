@@ -136,7 +136,7 @@ public final class ReActiveAndroid {
      * @return {@link TableManager} for specified table
      */
     @NonNull
-    public static TableManager getTableManager(Class<? extends Model> table) {
+    public static TableManager getTableManager(Class<?> table) {
         return getDatabaseForTable(table).getTableManager(table);
     }
 
@@ -145,7 +145,7 @@ public final class ReActiveAndroid {
      * @return {@link QueryModelManager} for specified table
      */
     @NonNull
-    public static QueryModelManager getQueryTableManager(Class<? extends Model> table) {
+    public static QueryModelManager getQueryTableManager(Class<?> table) {
         return getDatabaseForTable(table).getQueryModelManager(table);
     }
 
@@ -154,7 +154,7 @@ public final class ReActiveAndroid {
      * @return {@link TableInfo} for specified table
      */
     @NonNull
-    public static TableInfo getTableInfo(Class<? extends Model> table) {
+    public static TableInfo getTableInfo(Class<?> table) {
         return getDatabaseForTable(table).getTableInfo(table);
     }
 
@@ -164,7 +164,7 @@ public final class ReActiveAndroid {
      * @return {@link TypeSerializer} for specified type
      */
     @Nullable
-    public static TypeSerializer getSerializerForType(Class<? extends Model> table, Class<?> type) {
+    public static TypeSerializer getSerializerForType(Class<?> table, Class<?> type) {
         return getDatabaseForTable(table).getTypeSerializer(type);
     }
 
@@ -173,7 +173,7 @@ public final class ReActiveAndroid {
      * @return Table name for specified class
      */
     @NonNull
-    public static String getTableName(Class<? extends Model> table) {
+    public static String getTableName(Class<?> table) {
         return getDatabaseForTable(table).getTableInfo(table).getTableName();
     }
 

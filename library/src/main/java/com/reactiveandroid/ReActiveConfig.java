@@ -4,17 +4,9 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.reactiveandroid.database.DatabaseConfig;
-import com.reactiveandroid.database.migration.Migration;
-import com.reactiveandroid.database.migration.MigrationContainer;
-import com.reactiveandroid.serializer.TypeSerializer;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class ReActiveConfig {
 

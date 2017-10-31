@@ -55,11 +55,11 @@ public class JoinTest extends BaseTest {
     public void testJoinWithCustomClass() {
         JoinModelCity city = new JoinModelCity("London");
         city.save();
-        JoinModelCustomer customer = new JoinModelCustomer("John", city.getId());
+        JoinModelCustomer customer = new JoinModelCustomer("John", city.id);
         customer.save();
-        JoinModelOrder orderGooglePixel = new JoinModelOrder("Google Pixel", customer.getId());
+        JoinModelOrder orderGooglePixel = new JoinModelOrder("Google Pixel", customer.id);
         orderGooglePixel.save();
-        JoinModelOrder orderIphone = new JoinModelOrder("iPhone 9", customer.getId());
+        JoinModelOrder orderIphone = new JoinModelOrder("iPhone 9", customer.id);
         orderIphone.save();
 
         List<OrderInfoQueryModel> orderInfos = Select.columns("OrderItem.id AS order_id",

@@ -2,7 +2,6 @@ package com.reactiveandroid.query;
 
 import android.support.annotation.NonNull;
 
-import com.reactiveandroid.Model;
 import com.reactiveandroid.ReActiveAndroid;
 
 /**
@@ -14,7 +13,7 @@ public final class Update extends QueryBase {
 		super(null, null);
 	}
 
-	public static <T extends Model> Table<T> table(Class<T> table) {
+	public static <T> Table<T> table(Class<T> table) {
 		return new Table<>(new Update(), table);
 	}
 
@@ -24,7 +23,7 @@ public final class Update extends QueryBase {
 		return "UPDATE";
 	}
 
-	public static final class Table<T extends Model> extends QueryBase<T> {
+	public static final class Table<T> extends QueryBase<T> {
 
 		public Table(Query parent, Class<T> table) {
 			super(parent, table);
@@ -46,7 +45,7 @@ public final class Update extends QueryBase {
 
 	}
 
-	public static final class Set<T extends Model> extends ExecutableQueryBase<T> {
+	public static final class Set<T> extends ExecutableQueryBase<T> {
 
 		private String set;
 		private Object[] setArgs;
@@ -79,7 +78,7 @@ public final class Update extends QueryBase {
 
 	}
 
-	public static final class Where<T extends Model> extends ExecutableQueryBase<T> {
+	public static final class Where<T> extends ExecutableQueryBase<T> {
 
 		private String where;
 		private Object[] whereArgs;

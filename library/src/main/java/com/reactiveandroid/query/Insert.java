@@ -3,7 +3,6 @@ package com.reactiveandroid.query;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
-import com.reactiveandroid.Model;
 import com.reactiveandroid.ReActiveAndroid;
 
 /**
@@ -15,7 +14,7 @@ public final class Insert extends QueryBase {
 		super(null, null);
 	}
 
-	public static <T extends Model> Into<T> into(Class<T> table) {
+	public static <T> Into<T> into(Class<T> table) {
 		return new Into<>(new Insert(), table);
 	}
 
@@ -25,7 +24,7 @@ public final class Insert extends QueryBase {
 		return "INSERT";
 	}
 
-	public static final class Into<T extends Model> extends QueryBase<T> {
+	public static final class Into<T> extends QueryBase<T> {
 
 		private Into(Query parent, Class<T> table) {
 			super(parent, table);
@@ -42,15 +41,12 @@ public final class Insert extends QueryBase {
 		@NonNull
         @Override
 		protected String getPartSql() {
-			StringBuilder builder = new StringBuilder();
-			builder.append("INTO ");
-			builder.append(ReActiveAndroid.getTableName(table));
-			return builder.toString();
+			return "INTO " + ReActiveAndroid.getTableName(table);
 		}
 
 	}
 
-	public static final class Columns<T extends Model> extends QueryBase<T> {
+	public static final class Columns<T> extends QueryBase<T> {
 
 		private String[] mColumns;
 
@@ -78,7 +74,7 @@ public final class Insert extends QueryBase {
 
 	}
 
-	public static final class Values<T extends Model> extends ExecutableQueryBase<T> {
+	public static final class Values<T> extends ExecutableQueryBase<T> {
 
 		private Object[] valuesArgs;
 

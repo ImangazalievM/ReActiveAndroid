@@ -2,6 +2,7 @@ package com.reactiveandroid.test.models;
 
 import com.reactiveandroid.Model;
 import com.reactiveandroid.annotation.Column;
+import com.reactiveandroid.annotation.PrimaryKey;
 import com.reactiveandroid.annotation.Table;
 import com.reactiveandroid.test.databases.TestDatabase;
 
@@ -9,21 +10,19 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@Table(name = "TestModel", database = TestDatabase.class)
+@Table(database = TestDatabase.class)
 public class TestModel extends Model {
 
+    @PrimaryKey
+    public Long id;
     @Column
     public Date dateField;
-
     @Column
     public String stringField;
-
     @Column
     public double doubleField;
-
     @Column
     public int intField;
-
     @Column
     public boolean booleanField;
 

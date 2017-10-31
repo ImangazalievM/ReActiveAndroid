@@ -3,7 +3,6 @@ package com.reactiveandroid.database.table;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
-import com.reactiveandroid.Model;
 import com.reactiveandroid.annotation.Column;
 import com.reactiveandroid.annotation.QueryModel;
 import com.reactiveandroid.serializer.TypeSerializer;
@@ -23,11 +22,11 @@ import java.util.Map;
 public final class QueryTableInfo {
 
     private Class<?> databaseClass;
-    private Class<? extends Model> modelClass;
+    private Class<?> modelClass;
     private List<Field> modelFields = new ArrayList<>();
     private Map<Field, ColumnInfo> columns = new LinkedHashMap<>();
 
-    public QueryTableInfo(Class<? extends Model> modelClass,
+    public QueryTableInfo(Class<?> modelClass,
                           Map<Class<?>, TypeSerializer> typeSerializers) {
         QueryModel tableAnnotation = modelClass.getAnnotation(QueryModel.class);
 
@@ -49,7 +48,7 @@ public final class QueryTableInfo {
     }
 
     @NonNull
-    public Class<? extends Model> getModelClass() {
+    public Class<?> getModelClass() {
         return modelClass;
     }
 
@@ -68,7 +67,7 @@ public final class QueryTableInfo {
         String columnName = TextUtils.isEmpty(columnAnnotation.name()) ? field.getName() : columnAnnotation.name();
         SQLiteType sqliteType = getFieldSQLiteType(field, typeSerializers);
         boolean notNull = columnAnnotation.notNull();
-        return new ColumnInfo(columnName, sqliteType, notNull, 0);
+        return new ColumnInfo(columnName, sqliteType, notNull);
     }
 
     private SQLiteType getFieldSQLiteType(Field field, Map<Class<?>, TypeSerializer> typeSerializers) {

@@ -1,6 +1,5 @@
 package com.reactiveandroid.database;
 
-import com.reactiveandroid.Model;
 import com.reactiveandroid.annotation.Database;
 import com.reactiveandroid.database.migration.Migration;
 import com.reactiveandroid.database.migration.MigrationContainer;
@@ -18,7 +17,7 @@ public class DatabaseConfig {
     public final Class<?> databaseClass;
     public final String databaseName;
     public final int databaseVersion;
-    public final List<Class<? extends Model>> modelClasses;
+    public final List<Class<?>> modelClasses;
     public final List<Class<? extends TypeSerializer>> typeSerializers;
     public final MigrationContainer migrationContainer;
     public final boolean requireMigration;
@@ -26,7 +25,7 @@ public class DatabaseConfig {
     public DatabaseConfig(Class<?> databaseClass,
                           String databaseName,
                           int databaseVersion,
-                          List<Class<? extends Model>> modelClasses,
+                          List<Class<?>> modelClasses,
                           List<Class<? extends TypeSerializer>> typeSerializers,
                           MigrationContainer migrationContainer,
                           boolean requireMigration) {
@@ -48,7 +47,7 @@ public class DatabaseConfig {
         private Class<?> databaseClass;
         private String databaseName;
         private int databaseVersion;
-        private List<Class<? extends Model>> modelClasses;
+        private List<Class<?>> modelClasses;
         private List<Class<? extends TypeSerializer>> typeSerializers;
         private MigrationContainer migrationContainer;
         private boolean requireMigration = false;
@@ -69,7 +68,7 @@ public class DatabaseConfig {
             this.requireMigration = false;
         }
 
-        public Builder addModelClasses(Class<? extends Model>... modelClasses) {
+        public Builder addModelClasses(Class<?>... modelClasses) {
             this.modelClasses.addAll(Arrays.asList(modelClasses));
             return this;
         }

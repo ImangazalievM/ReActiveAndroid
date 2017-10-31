@@ -1,7 +1,6 @@
 package com.reactiveandroid;
 
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 
@@ -75,9 +74,8 @@ public class QueryModelManager<QueryModelClass> {
                     value = cursor.getBlob(columnIndex);
                 } else if (ReflectionUtils.isModel(fieldType)) {
                     long entityId = cursor.getLong(columnIndex);
-                    Class<? extends Model> entityType = (Class<? extends Model>) fieldType;
-                    String foreignKeyIdName = ReActiveAndroid.getTableInfo(entityType).getIdName();
-                    value = Select.from(entityType).where(foreignKeyIdName + "=?", entityId).fetchSingle();
+                    String foreignKeyIdName = ReActiveAndroid.getTableInfo(fieldType).getPrimaryKeyColumnName();
+                    value = Select.from(fieldType).where(foreignKeyIdName + "=?", entityId).fetchSingle();
                 }
 
                 // Use a deserializer if one is available

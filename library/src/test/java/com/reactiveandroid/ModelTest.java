@@ -3,9 +3,6 @@ package com.reactiveandroid;
 import com.reactiveandroid.query.Delete;
 import com.reactiveandroid.query.Select;
 import com.reactiveandroid.test.BaseTest;
-import com.reactiveandroid.test.TestUtils;
-import com.reactiveandroid.test.models.CategoryTestModel;
-import com.reactiveandroid.test.models.ItemTestModel;
 import com.reactiveandroid.test.models.TestModel;
 
 import org.junit.Test;
@@ -21,7 +18,7 @@ public class ModelTest extends BaseTest {
     public void testGetId() {
         TestModel model = new TestModel();
 
-        assertNull(model.getId());
+        assertNull(model.id);
     }
 
     @Test
@@ -30,7 +27,7 @@ public class ModelTest extends BaseTest {
         TestModel model = new TestModel();
         model.save();
 
-        assertEquals(1L, model.getId(), 0);
+        assertEquals(1L, model.id, 0);
         assertEquals(1, getCount());
     }
 
@@ -63,7 +60,7 @@ public class ModelTest extends BaseTest {
         model.save();
         assertEquals(1, getCount());
 
-        Model.delete(model.getClass(), model.getId());
+        Model.delete(model.getClass(), model.id);
         assertEquals(0, getCount());
     }
 
@@ -76,9 +73,9 @@ public class ModelTest extends BaseTest {
         model.save();
         assertEquals(1, getCount());
 
-        TestModel resultModel = Model.load(model.getClass(), model.getId());
+        TestModel resultModel = Model.load(model.getClass(), model.id);
 
-        assertEquals(model.getId(), resultModel.getId());
+        assertEquals(model.id, resultModel.id);
         assertEquals(model.stringField, resultModel.stringField);
     }
 
@@ -103,19 +100,6 @@ public class ModelTest extends BaseTest {
         assertEquals(0, getCount());
     }
 
-    @Test
-    public void testGetMany() {
-        CategoryTestModel categoryModel = new CategoryTestModel();
-        Long categoryModeId = categoryModel.save();
-        List<ItemTestModel> itemModels = ItemTestModel.createModelsWithCategory(categoryModel, 10);
-        TestUtils.saveModels(itemModels);
-
-        List<ItemTestModel> resultItemModels = categoryModel.getItems();
-        assertEquals(itemModels.size(), resultItemModels.size());
-        for (ItemTestModel itemTestModel : resultItemModels) {
-            assertEquals(categoryModeId, itemTestModel.category.getId());
-        }
-    }
 
     private void cleanTable() {
         Delete.from(TestModel.class).execute();
@@ -124,5 +108,6 @@ public class ModelTest extends BaseTest {
     private int getCount() {
         return Select.count().from(TestModel.class).fetchValue(int.class);
     }
+
 
 }

@@ -2,6 +2,7 @@ package com.reactiveandroid.test.models;
 
 import com.reactiveandroid.Model;
 import com.reactiveandroid.annotation.Column;
+import com.reactiveandroid.annotation.PrimaryKey;
 import com.reactiveandroid.annotation.Table;
 import com.reactiveandroid.test.databases.TestDatabase;
 
@@ -11,6 +12,8 @@ import java.util.List;
 @Table(name = "Items", database = TestDatabase.class)
 public class ItemTestModel extends Model {
 
+    @PrimaryKey
+    public Long id;
     @Column(name = "Name")
     public String name;
     @Column(name = "Category")

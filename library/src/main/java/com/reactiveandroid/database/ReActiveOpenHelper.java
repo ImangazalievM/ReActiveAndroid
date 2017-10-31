@@ -1,21 +1,16 @@
 package com.reactiveandroid.database;
 
-import java.util.List;
-
 import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteCursor;
-import android.database.sqlite.SQLiteCursorDriver;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.database.sqlite.SQLiteQuery;
 
 import com.reactiveandroid.ReActiveAndroid;
 import com.reactiveandroid.database.migration.Migration;
 import com.reactiveandroid.database.table.TableInfo;
-import com.reactiveandroid.internal.log.LogLevel;
-import com.reactiveandroid.internal.log.ReActiveLog;
 import com.reactiveandroid.utils.SQLiteUtils;
+
+import java.util.List;
 
 /**
  * An open helper that holds a reference to the configuration until the database is opened.

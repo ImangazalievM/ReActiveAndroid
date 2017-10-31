@@ -38,8 +38,8 @@ public class TableInfoTest extends BaseTest {
 
     @Test
     public void testGetIdName() {
-        assertEquals("id", testTableInfo.getIdName());
-        assertEquals("cat_id", categoryTestTableInfo.getIdName());
+        assertEquals("id", testTableInfo.getPrimaryKeyColumnName());
+        assertEquals("cat_id", categoryTestTableInfo.getPrimaryKeyColumnName());
     }
 
     @Test

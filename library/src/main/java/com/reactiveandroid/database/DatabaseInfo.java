@@ -5,7 +5,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.reactiveandroid.Model;
 import com.reactiveandroid.QueryModelManager;
 import com.reactiveandroid.TableManager;
 import com.reactiveandroid.database.table.QueryTableInfo;
@@ -77,7 +76,7 @@ public class DatabaseInfo {
     }
 
     @NonNull
-    public TableInfo getTableInfo(Class<? extends Model> table) {
+    public TableInfo getTableInfo(Class<?> table) {
         TableInfo tableInfo = tableInfos.get(table);
         if (tableInfo == null) {
             throw new IllegalStateException(String.format("Table info for class %s not found", table.getSimpleName()));
@@ -86,7 +85,7 @@ public class DatabaseInfo {
     }
 
     @NonNull
-    public TableManager getTableManager(Class<? extends Model> table) {
+    public TableManager getTableManager(Class<?> table) {
         TableManager tableManager = tableManagerMap.get(table);
         if (tableManager == null) {
             throw new IllegalArgumentException("Cannot find TableManager for " + table.getName());
@@ -127,9 +126,9 @@ public class DatabaseInfo {
             }
         }
 
-        List<Class<? extends Model>> models = databaseConfig.modelClasses;
+        List<Class<?>> models = databaseConfig.modelClasses;
         if (models != null) {
-            for (Class<? extends Model> model : models) {
+            for (Class<?> model : models) {
                 tableInfos.put(model, new TableInfo(model, typeSerializers));
             }
         }

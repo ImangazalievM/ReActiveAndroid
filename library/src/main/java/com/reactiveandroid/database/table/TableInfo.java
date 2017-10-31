@@ -2,12 +2,11 @@ package com.reactiveandroid.database.table;
 
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.SparseArray;
 
-import com.reactiveandroid.Model;
 import com.reactiveandroid.annotation.Column;
 import com.reactiveandroid.annotation.IndexGroup;
+import com.reactiveandroid.annotation.PrimaryKey;
 import com.reactiveandroid.annotation.Table;
 import com.reactiveandroid.annotation.UniqueGroup;
 import com.reactiveandroid.serializer.TypeSerializer;
@@ -27,43 +26,45 @@ import java.util.Map;
 public final class TableInfo {
 
     private Class<?> databaseClass;
-    private Class<? extends Model> tableClass;
+    private Class<?> tableClass;
     private String tableName;
-    private String idName;
-
     private List<Field> modelFields = new ArrayList<>();
+    private Field primaryKeyField;
+    private String primaryKeyColumnName;
+
     private Map<Field, ColumnInfo> columns = new LinkedHashMap<>();
     private SparseArray<IndexGroupInfo> indexGroups = new SparseArray<>();
     private SparseArray<UniqueGroupInfo> uniqueGroups = new SparseArray<>();
+
     private boolean cachingEnabled;
     private int cacheSize;
 
-    public TableInfo(Class<? extends Model> tableClass,
+
+    public TableInfo(Class<?> tableClass,
                      Map<Class<?>, TypeSerializer> typeSerializers) {
         Table tableAnnotation = tableClass.getAnnotation(Table.class);
 
         this.tableClass = tableClass;
         this.databaseClass = tableAnnotation.database();
         this.tableName = tableAnnotation.name().isEmpty() ? tableClass.getSimpleName() : tableAnnotation.name();
-        this.idName = tableAnnotation.idName();
         this.cachingEnabled = tableAnnotation.cachingEnabled();
         this.cacheSize = tableAnnotation.cacheSize();
         createUniqueGroups(tableAnnotation);
         createIndexGroups(tableAnnotation);
 
         // Manually addColumn the id column since it is not declared like the other columns.
-        Field idField = getIdField(tableClass);
-        columns.put(idField, new ColumnInfo(idName, SQLiteType.INTEGER, true, 1));
-        modelFields.add(idField);
+        primaryKeyField = findPrimaryKeyField(tableClass);
+        columns.put(primaryKeyField, new ColumnInfo(primaryKeyColumnName, SQLiteType.INTEGER, true));
+        modelFields.add(primaryKeyField);
 
-        List<Field> fields = new LinkedList<>(ReflectionUtils.getDeclaredColumnFields(tableClass));
-        Collections.reverse(fields);
-        for (Field field : fields) {
+        List<Field> modelFields = new LinkedList<>(ReflectionUtils.getDeclaredColumnFields(tableClass));
+        Collections.reverse(modelFields);
+        for (Field field : modelFields) {
             Column columnAnnotation = field.getAnnotation(Column.class);
             ColumnInfo columnInfo = createColumnInfo(field, columnAnnotation, typeSerializers);
             createColumnUnique(columnInfo, columnAnnotation);
             createColumnIndex(columnInfo, columnAnnotation);
-            modelFields.add(field);
+            this.modelFields.add(field);
             columns.put(field, columnInfo);
         }
     }
@@ -74,7 +75,7 @@ public final class TableInfo {
     }
 
     @NonNull
-    public Class<? extends Model> getTableClass() {
+    public Class<?> getTableClass() {
         return tableClass;
     }
 
@@ -84,13 +85,18 @@ public final class TableInfo {
     }
 
     @NonNull
-    public String getIdName() {
-        return idName;
+    public String getPrimaryKeyColumnName() {
+        return primaryKeyColumnName;
     }
 
     @NonNull
     public List<Field> getFields() {
         return modelFields;
+    }
+
+    @NonNull
+    public Field getPrimaryKeyField() {
+        return primaryKeyField;
     }
 
     @NonNull
@@ -132,24 +138,37 @@ public final class TableInfo {
         }
     }
 
-    private Field getIdField(Class<?> type) {
-        if (type.equals(Model.class)) {
-            try {
-                return type.getDeclaredField("id");
-            } catch (NoSuchFieldException e) {
-                Log.e("Impossible!", e.toString());
+    private Field findPrimaryKeyField(Class<?> modelClass) {
+        for (Field field : modelClass.getDeclaredFields()) {
+            PrimaryKey primaryKeyAnnotation = field.getAnnotation(PrimaryKey.class);
+            if (primaryKeyAnnotation != null) {
+                if (!(field.getType().equals(Long.class))) {
+                    throw new IllegalArgumentException("Primary key field should be Long type");
+                }
+
+                if (primaryKeyField == null) {
+                    this.primaryKeyField = field;
+                    this.primaryKeyColumnName = primaryKeyAnnotation.name();
+                } else {
+                    throw new IllegalStateException(modelClass.getSimpleName() + " contains more than one primary key. " +
+                            "ReActiveAndroid does not support composite primary key");
+                }
             }
-        } else if (type.getSuperclass() != null) {
-            return getIdField(type.getSuperclass());
         }
-        return null;
+
+        if (primaryKeyField != null) {
+            primaryKeyField.setAccessible(true);
+        } else {
+            throw new IllegalStateException("Primary key field not found for model " + modelClass.getSimpleName());
+        }
+        return primaryKeyField;
     }
 
     private ColumnInfo createColumnInfo(Field field, Column columnAnnotation, Map<Class<?>, TypeSerializer> typeSerializers) {
         String columnName = TextUtils.isEmpty(columnAnnotation.name()) ? field.getName() : columnAnnotation.name();
         SQLiteType sqliteType = getFieldSQLiteType(field, typeSerializers);
         boolean notNull = columnAnnotation.notNull();
-        return new ColumnInfo(columnName, sqliteType, notNull, 0);
+        return new ColumnInfo(columnName, sqliteType, notNull);
     }
 
     private void createColumnUnique(ColumnInfo columnInfo, Column columnAnnotation) {

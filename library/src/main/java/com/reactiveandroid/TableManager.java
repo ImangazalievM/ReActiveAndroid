@@ -23,10 +23,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class TableManager<TableClass extends Model> {
+public class TableManager<TableClass> {
 
     private TableInfo tableInfo;
     private ModelCache<TableClass> modelCache;
+    private SQLiteDatabase sqLiteDatabase;
 
     public TableManager(TableInfo tableInfo, ModelCache<TableClass> modelCache) {
         this.tableInfo = tableInfo;
@@ -46,19 +47,21 @@ public class TableManager<TableClass extends Model> {
     @Nullable
     public TableClass load(Class<TableClass> type, long id) {
         TableInfo tableInfo = ReActiveAndroid.getTableInfo(type);
-        return Select.from(type).where(tableInfo.getIdName() + "=?", id).fetchSingle();
+        return Select.from(type).where(tableInfo.getPrimaryKeyColumnName() + "=?", id).fetchSingle();
     }
 
-    public void save(TableClass model) {
+    @Nullable
+    public Long save(TableClass model) {
         SQLiteDatabase db = getDatabase();
-        ContentValues values = new ContentValues();
-        ContentUtils.fillContentValues(model, tableInfo, values);
-
-        if (model.id == null) {
-            model.id = db.insert(tableInfo.getTableName(), null, values);
+        ContentValues values = ContentUtils.getContentValues(model, tableInfo);
+        Long id = getModelId(model);
+        if (id == null) {
+            id = db.insert(tableInfo.getTableName(), null, values);
+            setModelId(model, id);
         } else {
-            db.update(tableInfo.getTableName(), values, tableInfo.getIdName() + "=" + model.id, null);
+            db.update(tableInfo.getTableName(), values, tableInfo.getPrimaryKeyColumnName() + "=" + id, null);
         }
+        return id;
     }
 
     public void saveAll(Class<TableClass> table, List<TableClass> models) {
@@ -68,29 +71,28 @@ public class TableManager<TableClass extends Model> {
         }
 
         SQLiteDatabase sqliteDatabase = ReActiveAndroid.getWritableDatabaseForTable(table);
-        TableManager tableManager = ReActiveAndroid.getTableManager(table);
         try {
             sqliteDatabase.beginTransaction();
-            for (Model model : models) {
-                tableManager.save(model);
+            for (TableClass model : models) {
+                save(model);
             }
             sqliteDatabase.setTransactionSuccessful();
-
             ContentUtils.bulkInsert(ReActiveAndroid.getContext().getContentResolver(), null, table, models);
         } finally {
             sqliteDatabase.endTransaction();
         }
     }
 
-    public void delete(Model model) {
-        modelCache.removeModel(model.id);
-        getDatabase().delete(tableInfo.getTableName(), tableInfo.getIdName() + "=?", new String[]{model.id.toString()});
-        model.id = null;
+    public void delete(TableClass model) {
+        Long id = getModelId(model);
+        modelCache.removeModel(id);
+        getDatabase().delete(tableInfo.getTableName(), tableInfo.getPrimaryKeyColumnName() + "=?", new String[]{id.toString()});
+        setModelId(model, null);
     }
 
     public void delete(Class<TableClass> type, long id) {
         TableInfo tableInfo = ReActiveAndroid.getTableInfo(type);
-        Delete.from(type).where(tableInfo.getIdName() + "=?", id).execute();
+        Delete.from(type).where(tableInfo.getPrimaryKeyColumnName() + "=?", id).execute();
     }
 
     public void deleteAll(Class<TableClass> type, List<TableClass> models) {
@@ -101,12 +103,12 @@ public class TableManager<TableClass extends Model> {
 
         Long[] ids = new Long[models.size()];
         for (int i = 0; i < ids.length; i++) {
-            ids[i] = models.get(i).id;
+            ids[i] = getModelId(models.get(i));
         }
 
         TableInfo tableInfo = ReActiveAndroid.getTableInfo(type);
         String idsArg = TextUtils.join(", ", ids);
-        ReActiveAndroid.getWritableDatabaseForTable(type).execSQL(String.format("DELETE FROM %s WHERE %s IN (%s);", tableInfo.getTableName(), tableInfo.getIdName(), idsArg));
+        ReActiveAndroid.getWritableDatabaseForTable(type).execSQL(String.format("DELETE FROM %s WHERE %s IN (%s);", tableInfo.getTableName(), tableInfo.getPrimaryKeyColumnName(), idsArg));
     }
 
     public void loadFromCursor(TableClass model, Cursor cursor) {
@@ -159,11 +161,10 @@ public class TableManager<TableClass extends Model> {
                     value = cursor.getBlob(columnIndex);
                 } else if (ReflectionUtils.isModel(fieldType)) {
                     long entityId = cursor.getLong(columnIndex);
-                    Class<? extends Model> entityType = (Class<? extends Model>) fieldType;
-
-                    Model entity = tableInfo.isCachingEnabled() ? modelCache.get(entityId) : null;
+                    Class<?> entityType = fieldType;
+                    Object entity = tableInfo.isCachingEnabled() ? modelCache.get(entityId) : null;
                     if (entity == null) {
-                        String foreignKeyIdName = ReActiveAndroid.getTableInfo(entityType).getIdName();
+                        String foreignKeyIdName = ReActiveAndroid.getTableInfo(entityType).getPrimaryKeyColumnName();
                         entity = Select.from(entityType).where(foreignKeyIdName + "=?", entityId).fetchSingle();
                     }
 
@@ -186,9 +187,28 @@ public class TableManager<TableClass extends Model> {
 
     }
 
-    @NonNull
+    private void setModelId(TableClass model, Long id) {
+        try {
+            tableInfo.getPrimaryKeyField().set(model, id);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Long getModelId(TableClass model) {
+        try {
+            return (Long) tableInfo.getPrimaryKeyField().get(model);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     private SQLiteDatabase getDatabase() {
-        return ReActiveAndroid.getWritableDatabaseForTable(tableInfo.getTableClass());
+        if (sqLiteDatabase == null) {
+            sqLiteDatabase = ReActiveAndroid.getWritableDatabaseForTable(tableInfo.getTableClass());
+        }
+        return sqLiteDatabase;
     }
 
 }

@@ -5,6 +5,7 @@ import com.reactiveandroid.annotation.Collate;
 import com.reactiveandroid.annotation.Column;
 import com.reactiveandroid.annotation.ConflictAction;
 import com.reactiveandroid.annotation.IndexGroup;
+import com.reactiveandroid.annotation.PrimaryKey;
 import com.reactiveandroid.annotation.Table;
 import com.reactiveandroid.annotation.UniqueGroup;
 import com.reactiveandroid.test.databases.TestDatabase;
@@ -18,24 +19,21 @@ import java.util.List;
         indexGroups = @IndexGroup(groupNumber = 1, name = "index_1"))
 public class FullTestModel extends Model {
 
+    @PrimaryKey
+    public Long id;
     @Column(uniqueGroups = 1)
     public Date dateField;
-
     @Column(unique = true, onUniqueConflict = ConflictAction.IGNORE, collate = Collate.BINARY,
             index = true)
     public String stringField;
-
     @Column(uniqueGroups = 1,
             index = true, indexGroups = 1)
     public double doubleField;
-
     @Column(uniqueGroups = 2,
             index = true, indexGroups = 1)
     public int intField;
-
     @Column(uniqueGroups = 2)
     public boolean booleanField;
-
     public int nonColumnField;
 
     public static List<FullTestModel> createEmptyModels(int count) {

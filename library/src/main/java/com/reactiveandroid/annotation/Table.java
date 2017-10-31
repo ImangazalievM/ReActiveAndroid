@@ -13,7 +13,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Table {
 
-    String DEFAULT_ID_NAME = "id";
     int DEFAULT_CACHE_SIZE = 50;
 
     /**
@@ -25,11 +24,6 @@ public @interface Table {
      * Specifies a database for the table
      */
     Class<?> database();
-
-    /**
-     * Specifies a name for primary key column
-     */
-    String idName() default DEFAULT_ID_NAME;
 
     UniqueGroup[] uniqueGroups() default {};
 

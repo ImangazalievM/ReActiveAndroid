@@ -6,6 +6,7 @@ import android.net.Uri;
 
 import com.reactiveandroid.Model;
 import com.reactiveandroid.ReActiveAndroid;
+import com.reactiveandroid.TableManager;
 import com.reactiveandroid.annotation.Column;
 import com.reactiveandroid.database.table.TableInfo;
 import com.reactiveandroid.internal.log.LogLevel;
@@ -20,7 +21,7 @@ public class ContentUtils {
 
     public static final String BASE_CONTENT_URI = "content://";
 
-    public static Uri createUri(String authority, Class<? extends Model> type, Long id) {
+    public static Uri createUri(String authority, Class<?> type, Long id) {
         Uri.Builder builder = Uri.parse(BASE_CONTENT_URI + authority).buildUpon();
         builder.appendPath(ReActiveAndroid.getTableName(type).toLowerCase());
 
@@ -30,7 +31,7 @@ public class ContentUtils {
         return builder.build();
     }
 
-    public static <TableClass extends Model> int bulkInsert(ContentResolver contentResolver,
+    public static <TableClass> int bulkInsert(ContentResolver contentResolver,
                                                             Uri bulkInsertUri,
                                                             Class<TableClass> table,
                                                             List<TableClass> models) {
@@ -40,18 +41,16 @@ public class ContentUtils {
 
         if (models != null) {
             for (int i = 0; i < contentValues.length; i++) {
-                contentValues[i] = new ContentValues();
-                fillContentValues(models.get(i), tableInfo, contentValues[i]);
+                contentValues[i] = getContentValues(models.get(i), tableInfo);
             }
         }
 
         return contentResolver.bulkInsert(bulkInsertUri, contentValues);
     }
 
-    public static <TableClass extends Model> void fillContentValues(TableClass model,
-                                                                    TableInfo tableInfo,
-                                                                    ContentValues values) {
-        values.clear();
+    public static <TableClass> ContentValues getContentValues(TableClass model, 
+                                                                            TableInfo tableInfo) {
+        ContentValues contentValues = new ContentValues();
         for (Field field : tableInfo.getFields()) {
             String fieldName = tableInfo.getColumnInfo(field).name;
             Class<?> fieldType = field.getType();
@@ -91,36 +90,37 @@ public class ContentUtils {
                         continue;
                     }
 
-                    values.putNull(fieldName);
+                    contentValues.putNull(fieldName);
                 } else if (fieldType.equals(Byte.class) || fieldType.equals(byte.class)) {
-                    values.put(fieldName, (Byte) value);
+                    contentValues.put(fieldName, (Byte) value);
                 } else if (fieldType.equals(Short.class) || fieldType.equals(short.class)) {
-                    values.put(fieldName, (Short) value);
+                    contentValues.put(fieldName, (Short) value);
                 } else if (fieldType.equals(Integer.class) || fieldType.equals(int.class)) {
-                    values.put(fieldName, (Integer) value);
+                    contentValues.put(fieldName, (Integer) value);
                 } else if (fieldType.equals(Long.class) || fieldType.equals(long.class)) {
-                    values.put(fieldName, (Long) value);
+                    contentValues.put(fieldName, (Long) value);
                 } else if (fieldType.equals(Float.class) || fieldType.equals(float.class)) {
-                    values.put(fieldName, (Float) value);
+                    contentValues.put(fieldName, (Float) value);
                 } else if (fieldType.equals(Double.class) || fieldType.equals(double.class)) {
-                    values.put(fieldName, (Double) value);
+                    contentValues.put(fieldName, (Double) value);
                 } else if (fieldType.equals(Boolean.class) || fieldType.equals(boolean.class)) {
-                    values.put(fieldName, (Boolean) value);
+                    contentValues.put(fieldName, (Boolean) value);
                 } else if (fieldType.equals(Character.class) || fieldType.equals(char.class)) {
-                    values.put(fieldName, value.toString());
+                    contentValues.put(fieldName, value.toString());
                 } else if (fieldType.equals(String.class)) {
-                    values.put(fieldName, value.toString());
+                    contentValues.put(fieldName, value.toString());
                 } else if (fieldType.equals(Byte[].class) || fieldType.equals(byte[].class)) {
-                    values.put(fieldName, (byte[]) value);
+                    contentValues.put(fieldName, (byte[]) value);
                 } else if (ReflectionUtils.isModel(fieldType)) {
-                    values.put(fieldName, ((Model) value).getId());
+                    TableManager tableManager = ReActiveAndroid.getTableManager(fieldType);
+                    contentValues.put(fieldName, tableManager.getModelId(value));
                 }
 
             } catch (IllegalArgumentException | IllegalAccessException e) {
                 ReActiveLog.e(LogLevel.BASIC, e.getClass().getName(), e);
             }
         }
-
+        return contentValues;
     }
 
 

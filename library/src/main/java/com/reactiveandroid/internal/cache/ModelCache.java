@@ -3,9 +3,7 @@ package com.reactiveandroid.internal.cache;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.reactiveandroid.Model;
-
-public interface ModelCache<ModelClass extends Model> {
+public interface ModelCache<ModelClass> {
 
     /**
      * Adds a model to this cache.

@@ -3,7 +3,6 @@ package com.reactiveandroid.query;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
-import com.reactiveandroid.Model;
 import com.reactiveandroid.ReActiveAndroid;
 
 import java.util.ArrayList;
@@ -12,45 +11,45 @@ import java.util.List;
 /**
  * Generates a SELECT query
  */
-public final class Select<T extends Model> extends QueryBase<T> {
+public final class Select<T> extends QueryBase<T> {
 
     private Select() {
         super(null, null);
     }
 
-    public static <T extends Model> Qualifier<T> all() {
+    public static <T> Qualifier<T> all() {
         return new Qualifier<>(new Select(), false);
     }
 
-    public static <T extends Model> Qualifier<T> distinct() {
+    public static <T> Qualifier<T> distinct() {
         return new Qualifier<>(new Select(), true);
     }
 
-    public static <T extends Model> Columns<T> columns(String... columns) {
+    public static <T> Columns<T> columns(String... columns) {
         return new Columns<>(new Select(), null, columns);
     }
 
-    public static <T extends Model> From<T> from(Class<T> table) {
+    public static <T> From<T> from(Class<T> table) {
         return new Columns<>(new Select(), table, null).from(table);
     }
 
-    public static <T extends Model> Columns<T> count() {
+    public static <T> Columns<T> count() {
         return columns("COUNT(*)");
     }
 
-    public static <T extends Model> Columns<T> avg(String columnName) {
+    public static <T> Columns<T> avg(String columnName) {
         return columns("AVG(" + columnName + ")");
     }
 
-    public static <T extends Model> Columns<T> max(String columnName) {
+    public static <T> Columns<T> max(String columnName) {
         return columns("MAX(" + columnName + ")");
     }
 
-    public static <T extends Model> Columns<T> min(String columnName) {
+    public static <T> Columns<T> min(String columnName) {
         return columns("MIN(" + columnName + ")");
     }
 
-    public static <T extends Model> Columns<T> sum(String columnName) {
+    public static <T> Columns<T> sum(String columnName) {
         return columns("SUM(" + columnName + ")");
     }
 
@@ -60,7 +59,7 @@ public final class Select<T extends Model> extends QueryBase<T> {
         return "SELECT";
     }
 
-    public static final class Qualifier<T extends Model> extends QueryBase<T> {
+    public static final class Qualifier<T> extends QueryBase<T> {
 
         private boolean distinct;
 
@@ -69,11 +68,11 @@ public final class Select<T extends Model> extends QueryBase<T> {
             this.distinct = distinct;
         }
 
-        public <T extends Model> Columns<T> columns(String... columns) {
+        public Columns<T> columns(String... columns) {
             return new Columns<>(this, null, columns);
         }
 
-        public <T extends Model> From<T> from(Class<T> table) {
+        public From<T> from(Class<T> table) {
             return new Columns<>(this, table, null).from(table);
         }
 
@@ -84,7 +83,7 @@ public final class Select<T extends Model> extends QueryBase<T> {
         }
     }
 
-    public static final class Columns<T extends Model> extends QueryBase<T> {
+    public static final class Columns<T> extends QueryBase<T> {
 
         private String[] columns;
 
@@ -93,7 +92,7 @@ public final class Select<T extends Model> extends QueryBase<T> {
             this.columns = columns;
         }
 
-        public <T extends Model> From<T> from(Class<T> table) {
+        public <T> From<T> from(Class<T> table) {
             return new From<>(this, table);
         }
 
@@ -111,7 +110,7 @@ public final class Select<T extends Model> extends QueryBase<T> {
 
     }
 
-    public static final class From<T extends Model> extends ResultQueryBase<T> {
+    public static final class From<T> extends ResultQueryBase<T> {
 
         private String alias;
         private List<Join> joins = new ArrayList<>();
@@ -125,43 +124,43 @@ public final class Select<T extends Model> extends QueryBase<T> {
             return this;
         }
 
-        public <E extends Model> Join<T, E> join(Class<E> table) {
+        public <E> Join<T, E> join(Class<E> table) {
             return addJoin(table, Join.Type.JOIN);
         }
 
-        public <E extends Model> Join<T, E> leftJoin(Class<E> table) {
+        public <E> Join<T, E> leftJoin(Class<E> table) {
             return addJoin(table, Join.Type.LEFT);
         }
 
-        public <E extends Model> Join<T, E> leftOuterJoin(Class<E> table) {
+        public <E> Join<T, E> leftOuterJoin(Class<E> table) {
             return addJoin(table, Join.Type.LEFT_OUTER);
         }
 
-        public <E extends Model> Join<T, E> innerJoin(Class<E> table) {
+        public <E> Join<T, E> innerJoin(Class<E> table) {
             return addJoin(table, Join.Type.INNER);
         }
 
-        public <E extends Model> Join<T, E> crossJoin(Class<E> table) {
+        public <E> Join<T, E> crossJoin(Class<E> table) {
             return addJoin(table, Join.Type.CROSS);
         }
 
-        public <E extends Model> Join<T, E> naturalJoin(Class<E> table) {
+        public <E> Join<T, E> naturalJoin(Class<E> table) {
             return addJoin(table, Join.Type.NATURAL_JOIN);
         }
 
-        public <E extends Model> Join<T, E> naturalLeftJoin(Class<E> table) {
+        public <E> Join<T, E> naturalLeftJoin(Class<E> table) {
             return addJoin(table, Join.Type.NATURAL_LEFT);
         }
 
-        public <E extends Model> Join<T, E> naturalLeftOuterJoin(Class<E> table) {
+        public <E> Join<T, E> naturalLeftOuterJoin(Class<E> table) {
             return addJoin(table, Join.Type.NATURAL_LEFT_OUTER);
         }
 
-        public <E extends Model> Join<T, E> naturalInnerJoin(Class<E> table) {
+        public <E> Join<T, E> naturalInnerJoin(Class<E> table) {
             return addJoin(table, Join.Type.NATURAL_INNER);
         }
 
-        public <E extends Model> Join<T, E> naturalCrossJoin(Class<E> table) {
+        public <E> Join<T, E> naturalCrossJoin(Class<E> table) {
             return addJoin(table, Join.Type.NATURAL_CROSS);
         }
 
@@ -189,7 +188,7 @@ public final class Select<T extends Model> extends QueryBase<T> {
             return new Offset<>(this, table, offset);
         }
 
-        private <E extends Model> Join<T, E> addJoin(Class<E> table, Join.Type type) {
+        private <E> Join<T, E> addJoin(Class<E> table, Join.Type type) {
             Join<T, E> join = new Join<>(this, table, type);
             joins.add(join);
             return join;
@@ -214,7 +213,7 @@ public final class Select<T extends Model> extends QueryBase<T> {
         }
     }
 
-    public static final class Join<P extends Model, T extends Model> extends QueryBase<T> {
+    public static final class Join<P, T> extends QueryBase<T> {
 
         public enum Type {
 
@@ -277,7 +276,7 @@ public final class Select<T extends Model> extends QueryBase<T> {
         }
     }
 
-    public static final class Where<T extends Model> extends ResultQueryBase<T> {
+    public static final class Where<T> extends ResultQueryBase<T> {
 
         private String where;
         private Object[] whereArgs;
@@ -318,7 +317,7 @@ public final class Select<T extends Model> extends QueryBase<T> {
 
     }
 
-    public static final class GroupBy<T extends Model> extends ResultQueryBase<T> {
+    public static final class GroupBy<T> extends ResultQueryBase<T> {
 
         private String groupBy;
 
@@ -347,7 +346,7 @@ public final class Select<T extends Model> extends QueryBase<T> {
 
     }
 
-    public static final class Having<T extends Model> extends ResultQueryBase<T> {
+    public static final class Having<T> extends ResultQueryBase<T> {
 
         private String having;
 
@@ -376,7 +375,7 @@ public final class Select<T extends Model> extends QueryBase<T> {
 
     }
 
-    public static final class OrderBy<T extends Model> extends ResultQueryBase<T> {
+    public static final class OrderBy<T> extends ResultQueryBase<T> {
 
         private String orderBy;
 
@@ -401,7 +400,7 @@ public final class Select<T extends Model> extends QueryBase<T> {
 
     }
 
-    public static final class Limit<T extends Model> extends ResultQueryBase<T> {
+    public static final class Limit<T> extends ResultQueryBase<T> {
 
         private String limit;
 
@@ -421,7 +420,7 @@ public final class Select<T extends Model> extends QueryBase<T> {
         }
     }
 
-    public static final class Offset<T extends Model> extends ResultQueryBase<T> {
+    public static final class Offset<T> extends ResultQueryBase<T> {
 
         private String offset;
 

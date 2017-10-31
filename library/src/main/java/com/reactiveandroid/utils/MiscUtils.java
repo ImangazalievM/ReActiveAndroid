@@ -1,10 +1,6 @@
 package com.reactiveandroid.utils;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
-import com.reactiveandroid.internal.log.LogLevel;
-import com.reactiveandroid.internal.log.ReActiveLog;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

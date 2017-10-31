@@ -32,7 +32,7 @@ public class AssetsSqlMigation {
     private static List<String> parse(final InputStream stream) throws IOException {
         BufferedInputStream buffer = new BufferedInputStream(stream);
         List<String> commands = new ArrayList<>();
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
 
         try {
             Tokenizer tokenizer = new Tokenizer(buffer);

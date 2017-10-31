@@ -7,7 +7,6 @@ import android.text.TextUtils;
 import android.util.SparseArray;
 
 import com.reactiveandroid.ReActiveAndroid;
-import com.reactiveandroid.Model;
 import com.reactiveandroid.annotation.Collate;
 import com.reactiveandroid.database.ReActiveMasterTable;
 import com.reactiveandroid.database.table.ColumnInfo;
@@ -91,7 +90,7 @@ public final class SQLiteUtils {
         definition.append(sqliteType.getName());
 
         if (!TextUtils.isEmpty(definition)) {
-            if (columnInfo.name.equals(tableInfo.getIdName())) {
+            if (columnInfo.name.equals(tableInfo.getPrimaryKeyColumnName())) {
                 definition.append(" PRIMARY KEY AUTOINCREMENT");
             } else if (column != null) {
                 if (column.length() > -1) {
@@ -118,10 +117,10 @@ public final class SQLiteUtils {
             }
 
             if (ReflectionUtils.isModel(type)) {
-                TableInfo foreignKeyTableInfo = ReActiveAndroid.getTableInfo((Class<? extends Model>) type);
+                TableInfo foreignKeyTableInfo = ReActiveAndroid.getTableInfo(type);
                 definition.append(" REFERENCES ");
                 definition.append(foreignKeyTableInfo.getTableName());
-                definition.append("(`").append(foreignKeyTableInfo.getIdName()).append("`)");
+                definition.append("(`").append(foreignKeyTableInfo.getPrimaryKeyColumnName()).append("`)");
                 definition.append(" ON DELETE ");
                 definition.append(column.onDelete().toString().replace("_", " "));
                 definition.append(" ON UPDATE ");

@@ -3,17 +3,16 @@ package com.reactiveandroid.internal.cache;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.reactiveandroid.Model;
 import com.reactiveandroid.annotation.Table;
 
-public class ModelLruCache<ModelClass extends Model> implements ModelCache<ModelClass> {
+public class ModelLruCache<ModelClass> implements ModelCache<ModelClass> {
 
     private final LruCache<Long, ModelClass> cache;
 
     /**
      * @param size The size, if less than or equal to 0 we set it to {@link Table#DEFAULT_CACHE_SIZE}.
      */
-    public static <ModelClass extends Model> ModelLruCache<ModelClass> newInstance(int size) {
+    public static <ModelClass> ModelLruCache<ModelClass> newInstance(int size) {
         if (size <= 0) {
             size = Table.DEFAULT_CACHE_SIZE;
         }

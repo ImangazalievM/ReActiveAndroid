@@ -15,7 +15,7 @@ public class MinTest extends BaseTest {
     public DataBaseTestRule dataBaseTestRule = DataBaseTestRule.create();
 
     @Test
-    public void testAvgSql() {
+    public void testMinSql() {
         String expected = "SELECT MIN(intField) FROM TestModel";
 
         String actual = Select

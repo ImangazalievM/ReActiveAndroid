@@ -2,7 +2,6 @@ package com.reactiveandroid.query;
 
 import android.support.annotation.NonNull;
 
-import com.reactiveandroid.Model;
 import com.reactiveandroid.ReActiveAndroid;
 
 /**
@@ -14,7 +13,7 @@ public final class Delete extends QueryBase {
 		super(null, null);
 	}
 
-	public static <T extends Model> From from(Class<T> table) {
+	public static <T> From from(Class<T> table) {
 		return new From<>(new Delete(), table);
 	}
 
@@ -24,7 +23,7 @@ public final class Delete extends QueryBase {
 		return "DELETE";
 	}
 
-	public static final class From<T extends Model> extends DeleteQueryBase<T> {
+	public static final class From<T> extends DeleteQueryBase<T> {
 
 		private From(Query parent, Class<T> table) {
 			super(parent, table);
@@ -46,7 +45,7 @@ public final class Delete extends QueryBase {
 
 	}
 
-	public static final class Where<T extends Model> extends DeleteQueryBase<T> {
+	public static final class Where<T> extends DeleteQueryBase<T> {
 
 		private String where;
 		private Object[] whereArgs;
