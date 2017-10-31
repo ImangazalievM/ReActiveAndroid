@@ -53,17 +53,17 @@ public class SelectTest extends BaseTest {
 
     @Test
     public void testLimit() {
-        assertSqlEquals(SELECT_PREFIX + "LIMIT 10", from().limit("10"));
+        assertSqlEquals(SELECT_PREFIX + "LIMIT 10", from().limit(10));
     }
 
     @Test
     public void testOffset() {
-        assertSqlEquals(SELECT_PREFIX + "OFFSET 10", from().offset("10"));
+        assertSqlEquals(SELECT_PREFIX + "OFFSET 10", from().offset(10));
     }
 
     @Test
     public void testLimitOffset() {
-        assertSqlEquals(SELECT_PREFIX + "LIMIT 10 OFFSET 20", from().limit("10").offset("20"));
+        assertSqlEquals(SELECT_PREFIX + "LIMIT 10 OFFSET 20", from().limit(10).offset(20));
     }
 
     @Test
@@ -132,8 +132,8 @@ public class SelectTest extends BaseTest {
                 .where("id > 5")
                 .groupBy("id")
                 .having("id < 10")
-                .limit("5")
-                .offset("10"));;
+                .limit(5)
+                .offset(10));;
     }
 
     private Select.From from() {

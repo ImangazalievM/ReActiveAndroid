@@ -180,11 +180,11 @@ public final class Select<T> extends QueryBase<T> {
             return new OrderBy<>(this, table, orderBy);
         }
 
-        public Limit<T> limit(String limit) {
+        public Limit<T> limit(int limit) {
             return new Limit<>(this, table, limit);
         }
 
-        public Offset<T> offset(String offset) {
+        public Offset<T> offset(int offset) {
             return new Offset<>(this, table, offset);
         }
 
@@ -295,11 +295,11 @@ public final class Select<T> extends QueryBase<T> {
             return new OrderBy<>(this, table, orderBy);
         }
 
-        public Limit<T> limit(String limits) {
-            return new Limit<>(this, table, limits);
+        public Limit<T> limit(int limit) {
+            return new Limit<>(this, table, limit);
         }
 
-        public Offset<T> offset(String offset) {
+        public Offset<T> offset(int offset) {
             return new Offset<>(this, table, offset);
         }
 
@@ -334,8 +334,8 @@ public final class Select<T> extends QueryBase<T> {
             return new OrderBy<>(this, table, orderBy);
         }
 
-        public Limit<T> limit(String limits) {
-            return new Limit<>(this, table, limits);
+        public Limit<T> limit(int limit) {
+            return new Limit<>(this, table, limit);
         }
 
         @NonNull
@@ -359,11 +359,11 @@ public final class Select<T> extends QueryBase<T> {
             return new OrderBy<>(this, table, orderBy);
         }
 
-        public Limit<T> limit(String limits) {
-            return new Limit<>(this, table, limits);
+        public Limit<T> limit(int limit) {
+            return new Limit<>(this, table, limit);
         }
 
-        public Offset<T> offset(String offset) {
+        public Offset<T> offset(int offset) {
             return new Offset<>(this, table, offset);
         }
 
@@ -384,11 +384,11 @@ public final class Select<T> extends QueryBase<T> {
             this.orderBy = orderBy;
         }
 
-        public Limit<T> limit(String limits) {
-            return new Limit<>(this, table, limits);
+        public Limit<T> limit(int limit) {
+            return new Limit<>(this, table, limit);
         }
 
-        public Offset<T> offset(String offset) {
+        public Offset<T> offset(int offset) {
             return new Offset<>(this, table, offset);
         }
 
@@ -402,14 +402,14 @@ public final class Select<T> extends QueryBase<T> {
 
     public static final class Limit<T> extends ResultQueryBase<T> {
 
-        private String limit;
+        private int limit;
 
-        private Limit(Query parent, Class<T> table, String limit) {
+        private Limit(Query parent, Class<T> table, int limit) {
             super(parent, table);
             this.limit = limit;
         }
 
-        public Offset<T> offset(String offset) {
+        public Offset<T> offset(int offset) {
             return new Offset<>(this, table, offset);
         }
 
@@ -422,9 +422,9 @@ public final class Select<T> extends QueryBase<T> {
 
     public static final class Offset<T> extends ResultQueryBase<T> {
 
-        private String offset;
+        private int offset;
 
-        private Offset(Query parent, Class<T> table, String offset) {
+        private Offset(Query parent, Class<T> table, int offset) {
             super(parent, table);
             this.offset = offset;
         }
