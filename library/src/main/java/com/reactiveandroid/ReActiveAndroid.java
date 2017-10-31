@@ -47,7 +47,7 @@ public final class ReActiveAndroid {
             databaseMap.put(databaseConfig.databaseClass, reActiveDatabase);
 
             for (TableInfo tableInfo : reActiveDatabase.getTableInfos()) {
-                tableDatabaseMap.put(tableInfo.getTableClass(), reActiveDatabase);
+                tableDatabaseMap.put(tableInfo.getModelClass(), reActiveDatabase);
             }
 
             for (QueryTableInfo queryTableInfo : reActiveDatabase.getQueryTableInfos()) {

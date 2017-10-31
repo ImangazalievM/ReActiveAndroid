@@ -130,7 +130,7 @@ public class TableManager<TableClass> {
 
             try {
                 boolean columnIsNull = cursor.isNull(columnIndex);
-                TypeSerializer typeSerializer = ReActiveAndroid.getSerializerForType(tableInfo.getTableClass(), fieldType);
+                TypeSerializer typeSerializer = ReActiveAndroid.getSerializerForType(tableInfo.getModelClass(), fieldType);
                 Object value = null;
 
                 if (typeSerializer != null) {
@@ -206,7 +206,7 @@ public class TableManager<TableClass> {
 
     private SQLiteDatabase getDatabase() {
         if (sqLiteDatabase == null) {
-            sqLiteDatabase = ReActiveAndroid.getWritableDatabaseForTable(tableInfo.getTableClass());
+            sqLiteDatabase = ReActiveAndroid.getWritableDatabaseForTable(tableInfo.getModelClass());
         }
         return sqLiteDatabase;
     }

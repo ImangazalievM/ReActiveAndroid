@@ -4,7 +4,6 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.net.Uri;
 
-import com.reactiveandroid.Model;
 import com.reactiveandroid.ReActiveAndroid;
 import com.reactiveandroid.TableManager;
 import com.reactiveandroid.annotation.Column;
@@ -64,7 +63,7 @@ public class ContentUtils {
                 Column column = field.getAnnotation(Column.class);
 
                 if (value != null) {
-                    TypeSerializer typeSerializer = ReActiveAndroid.getSerializerForType(tableInfo.getTableClass(), fieldType);
+                    TypeSerializer typeSerializer = ReActiveAndroid.getSerializerForType(tableInfo.getModelClass(), fieldType);
                     if (typeSerializer != null) {
                         // serialize data
                         value = typeSerializer.serialize(value);

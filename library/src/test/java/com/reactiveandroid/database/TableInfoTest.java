@@ -26,8 +26,8 @@ public class TableInfoTest extends BaseTest {
 
     @Test
     public void testGetType() {
-        assertEquals(TestModel.class, testTableInfo.getTableClass());
-        assertEquals(CategoryTestModel.class, categoryTestTableInfo.getTableClass());
+        assertEquals(TestModel.class, testTableInfo.getModelClass());
+        assertEquals(CategoryTestModel.class, categoryTestTableInfo.getModelClass());
     }
 
     @Test

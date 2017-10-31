@@ -85,6 +85,7 @@ public final class ReActiveOpenHelper extends SQLiteOpenHelper {
         try {
             for (TableInfo tableInfo : ReActiveAndroid.getDatabaseTablesInfos(databaseConfig.databaseClass)) {
                 String tableDefinition = SQLiteUtils.createTableDefinition(tableInfo);
+                System.out.println(tableInfo.getModelClass().getSimpleName());
                 db.execSQL(tableDefinition);
             }
             db.setTransactionSuccessful();

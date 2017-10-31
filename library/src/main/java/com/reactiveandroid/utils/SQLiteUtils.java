@@ -8,6 +8,7 @@ import android.util.SparseArray;
 
 import com.reactiveandroid.ReActiveAndroid;
 import com.reactiveandroid.annotation.Collate;
+import com.reactiveandroid.annotation.Unique;
 import com.reactiveandroid.database.ReActiveMasterTable;
 import com.reactiveandroid.database.table.ColumnInfo;
 import com.reactiveandroid.database.table.IndexGroupInfo;
@@ -79,6 +80,7 @@ public final class SQLiteUtils {
         StringBuilder definition = new StringBuilder();
 
         Column column = field.getAnnotation(Column.class);
+        Unique uniqueAnnotation = field.getAnnotation(Unique.class);
         Class type = field.getType();
         ColumnInfo columnInfo = tableInfo.getColumnInfo(field);
         SQLiteType sqliteType = columnInfo.type;
@@ -109,9 +111,9 @@ public final class SQLiteUtils {
                     definition.append(column.onNullConflict().toString());
                 }
 
-                if (column.unique()) {
+                if (uniqueAnnotation != null && uniqueAnnotation.unique()) {
                     definition.append(" UNIQUE ON CONFLICT ");
-                    definition.append(column.onUniqueConflict().toString());
+                    definition.append(uniqueAnnotation.onUniqueConflict().toString());
                 }
 
             }

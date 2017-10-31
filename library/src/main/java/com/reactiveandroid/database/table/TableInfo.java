@@ -5,9 +5,11 @@ import android.text.TextUtils;
 import android.util.SparseArray;
 
 import com.reactiveandroid.annotation.Column;
+import com.reactiveandroid.annotation.Index;
 import com.reactiveandroid.annotation.IndexGroup;
 import com.reactiveandroid.annotation.PrimaryKey;
 import com.reactiveandroid.annotation.Table;
+import com.reactiveandroid.annotation.Unique;
 import com.reactiveandroid.annotation.UniqueGroup;
 import com.reactiveandroid.serializer.TypeSerializer;
 import com.reactiveandroid.utils.ReflectionUtils;
@@ -26,7 +28,7 @@ import java.util.Map;
 public final class TableInfo {
 
     private Class<?> databaseClass;
-    private Class<?> tableClass;
+    private Class<?> modelClass;
     private String tableName;
     private List<Field> modelFields = new ArrayList<>();
     private Field primaryKeyField;
@@ -40,30 +42,30 @@ public final class TableInfo {
     private int cacheSize;
 
 
-    public TableInfo(Class<?> tableClass,
+    public TableInfo(Class<?> modelClass,
                      Map<Class<?>, TypeSerializer> typeSerializers) {
-        Table tableAnnotation = tableClass.getAnnotation(Table.class);
+        Table tableAnnotation = modelClass.getAnnotation(Table.class);
 
-        this.tableClass = tableClass;
+        this.modelClass = modelClass;
         this.databaseClass = tableAnnotation.database();
-        this.tableName = tableAnnotation.name().isEmpty() ? tableClass.getSimpleName() : tableAnnotation.name();
+        this.tableName = tableAnnotation.name().isEmpty() ? modelClass.getSimpleName() : tableAnnotation.name();
         this.cachingEnabled = tableAnnotation.cachingEnabled();
         this.cacheSize = tableAnnotation.cacheSize();
         createUniqueGroups(tableAnnotation);
         createIndexGroups(tableAnnotation);
 
         // Manually addColumn the id column since it is not declared like the other columns.
-        primaryKeyField = findPrimaryKeyField(tableClass);
+        primaryKeyField = findPrimaryKeyField(modelClass);
         columns.put(primaryKeyField, new ColumnInfo(primaryKeyColumnName, SQLiteType.INTEGER, true));
         modelFields.add(primaryKeyField);
 
-        List<Field> modelFields = new LinkedList<>(ReflectionUtils.getDeclaredColumnFields(tableClass));
+        List<Field> modelFields = new LinkedList<>(ReflectionUtils.getDeclaredColumnFields(modelClass));
         Collections.reverse(modelFields);
+
         for (Field field : modelFields) {
-            Column columnAnnotation = field.getAnnotation(Column.class);
-            ColumnInfo columnInfo = createColumnInfo(field, columnAnnotation, typeSerializers);
-            createColumnUnique(columnInfo, columnAnnotation);
-            createColumnIndex(columnInfo, columnAnnotation);
+            ColumnInfo columnInfo = createColumnInfo(field, typeSerializers);
+            createColumnUnique(field, columnInfo);
+            createColumnIndex(field, columnInfo);
             this.modelFields.add(field);
             columns.put(field, columnInfo);
         }
@@ -75,8 +77,8 @@ public final class TableInfo {
     }
 
     @NonNull
-    public Class<?> getTableClass() {
-        return tableClass;
+    public Class<?> getModelClass() {
+        return modelClass;
     }
 
     @NonNull
@@ -164,27 +166,38 @@ public final class TableInfo {
         return primaryKeyField;
     }
 
-    private ColumnInfo createColumnInfo(Field field, Column columnAnnotation, Map<Class<?>, TypeSerializer> typeSerializers) {
+    private ColumnInfo createColumnInfo(Field field, Map<Class<?>, TypeSerializer> typeSerializers) {
+        Column columnAnnotation = field.getAnnotation(Column.class);
         String columnName = TextUtils.isEmpty(columnAnnotation.name()) ? field.getName() : columnAnnotation.name();
         SQLiteType sqliteType = getFieldSQLiteType(field, typeSerializers);
         boolean notNull = columnAnnotation.notNull();
         return new ColumnInfo(columnName, sqliteType, notNull);
     }
 
-    private void createColumnUnique(ColumnInfo columnInfo, Column columnAnnotation) {
-        int[] groups = columnAnnotation.uniqueGroups();
+    private void createColumnUnique(Field field, ColumnInfo columnInfo) {
+        Unique uniqueAnnotation = field.getAnnotation(Unique.class);
+        if (uniqueAnnotation == null) {
+            return;
+        }
+
+        int[] groups = uniqueAnnotation.uniqueGroups();
         for (int group : groups) {
             UniqueGroupInfo uniqueGroupInfo = uniqueGroups.get(group);
             if (uniqueGroupInfo != null) {
                 uniqueGroupInfo.addColumn(columnInfo);
             } else {
-                throw new IllegalArgumentException("Unique group with number " + group + " not found in class " + tableClass.getName());
+                throw new IllegalArgumentException("Unique group with number " + group + " not found in class " + modelClass.getName());
             }
         }
     }
 
-    private void createColumnIndex(ColumnInfo columnInfo, Column columnAnnotation) {
-        int[] groups = columnAnnotation.indexGroups();
+    private void createColumnIndex(Field field, ColumnInfo columnInfo) {
+        Index indexAnnotation = field.getAnnotation(Index.class);
+        if (indexAnnotation == null) {
+            return;
+        }
+
+        int[] groups = indexAnnotation.indexGroups();
         for (int group : groups) {
             IndexGroupInfo indexGroupInfo = indexGroups.get(group);
             if (indexGroupInfo != null) {
