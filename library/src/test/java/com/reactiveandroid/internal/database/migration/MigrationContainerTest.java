@@ -1,4 +1,4 @@
-package com.reactiveandroid.database.migration;
+package com.reactiveandroid.internal.database.migration;
 
 import android.database.sqlite.SQLiteDatabase;
 

@@ -5,9 +5,9 @@ import android.content.ContentValues;
 import android.net.Uri;
 
 import com.reactiveandroid.ReActiveAndroid;
-import com.reactiveandroid.ModelAdapter;
+import com.reactiveandroid.internal.ModelAdapter;
 import com.reactiveandroid.annotation.Column;
-import com.reactiveandroid.database.table.TableInfo;
+import com.reactiveandroid.internal.database.table.TableInfo;
 import com.reactiveandroid.internal.log.LogLevel;
 import com.reactiveandroid.internal.log.ReActiveLog;
 import com.reactiveandroid.internal.serializer.TypeSerializer;

@@ -1,6 +1,6 @@
-package com.reactiveandroid.database;
+package com.reactiveandroid.internal.database;
 
-import com.reactiveandroid.database.table.TableInfo;
+import com.reactiveandroid.internal.database.table.TableInfo;
 import com.reactiveandroid.test.BaseTest;
 import com.reactiveandroid.test.models.CategoryTestModel;
 import com.reactiveandroid.test.models.TestModel;

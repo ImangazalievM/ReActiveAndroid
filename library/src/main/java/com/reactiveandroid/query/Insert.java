@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.reactiveandroid.ReActiveAndroid;
+import com.reactiveandroid.internal.notifications.ChangeAction;
 
 /**
  * Generates a INSERT query
@@ -74,7 +75,7 @@ public final class Insert extends QueryBase {
 
 	}
 
-	public static final class Values<T> extends ExecutableQueryBase<T> {
+	public static final class Values<T> extends InsertQueryBase<T> {
 
 		private Object[] valuesArgs;
 

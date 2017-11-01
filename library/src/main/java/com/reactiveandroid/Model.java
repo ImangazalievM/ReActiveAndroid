@@ -3,6 +3,8 @@ package com.reactiveandroid;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 
+import com.reactiveandroid.internal.ModelAdapter;
+
 import java.util.List;
 import java.util.concurrent.Callable;
 

@@ -1,4 +1,4 @@
-package com.reactiveandroid.database.table;
+package com.reactiveandroid.internal.database.table;
 
 import java.util.ArrayList;
 import java.util.List;

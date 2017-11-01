@@ -1,6 +1,6 @@
 package com.reactiveandroid;
 
-import com.reactiveandroid.database.table.TableInfo;
+import com.reactiveandroid.internal.database.table.TableInfo;
 import com.reactiveandroid.test.BaseTest;
 import com.reactiveandroid.test.databases.TestDatabase;
 import com.reactiveandroid.test.models.CacheTestModel;

@@ -1,4 +1,4 @@
-package com.reactiveandroid.database;
+package com.reactiveandroid.internal.database;
 
 /**
  * Schema information about ReActive's master table.

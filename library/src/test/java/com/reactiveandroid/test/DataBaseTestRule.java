@@ -2,7 +2,7 @@ package com.reactiveandroid.test;
 
 import com.reactiveandroid.ReActiveAndroid;
 import com.reactiveandroid.ReActiveConfig;
-import com.reactiveandroid.database.DatabaseConfig;
+import com.reactiveandroid.internal.database.DatabaseConfig;
 import com.reactiveandroid.test.databases.TestDatabase;
 
 import org.junit.rules.TestRule;

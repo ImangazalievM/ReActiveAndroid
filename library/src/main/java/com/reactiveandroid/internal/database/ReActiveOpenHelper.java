@@ -1,4 +1,4 @@
-package com.reactiveandroid.database;
+package com.reactiveandroid.internal.database;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -6,8 +6,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.reactiveandroid.ReActiveAndroid;
-import com.reactiveandroid.database.migration.Migration;
-import com.reactiveandroid.database.table.TableInfo;
+import com.reactiveandroid.internal.database.migration.Migration;
+import com.reactiveandroid.internal.database.table.TableInfo;
 import com.reactiveandroid.internal.utils.SQLiteUtils;
 
 import java.util.List;

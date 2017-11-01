@@ -1,4 +1,4 @@
-package com.reactiveandroid.database;
+package com.reactiveandroid.internal.database;
 
 import com.reactiveandroid.test.BaseTest;
 import com.reactiveandroid.test.databases.TestDatabase;

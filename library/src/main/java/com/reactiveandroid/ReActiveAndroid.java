@@ -5,10 +5,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.reactiveandroid.database.DatabaseConfig;
-import com.reactiveandroid.database.DatabaseInfo;
-import com.reactiveandroid.database.table.QueryTableInfo;
-import com.reactiveandroid.database.table.TableInfo;
+import com.reactiveandroid.internal.database.DatabaseConfig;
+import com.reactiveandroid.internal.database.DatabaseInfo;
+import com.reactiveandroid.internal.database.table.QueryTableInfo;
+import com.reactiveandroid.internal.database.table.TableInfo;
+import com.reactiveandroid.internal.ModelAdapter;
+import com.reactiveandroid.internal.QueryModelAdapter;
 import com.reactiveandroid.internal.log.LogLevel;
 import com.reactiveandroid.internal.log.ReActiveLog;
 import com.reactiveandroid.internal.serializer.TypeSerializer;

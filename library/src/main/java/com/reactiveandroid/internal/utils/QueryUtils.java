@@ -4,11 +4,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 
-import com.reactiveandroid.QueryModelAdapter;
+import com.reactiveandroid.internal.QueryModelAdapter;
 import com.reactiveandroid.ReActiveAndroid;
-import com.reactiveandroid.ModelAdapter;
-import com.reactiveandroid.database.DatabaseInfo;
-import com.reactiveandroid.database.table.TableInfo;
+import com.reactiveandroid.internal.ModelAdapter;
+import com.reactiveandroid.internal.database.DatabaseInfo;
+import com.reactiveandroid.internal.database.table.TableInfo;
 import com.reactiveandroid.internal.cache.ModelCache;
 import com.reactiveandroid.internal.log.LogLevel;
 import com.reactiveandroid.internal.log.ReActiveLog;

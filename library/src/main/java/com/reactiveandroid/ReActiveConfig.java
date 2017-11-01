@@ -3,7 +3,7 @@ package com.reactiveandroid;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.reactiveandroid.database.DatabaseConfig;
+import com.reactiveandroid.internal.database.DatabaseConfig;
 
 import java.util.HashMap;
 import java.util.Map;

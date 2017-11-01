@@ -45,7 +45,7 @@ public final class Update extends QueryBase {
 
 	}
 
-	public static final class Set<T> extends ExecutableQueryBase<T> {
+	public static final class Set<T> extends UpdateQueryBase<T> {
 
 		private String set;
 		private Object[] setArgs;
@@ -78,7 +78,7 @@ public final class Update extends QueryBase {
 
 	}
 
-	public static final class Where<T> extends ExecutableQueryBase<T> {
+	public static final class Where<T> extends UpdateQueryBase<T> {
 
 		private String where;
 		private Object[] whereArgs;

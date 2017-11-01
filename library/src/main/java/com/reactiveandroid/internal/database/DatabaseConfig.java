@@ -1,8 +1,8 @@
-package com.reactiveandroid.database;
+package com.reactiveandroid.internal.database;
 
 import com.reactiveandroid.annotation.Database;
-import com.reactiveandroid.database.migration.Migration;
-import com.reactiveandroid.database.migration.MigrationContainer;
+import com.reactiveandroid.internal.database.migration.Migration;
+import com.reactiveandroid.internal.database.migration.MigrationContainer;
 import com.reactiveandroid.internal.serializer.TypeSerializer;
 
 import java.util.ArrayList;

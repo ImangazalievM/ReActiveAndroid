@@ -1,4 +1,4 @@
-package com.reactiveandroid;
+package com.reactiveandroid.internal;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -7,14 +7,17 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
-import com.reactiveandroid.database.table.ColumnInfo;
-import com.reactiveandroid.database.table.TableInfo;
 import com.reactiveandroid.internal.cache.ModelCache;
+import com.reactiveandroid.ReActiveAndroid;
+import com.reactiveandroid.internal.serializer.TypeSerializer;
+import com.reactiveandroid.internal.database.table.ColumnInfo;
+import com.reactiveandroid.internal.database.table.TableInfo;
 import com.reactiveandroid.internal.log.LogLevel;
 import com.reactiveandroid.internal.log.ReActiveLog;
+import com.reactiveandroid.internal.notifications.ChangeAction;
+import com.reactiveandroid.internal.notifications.ModelChangeNotifier;
 import com.reactiveandroid.query.Delete;
 import com.reactiveandroid.query.Select;
-import com.reactiveandroid.internal.serializer.TypeSerializer;
 import com.reactiveandroid.internal.utils.ContentUtils;
 import com.reactiveandroid.internal.utils.ReflectionUtils;
 
@@ -29,7 +32,7 @@ public class ModelAdapter<TableClass> {
     private ModelCache<TableClass> modelCache;
     private SQLiteDatabase sqLiteDatabase;
 
-    public ModelAdapter(TableInfo tableInfo, ModelCache<TableClass> modelCache) {
+    public ModelAdapter(@NonNull TableInfo tableInfo, @NonNull ModelCache<TableClass> modelCache) {
         this.tableInfo = tableInfo;
         this.modelCache = modelCache;
     }
@@ -45,26 +48,30 @@ public class ModelAdapter<TableClass> {
     }
 
     @Nullable
-    public TableClass load(Class<TableClass> type, long id) {
+    public TableClass load(@NonNull Class<TableClass> type, long id) {
         TableInfo tableInfo = ReActiveAndroid.getTableInfo(type);
         return Select.from(type).where(tableInfo.getPrimaryKeyColumnName() + "=?", id).fetchSingle();
     }
 
     @Nullable
-    public Long save(TableClass model) {
+    public Long save(@NonNull TableClass model) {
         SQLiteDatabase db = getDatabase();
         ContentValues values = ContentUtils.getContentValues(model, tableInfo);
         Long id = getModelId(model);
         if (id == null) {
             id = db.insert(tableInfo.getTableName(), null, values);
             setModelId(model, id);
+            ModelChangeNotifier.get().notifyModelChanged(model, ChangeAction.INSERT);
+            ModelChangeNotifier.get().notifyTableChanged(tableInfo.getModelClass(), ChangeAction.INSERT);
         } else {
             db.update(tableInfo.getTableName(), values, tableInfo.getPrimaryKeyColumnName() + "=" + id, null);
+            ModelChangeNotifier.get().notifyModelChanged(model, ChangeAction.UPDATE);
+            ModelChangeNotifier.get().notifyTableChanged(tableInfo.getModelClass(), ChangeAction.UPDATE);
         }
         return id;
     }
 
-    public void saveAll(Class<TableClass> table, List<TableClass> models) {
+    public void saveAll(@NonNull Class<TableClass> table, @NonNull List<TableClass> models) {
         // skip if empty
         if (models.isEmpty()) {
             return;
@@ -83,19 +90,21 @@ public class ModelAdapter<TableClass> {
         }
     }
 
-    public void delete(TableClass model) {
+    public void delete(@NonNull TableClass model) {
         Long id = getModelId(model);
         modelCache.removeModel(id);
         getDatabase().delete(tableInfo.getTableName(), tableInfo.getPrimaryKeyColumnName() + "=?", new String[]{id.toString()});
         setModelId(model, null);
+        ModelChangeNotifier.get().notifyModelChanged(model, ChangeAction.DELETE);
+        ModelChangeNotifier.get().notifyTableChanged(tableInfo.getModelClass(), ChangeAction.DELETE);
     }
 
-    public void delete(Class<TableClass> type, long id) {
+    public void delete(@NonNull Class<TableClass> type, long id) {
         TableInfo tableInfo = ReActiveAndroid.getTableInfo(type);
         Delete.from(type).where(tableInfo.getPrimaryKeyColumnName() + "=?", id).execute();
     }
 
-    public void deleteAll(Class<TableClass> type, List<TableClass> models) {
+    public void deleteAll(@NonNull Class<TableClass> type, @NonNull List<TableClass> models) {
         // skip if empty
         if (models.isEmpty()) {
             return;
@@ -111,7 +120,7 @@ public class ModelAdapter<TableClass> {
         ReActiveAndroid.getWritableDatabaseForTable(type).execSQL(String.format("DELETE FROM %s WHERE %s IN (%s);", tableInfo.getTableName(), tableInfo.getPrimaryKeyColumnName(), idsArg));
     }
 
-    public void loadFromCursor(TableClass model, Cursor cursor) {
+    public void loadFromCursor(@NonNull TableClass model, @NonNull Cursor cursor) {
 
         List<String> columnsOrdered = new ArrayList<>(Arrays.asList(cursor.getColumnNames()));
         for (Field field : tableInfo.getFields()) {
@@ -187,7 +196,7 @@ public class ModelAdapter<TableClass> {
 
     }
 
-    private void setModelId(TableClass model, Long id) {
+    private void setModelId(@NonNull TableClass model, @Nullable Long id) {
         try {
             tableInfo.getPrimaryKeyField().set(model, id);
         } catch (IllegalAccessException e) {
@@ -195,7 +204,8 @@ public class ModelAdapter<TableClass> {
         }
     }
 
-    public Long getModelId(TableClass model) {
+    @Nullable
+    public Long getModelId(@NonNull TableClass model) {
         try {
             return (Long) tableInfo.getPrimaryKeyField().get(model);
         } catch (IllegalAccessException e) {

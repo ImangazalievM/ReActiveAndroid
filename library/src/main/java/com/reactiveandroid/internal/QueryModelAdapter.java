@@ -1,15 +1,16 @@
-package com.reactiveandroid;
+package com.reactiveandroid.internal;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 
-import com.reactiveandroid.database.table.ColumnInfo;
-import com.reactiveandroid.database.table.QueryTableInfo;
+import com.reactiveandroid.ReActiveAndroid;
+import com.reactiveandroid.internal.serializer.TypeSerializer;
+import com.reactiveandroid.internal.database.table.ColumnInfo;
+import com.reactiveandroid.internal.database.table.QueryTableInfo;
 import com.reactiveandroid.internal.log.LogLevel;
 import com.reactiveandroid.internal.log.ReActiveLog;
 import com.reactiveandroid.query.Select;
-import com.reactiveandroid.internal.serializer.TypeSerializer;
 import com.reactiveandroid.internal.utils.ReflectionUtils;
 
 import java.lang.reflect.Field;
@@ -21,11 +22,11 @@ public class QueryModelAdapter<QueryModelClass> {
 
     private QueryTableInfo queryTableInfo;
 
-    public QueryModelAdapter(QueryTableInfo queryTableInfo) {
+    public QueryModelAdapter(@NonNull QueryTableInfo queryTableInfo) {
         this.queryTableInfo = queryTableInfo;
     }
 
-    public QueryModelClass createFromCursor(Cursor cursor) {
+    public QueryModelClass createFromCursor(@NonNull Cursor cursor) {
         QueryModelClass model = newInstance();
         List<String> columnsOrdered = new ArrayList<>(Arrays.asList(cursor.getColumnNames()));
         for (Field field : queryTableInfo.getFields()) {

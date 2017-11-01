@@ -1,4 +1,4 @@
-package com.reactiveandroid.database.migration;
+package com.reactiveandroid.internal.database.migration;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;

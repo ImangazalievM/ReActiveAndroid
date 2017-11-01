@@ -3,9 +3,9 @@ package com.reactiveandroid.internal.utils;
 import android.text.TextUtils;
 
 import com.reactiveandroid.ReActiveAndroid;
-import com.reactiveandroid.database.DatabaseInfo;
-import com.reactiveandroid.database.ReActiveMasterTable;
-import com.reactiveandroid.database.table.TableInfo;
+import com.reactiveandroid.internal.database.DatabaseInfo;
+import com.reactiveandroid.internal.database.ReActiveMasterTable;
+import com.reactiveandroid.internal.database.table.TableInfo;
 import com.reactiveandroid.test.BaseTest;
 import com.reactiveandroid.test.databases.TestDatabase;
 import com.reactiveandroid.test.models.FullTestModel;

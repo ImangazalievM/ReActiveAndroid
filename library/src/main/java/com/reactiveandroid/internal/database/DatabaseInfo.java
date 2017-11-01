@@ -1,14 +1,14 @@
-package com.reactiveandroid.database;
+package com.reactiveandroid.internal.database;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.reactiveandroid.QueryModelAdapter;
-import com.reactiveandroid.ModelAdapter;
-import com.reactiveandroid.database.table.QueryTableInfo;
-import com.reactiveandroid.database.table.TableInfo;
+import com.reactiveandroid.internal.QueryModelAdapter;
+import com.reactiveandroid.internal.ModelAdapter;
+import com.reactiveandroid.internal.database.table.QueryTableInfo;
+import com.reactiveandroid.internal.database.table.TableInfo;
 import com.reactiveandroid.internal.cache.ModelLruCache;
 import com.reactiveandroid.internal.log.LogLevel;
 import com.reactiveandroid.internal.log.ReActiveLog;
