@@ -33,26 +33,6 @@ public final class Select<T> extends QueryBase<T> {
         return new Columns<>(new Select(), table, null).from(table);
     }
 
-    public static <T> Columns<T> count() {
-        return columns("COUNT(*)");
-    }
-
-    public static <T> Columns<T> avg(String columnName) {
-        return columns("AVG(" + columnName + ")");
-    }
-
-    public static <T> Columns<T> max(String columnName) {
-        return columns("MAX(" + columnName + ")");
-    }
-
-    public static <T> Columns<T> min(String columnName) {
-        return columns("MIN(" + columnName + ")");
-    }
-
-    public static <T> Columns<T> sum(String columnName) {
-        return columns("SUM(" + columnName + ")");
-    }
-
     @NonNull
     @Override
     public String getPartSql() {
@@ -110,7 +90,7 @@ public final class Select<T> extends QueryBase<T> {
 
     }
 
-    public static final class From<T> extends ResultQueryBase<T> {
+    public static final class From<T> extends AggregateQueryBase<T> {
 
         private String alias;
         private List<Join> joins = new ArrayList<>();
@@ -276,7 +256,7 @@ public final class Select<T> extends QueryBase<T> {
         }
     }
 
-    public static final class Where<T> extends ResultQueryBase<T> {
+    public static final class Where<T> extends AggregateQueryBase<T> {
 
         private String where;
         private Object[] whereArgs;
@@ -317,7 +297,7 @@ public final class Select<T> extends QueryBase<T> {
 
     }
 
-    public static final class GroupBy<T> extends ResultQueryBase<T> {
+    public static final class GroupBy<T> extends AggregateQueryBase<T> {
 
         private String groupBy;
 
@@ -346,7 +326,7 @@ public final class Select<T> extends QueryBase<T> {
 
     }
 
-    public static final class Having<T> extends ResultQueryBase<T> {
+    public static final class Having<T> extends AggregateQueryBase<T> {
 
         private String having;
 
@@ -375,7 +355,7 @@ public final class Select<T> extends QueryBase<T> {
 
     }
 
-    public static final class OrderBy<T> extends ResultQueryBase<T> {
+    public static final class OrderBy<T> extends AggregateQueryBase<T> {
 
         private String orderBy;
 
@@ -400,7 +380,7 @@ public final class Select<T> extends QueryBase<T> {
 
     }
 
-    public static final class Limit<T> extends ResultQueryBase<T> {
+    public static final class Limit<T> extends AggregateQueryBase<T> {
 
         private int limit;
 
@@ -420,7 +400,7 @@ public final class Select<T> extends QueryBase<T> {
         }
     }
 
-    public static final class Offset<T> extends ResultQueryBase<T> {
+    public static final class Offset<T> extends AggregateQueryBase<T> {
 
         private int offset;
 

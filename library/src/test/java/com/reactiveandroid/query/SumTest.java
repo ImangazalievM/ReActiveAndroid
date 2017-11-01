@@ -1,8 +1,5 @@
 package com.reactiveandroid.query;
 
-import android.database.Cursor;
-import android.database.DatabaseUtils;
-
 import com.reactiveandroid.test.BaseTest;
 import com.reactiveandroid.test.DataBaseTestRule;
 import com.reactiveandroid.test.models.TestModel;
@@ -12,78 +9,76 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class AvgTest extends BaseTest {
+public class SumTest extends BaseTest {
 
     @Rule
     public DataBaseTestRule dataBaseTestRule = DataBaseTestRule.create();
 
     @Test
-    public void testColumnAvg() {
+    public void testColumnMin() {
         cleanTable();
         populateTable();
 
-        float avg = Select
+        float sum = Select
                 .from(TestModel.class)
-                .avg("intField");
+                .sum("intField");
 
-        assertEquals(3f, avg, 0);
+        assertEquals(12, sum, 0);
     }
 
     @Test
-    public void testAvgWhereClause() {
+    public void testSumWhereClause() {
         cleanTable();
         populateTable();
 
-        float avg = Select
+        float sum = Select
                 .from(TestModel.class)
-                .where("intField > ?", 2)
-                .avg("intField");
+                .where("intField > ?", 1)
+                .min("intField");
 
-        assertEquals(4.5f, avg, 0);
+        assertEquals(2, sum, 0);
     }
 
     @Test
-    public void testAvgEmptyResult() {
+    public void testSumEmptyResult() {
         cleanTable();
         populateTable();
 
-        float avg = Select
+        float sum = Select
                 .from(TestModel.class)
                 .where("intField > ?", 10)
-                .avg("intField");
+                .min("intField");
 
-        assertEquals(0, avg, 0);
+        assertEquals(0, sum, 0);
     }
 
     @Test
-    public void testAvgOrderBy() {
+    public void testSumOrderBy() {
         cleanTable();
         populateTable();
 
-        float avg = Select
+        float sum = Select
                 .from(TestModel.class)
                 .orderBy("intField ASC")
-                .avg("intField");
+                .sum("intField");
 
         //Should not change the result if order by is used.
-        assertEquals(3f, avg, 0);
+        assertEquals(12, sum, 0);
     }
 
     @Test
-    public void testAvgGroupBy() {
+    public void testSumGroupBy() {
         cleanTable();
         populateTable();
 
-        Cursor avgCursor = Select
-                .columns("AVG(intField)")
+        float sum = Select
                 .from(TestModel.class)
                 .groupBy("stringField")
-                .fetchCursor();
+                .sum("intField");
 
-        avgCursor.moveToFirst(); //avg for "Category 1"
-        assertEquals(2f, avgCursor.getFloat(0), 0);
-        avgCursor.moveToNext(); //avg for "Category 2"
-        assertEquals(4f, avgCursor.getFloat(0), 0);
+        //Should return minimal of the values which belong to the first category in selection
+        //May seem weird, just test it in an SQL browser
+        assertEquals(4, sum, 0);
     }
 
     private void cleanTable() {
@@ -107,7 +102,6 @@ public class AvgTest extends BaseTest {
 
         m4.stringField = "Category 2";
         m4.intField = 6;
-
 
         m1.save();
         m2.save();

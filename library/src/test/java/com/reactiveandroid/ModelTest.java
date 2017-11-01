@@ -106,7 +106,7 @@ public class ModelTest extends BaseTest {
     }
 
     private int getCount() {
-        return Select.count().from(TestModel.class).fetchValue(int.class);
+        return Select.from(TestModel.class).count();
     }
 
 

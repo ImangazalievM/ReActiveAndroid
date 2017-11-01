@@ -15,55 +15,15 @@ public class MinTest extends BaseTest {
     public DataBaseTestRule dataBaseTestRule = DataBaseTestRule.create();
 
     @Test
-    public void testMinSql() {
-        String expected = "SELECT MIN(intField) FROM TestModel";
-
-        String actual = Select
-                .min("intField")
-                .from(TestModel.class)
-                .getSql();
-
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    public void testCountWhereClauseSql() {
-        String expected = "SELECT MIN(intField) FROM TestModel WHERE intField = ?";
-
-        String actual = Select
-                .min("intField")
-                .from(TestModel.class)
-                .where("intField = ?", 1)
-                .getSql();
-
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    public void testMinOrderBySql() {
-        String expected = "SELECT MIN(intField) FROM TestModel WHERE intField <> ? ORDER BY intField";
-
-        String actual = Select
-                .min("intField")
-                .from(TestModel.class)
-                .where("intField <> ?", 0)
-                .orderBy("intField")
-                .getSql();
-
-        assertEquals(expected, actual);
-    }
-
-    @Test
     public void testColumnMin() {
         cleanTable();
         populateTable();
 
-        int min = Select
-                .min("intField")
+        float min = Select
                 .from(TestModel.class)
-                .fetchValue(int.class);
+                .min("intField");
 
-        assertEquals(1, min);
+        assertEquals(1, min, 0);
     }
 
     @Test
@@ -71,13 +31,12 @@ public class MinTest extends BaseTest {
         cleanTable();
         populateTable();
 
-        int min = Select
-                .min("intField")
+        float min = Select
                 .from(TestModel.class)
                 .where("intField > ?", 1)
-                .fetchValue(int.class);
+                .min("intField");
 
-        assertEquals(2, min);
+        assertEquals(2, min, 0);
     }
 
     @Test
@@ -85,13 +44,12 @@ public class MinTest extends BaseTest {
         cleanTable();
         populateTable();
 
-        int min = Select
-                .min("intField")
+        float min = Select
                 .from(TestModel.class)
                 .where("intField > ?", 10)
-                .fetchValue(int.class);
+                .min("intField");
 
-        assertEquals(0, min);
+        assertEquals(0, min, 0);
     }
 
     @Test
@@ -99,15 +57,14 @@ public class MinTest extends BaseTest {
         cleanTable();
         populateTable();
 
-        int min = Select
-                .min("intField")
+        float min = Select
                 .from(TestModel.class)
                 .where("intField > ?", 1)
                 .orderBy("intField ASC")
-                .fetchValue(int.class);
+                .min("intField");
 
         //Should not change the result if order by is used.
-        assertEquals(2, min);
+        assertEquals(2, min, 0);
     }
 
     @Test
@@ -115,15 +72,14 @@ public class MinTest extends BaseTest {
         cleanTable();
         populateTable();
 
-        int min = Select
-                .min("intField")
+        float min = Select
                 .from(TestModel.class)
                 .groupBy("stringField")
-                .fetchValue(int.class);
+                .min("intField");
 
         //Should return minimal of the values which belong to the first category in selection
         //May seem weird, just test it in an SQL browser
-        assertEquals(1, min);
+        assertEquals(1, min, 0);
     }
 
     private void cleanTable() {

@@ -12,24 +12,12 @@ import static org.junit.Assert.assertEquals;
 public class CountTest extends BaseTest {
 
     @Test
-    public void testCountTableSql() {
-        String expected = "SELECT COUNT(*) FROM TestModel";
-
-        String actual = Select
-                .count()
-                .from(TestModel.class)
-                .getSql();
-
-        assertEquals(expected, actual);
-    }
-
-    @Test
     public void testCountTable() {
         cleanTable();
         populateTable();
 
         List<TestModel> list = Select.from(TestModel.class).fetch();
-        int count = Select.count().from(TestModel.class).fetchValue(int.class);
+        int count = Select.from(TestModel.class).count();
 
         assertEquals(3, count);
         assertEquals(list.size(), count);
@@ -46,10 +34,9 @@ public class CountTest extends BaseTest {
                 .fetch();
 
         int count = Select
-                .count()
                 .from(TestModel.class)
                 .where("intField = ?", 1)
-                .fetchValue(int.class);
+                .count();
 
         assertEquals(2, count);
         assertEquals(list.size(), count);
@@ -65,10 +52,9 @@ public class CountTest extends BaseTest {
                 .where("intField = ?", 3)
                 .fetch();
         int count = Select
-                .count()
                 .from(TestModel.class)
                 .where("intField = ?", 3)
-                .fetchValue(int.class);
+                .count();
 
         //Should return the same count as there are entries in the result set if the where-clause
         //matches zero entries.
@@ -82,20 +68,17 @@ public class CountTest extends BaseTest {
         populateTable();
 
         int count = Select
-                .count()
                 .from(TestModel.class)
-                .where("intField = ?", 1)
                 .orderBy("intField ASC")
-                .fetchValue(int.class);
+                .count();
 
         List<TestModel> list = Select
                 .from(TestModel.class)
-                .where("intField = ?", 1)
                 .orderBy("intField ASC")
                 .fetch();
 
         //Should not change the result if order by is used.
-        assertEquals(2, count);
+        assertEquals(3, count);
         assertEquals(list.size(), count);
     }
 
@@ -105,11 +88,10 @@ public class CountTest extends BaseTest {
         populateTable();
 
         int count = Select
-                .count()
                 .from(TestModel.class)
                 .groupBy("intField")
                 .having("intField = 1")
-                .fetchValue(int.class);
+                .count();
 
         List<TestModel> list = Select
                 .from(TestModel.class)

@@ -15,53 +15,13 @@ public class MaxTest extends BaseTest {
     public DataBaseTestRule dataBaseTestRule = DataBaseTestRule.create();
 
     @Test
-    public void testAvgSql() {
-        String expected = "SELECT MAX(intField) FROM TestModel";
-
-        String actual = Select
-                .max("intField")
-                .from(TestModel.class)
-                .getSql();
-
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    public void testCountWhereClauseSql() {
-        String expected = "SELECT MAX(intField) FROM TestModel WHERE intField = ?";
-
-        String actual = Select
-                .max("intField")
-                .from(TestModel.class)
-                .where("intField = ?", 1)
-                .getSql();
-
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    public void testMaxOrderBySql() {
-        String expected = "SELECT MAX(intField) FROM TestModel WHERE intField <> ? ORDER BY intField";
-
-        String actual = Select
-                .max("intField")
-                .from(TestModel.class)
-                .where("intField <> ?", 0)
-                .orderBy("intField")
-                .getSql();
-
-        assertEquals(expected, actual);
-    }
-
-    @Test
     public void testColumnMax() {
         cleanTable();
         populateTable();
 
         float max = Select
-                .max("intField")
                 .from(TestModel.class)
-                .fetchValue(float.class);
+                .max("intField");
 
         assertEquals(6f, max, 0);
     }
@@ -72,10 +32,9 @@ public class MaxTest extends BaseTest {
         populateTable();
 
         float max = Select
-                .max("intField")
                 .from(TestModel.class)
                 .where("intField < ?", 5)
-                .fetchValue(float.class);
+                .max("intField");
 
         assertEquals(3f, max, 0);
     }
@@ -86,10 +45,9 @@ public class MaxTest extends BaseTest {
         populateTable();
 
         float max = Select
-                .max("intField")
                 .from(TestModel.class)
                 .where("intField > ?", 10)
-                .fetchValue(float.class);
+                .max("intField");
 
         assertEquals(0, max, 0);
     }
@@ -100,14 +58,12 @@ public class MaxTest extends BaseTest {
         populateTable();
 
         float max = Select
-                .max("intField")
                 .from(TestModel.class)
-                .where("intField < ?", 5)
                 .orderBy("intField ASC")
-                .fetchValue(float.class);
+                .max("intField");
 
         //Should not change the result if order by is used.
-        assertEquals(3f, max, 0);
+        assertEquals(6f, max, 0);
     }
 
     @Test
@@ -116,10 +72,9 @@ public class MaxTest extends BaseTest {
         populateTable();
 
         float max = Select
-                .max("intField")
                 .from(TestModel.class)
                 .groupBy("stringField")
-                .fetchValue(float.class);
+                .max("intField");
 
         //Should return maximal value which belong to the first category in selection
         //May seem weird, just test it in an SQL browser
