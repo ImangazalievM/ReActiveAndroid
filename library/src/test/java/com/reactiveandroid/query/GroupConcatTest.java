@@ -9,76 +9,76 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class MaxTest extends BaseTest {
+public class GroupConcatTest extends BaseTest {
 
     @Rule
     public DataBaseTestRule dataBaseTestRule = DataBaseTestRule.create();
 
     @Test
-    public void testMax() {
+    public void testColumnMin() {
         cleanTable();
         populateTable();
 
-        float max = Select
+        float sum = Select
                 .from(TestModel.class)
-                .max("intField");
+                .sum("intField");
 
-        assertEquals(6f, max, 0);
+        assertEquals(12, sum, 0);
     }
 
     @Test
-    public void testMaxWhereClause() {
+    public void testSumWhereClause() {
         cleanTable();
         populateTable();
 
-        float max = Select
+        float sum = Select
                 .from(TestModel.class)
-                .where("intField < ?", 5)
-                .max("intField");
+                .where("intField > ?", 1)
+                .min("intField");
 
-        assertEquals(3f, max, 0);
+        assertEquals(2, sum, 0);
     }
 
     @Test
-    public void testMaxEmptyResult() {
+    public void testSumEmptyResult() {
         cleanTable();
         populateTable();
 
-        float max = Select
+        float sum = Select
                 .from(TestModel.class)
                 .where("intField > ?", 10)
-                .max("intField");
+                .min("intField");
 
-        assertEquals(0, max, 0);
+        assertEquals(0, sum, 0);
     }
 
     @Test
-    public void testMaxOrderBy() {
+    public void testSumOrderBy() {
         cleanTable();
         populateTable();
 
-        float max = Select
+        float sum = Select
                 .from(TestModel.class)
                 .orderBy("intField ASC")
-                .max("intField");
+                .sum("intField");
 
         //Should not change the result if order by is used.
-        assertEquals(6f, max, 0);
+        assertEquals(12, sum, 0);
     }
 
     @Test
-    public void testMaxGroupBy() {
+    public void testSumGroupBy() {
         cleanTable();
         populateTable();
 
-        float max = Select
+        float sum = Select
                 .from(TestModel.class)
                 .groupBy("stringField")
-                .max("intField");
+                .sum("intField");
 
-        //Should return maximal value which belong to the first category in selection
+        //Should return minimal of the values which belong to the first category in selection
         //May seem weird, just test it in an SQL browser
-        assertEquals(3f, max, 0);
+        assertEquals(4, sum, 0);
     }
 
     private void cleanTable() {
@@ -102,7 +102,6 @@ public class MaxTest extends BaseTest {
 
         m4.stringField = "Category 2";
         m4.intField = 6;
-
 
         m1.save();
         m2.save();

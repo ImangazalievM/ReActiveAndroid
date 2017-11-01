@@ -15,7 +15,7 @@ public class SumTest extends BaseTest {
     public DataBaseTestRule dataBaseTestRule = DataBaseTestRule.create();
 
     @Test
-    public void testColumnMin() {
+    public void testSum() {
         cleanTable();
         populateTable();
 

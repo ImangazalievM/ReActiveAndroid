@@ -18,7 +18,7 @@ public class AvgTest extends BaseTest {
     public DataBaseTestRule dataBaseTestRule = DataBaseTestRule.create();
 
     @Test
-    public void testColumnAvg() {
+    public void testAvg() {
         cleanTable();
         populateTable();
 
