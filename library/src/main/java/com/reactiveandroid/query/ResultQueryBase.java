@@ -34,11 +34,11 @@ public abstract class ResultQueryBase<TableClass> extends QueryBase<TableClass> 
         return null;
     }
 
-    public <CustomClass> List<CustomClass> fetchAs(Class<CustomClass> customType) {
+    public <CustomClass> List<CustomClass> fetchCustom(Class<CustomClass> customType) {
         return QueryUtils.rawQueryCustom(customType, getSql(), getArgs());
     }
 
-    public <CustomClass> CustomClass fetchSingleAs(Class<CustomClass> customType) {
+    public <CustomClass> CustomClass fetchCustomSingle(Class<CustomClass> customType) {
         List<CustomClass> results = QueryUtils.rawQueryCustom(customType, getSingleSql(), getArgs());
         if (!results.isEmpty()) {
             return results.get(0);
@@ -59,11 +59,11 @@ public abstract class ResultQueryBase<TableClass> extends QueryBase<TableClass> 
         });
     }
 
-    public <CustomClass> Single<List<CustomClass>> fetchAsAsync(final Class<CustomClass> customType) {
+    public <CustomClass> Single<List<CustomClass>> fetchCustomAsync(final Class<CustomClass> customType) {
         return Single.fromCallable(new Callable<List<CustomClass>>() {
             @Override
             public List<CustomClass> call() throws Exception {
-                return fetchAs(customType);
+                return fetchCustom(customType);
             }
         });
     }
@@ -77,11 +77,11 @@ public abstract class ResultQueryBase<TableClass> extends QueryBase<TableClass> 
         });
     }
 
-    public <CustomClass> Single<CustomClass> fetchSingleAsAsync(final Class<CustomClass> customType) {
+    public <CustomClass> Single<CustomClass> fetchCustomSingleAsync(final Class<CustomClass> customType) {
         return Single.fromCallable(new Callable<CustomClass>() {
             @Override
             public CustomClass call() throws Exception {
-                return fetchSingleAs(customType);
+                return fetchCustomSingle(customType);
             }
         });
     }

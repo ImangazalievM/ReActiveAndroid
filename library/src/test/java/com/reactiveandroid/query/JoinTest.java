@@ -71,7 +71,7 @@ public class JoinTest extends BaseTest {
                 .on("OrderItem.customer_id = Customer.id")
                 .join(JoinModelCity.class).as("City")
                 .on("City.id = Customer.id")
-                .fetchAs(OrderInfoQueryModel.class);
+                .fetchCustom(OrderInfoQueryModel.class);
 
         assertEquals(2, orderInfos.size());
 

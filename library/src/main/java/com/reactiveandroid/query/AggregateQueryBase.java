@@ -41,6 +41,10 @@ public abstract class AggregateQueryBase<TableClass> extends ResultQueryBase<Tab
         return getAsFloat(getAggregateFunctionSql("TOTAL(" + columnName + ") "));
     }
 
+    public String groupConcat(String columnName) {
+        return getAsString("GROUP_CONCAT(" + columnName + ") ");
+    }
+
     public Single<Integer> countAsync() {
         return Single.fromCallable(new Callable<Integer>() {
             @Override
@@ -95,6 +99,15 @@ public abstract class AggregateQueryBase<TableClass> extends ResultQueryBase<Tab
         });
     }
 
+    public Single<String> groupConcatAsync(final String columnName) {
+        return Single.fromCallable(new Callable<String>() {
+            @Override
+            public String call() throws Exception {
+                return groupConcat(columnName);
+            }
+        });
+    }
+
     private String getAggregateFunctionSql(String aggregateFunction) {
         String originalSql = getSql();
         int fromIndex = originalSql.indexOf(" FROM");
@@ -117,9 +130,21 @@ public abstract class AggregateQueryBase<TableClass> extends ResultQueryBase<Tab
         float result;
         Cursor cursor = ReActiveAndroid.getWritableDatabaseForTable(table).rawQuery(sql, getArgs());
         if (!cursor.moveToFirst()) {
-            result = 0;
+            result = 0f;
         } else {
             result = cursor.getFloat(0);
+        }
+        cursor.close();
+        return result;
+    }
+
+    private String getAsString(String sql) {
+        String result;
+        Cursor cursor = ReActiveAndroid.getWritableDatabaseForTable(table).rawQuery(sql, getArgs());
+        if (!cursor.moveToFirst()) {
+            result = null;
+        } else {
+            result = cursor.getString(0);
         }
         cursor.close();
         return result;
