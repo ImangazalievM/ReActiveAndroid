@@ -94,7 +94,6 @@ public class ModelAdapter<TableClass> {
         Long id = getModelId(model);
         modelCache.removeModel(id);
         getDatabase().delete(tableInfo.getTableName(), tableInfo.getPrimaryKeyColumnName() + "=?", new String[]{id.toString()});
-        setModelId(model, null);
         ModelChangeNotifier.get().notifyModelChanged(model, ChangeAction.DELETE);
         ModelChangeNotifier.get().notifyTableChanged(tableInfo.getModelClass(), ChangeAction.DELETE);
     }
