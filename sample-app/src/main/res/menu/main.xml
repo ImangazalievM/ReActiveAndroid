@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_search"
+        android:icon="@drawable/ic_search_white_24dp"
+        android:title="@string/search"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        app:showAsAction="collapseActionView|always" />
+
+    <item
+        android:icon="@drawable/ic_folder_white_24dp"
+        android:id="@+id/open_folders_edit_screen"
+        android:title="@string/folders"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/delete_all_notes"
+        android:title="@string/delete_all_notes"
+        app:showAsAction="never" />
+
+
+</menu>

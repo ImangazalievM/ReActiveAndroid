@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">ReActiveAndroid</string>
+    <string name="notes_not_found">Notes not found</string>
+    <string name="save">Save</string>
+    <string name="delete">Delete</string>
+    <string name="note_info">Note info</string>
+    <string name="search">Search</string>
+    <string name="delete_all_notes">Delete all folders</string>
+    <string name="delete_all_folders">Delete all folders</string>
+    <string name="folders">Folders</string>
+    <string name="first_save_note">First save note</string>
+    <string name="note_is_saved">Note is saved</string>
+    <string name="note_is_deleted">Note is deleted</string>
+    <string name="enter_folder_name">Enter folder name</string>
+    <string name="folder_name">Folder name</string>
+    <string name="create_new_folder">Create new folder</string>
+    <string name="note_folders">Note folders</string>
 </resources>

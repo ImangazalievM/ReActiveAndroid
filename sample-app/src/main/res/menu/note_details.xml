@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:icon="@drawable/ic_folder_white_24dp"
+        android:id="@+id/note_folders"
+        android:title="@string/note_folders"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/save_note"
+        android:title="@string/save"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/delete_note"
+        android:title="@string/delete"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/note_info"
+        android:title="@string/note_info"
+        app:showAsAction="never" />
+
+</menu>
