@@ -1,6 +1,6 @@
 # ReActiveAndroid
-[ ![Download](https://api.bintray.com/packages/imangazaliev/maven/reactiveandroid/images/download.svg) ](https://bintray.com/imangazaliev/maven/reactiveandroid/_latestVersion)
-![minSdkVersion 14](https://img.shields.io/badge/minSdkVersion-14-blue.svg)
+[![Download](https://api.bintray.com/packages/imangazaliev/maven/reactiveandroid/images/download.svg)](https://bintray.com/imangazaliev/maven/reactiveandroid/_latestVersion)
+[![minSdkVersion 14](https://img.shields.io/badge/minSdkVersion-14-blue.svg)]()
 
 ReActiveAndroid is Android ORM based on popular library [ActiveAndroid](https://github.com/pardom/ActiveAndroid). Unfortunately, the author of the library stopped maintaining it, so I decided to continue maintain the library instead of him.
 
