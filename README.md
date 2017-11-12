@@ -1,6 +1,5 @@
-# ReActiveAndroid
-
 ![logo][logo]
+[![Build Status](https://travis-ci.org/ImangazalievM/ReActiveAndroid.svg?branch=master)](https://travis-ci.org/ImangazalievM/ReActiveAndroid)
 [![Download](https://api.bintray.com/packages/imangazaliev/maven/reactiveandroid/images/download.svg)](https://bintray.com/imangazaliev/maven/reactiveandroid/_latestVersion)
 [![minSdkVersion 14](https://img.shields.io/badge/minSdkVersion-14-blue.svg)]()
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
@@ -18,18 +17,19 @@ New features in ReActiveAndroid in comparison with ActiveAndroid:
 
 In the plans:
 
-- Annotation Processing instead Java Reflection (to increase performance and speed)
-- inherited models
+- Annotation Processing instead Java Reflection
+- improved compatibility with Kotlin
 - composite primary key support
 - "One to Many" relation
-- Kotlin support
+- inherited models
 - SQL Cipher support
+- AutoValue support
 
 # Usage
 
 ## Gradle dependency
 
-Add this to your app build.gradle:
+Add this to your app **build.gradle**:
 
 ```gradle
 compile 'com.reactiveandroid:reactiveandroid:1.1.0'
@@ -54,6 +54,8 @@ To create a table, we need to create a model class that inherits from the `Model
 @Table(name = "Notes", database = AppDatabase.class)
 public class Note extends Model {
 
+    @PrimaryKey
+    private Long id;
     @Column(name = "title")
     private String title;
     @Column(name = "text")
@@ -64,7 +66,11 @@ public class Note extends Model {
         this.text = text;
     }
 
- public void setTitle(String title) {
+    public Long getId() {
+        return id;
+    }
+
+    public void setTitle(String title) {
         this.title = title;
     }
 
@@ -83,7 +89,7 @@ public class Note extends Model {
 }
 ```
 
-In the `@Table` annotation we specify the name of the table, as well as the class of the database in which the table belongs. Also you can crete model class without inheritance from the `Model`, but then you will not have access to the save () and delete () methods.
+In the `@Table` annotation we specify the name of the table, as well as the class of the database in which the table belongs. Also you can crete model class without inheritance from the `Model`, but then you will not have access to the `save()` and `delete()` methods.
 
 Next, we need to initialize the library in the `onCreate` method of the Application class:
 
@@ -129,15 +135,13 @@ Update.table(Note.class).set("title = ?", "New title").where("id = ?", 1).execut
 Delete.from(Note.class).where("id = ?", 1).execute();
 ```
 
-## Full Documentation
+## Documentation
 
 More information about the library's features can be found in our [Wiki](https://github.com/ImangazalievM/ReActiveAndroid/wiki).
 
 # License
 
 ```
-## License
-
 The MIT License
 
 Copyright (c) 2016 Mahach Imangazaliev
