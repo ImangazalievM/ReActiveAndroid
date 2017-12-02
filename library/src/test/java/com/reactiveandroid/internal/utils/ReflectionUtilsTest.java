@@ -16,7 +16,6 @@ import org.junit.runner.RunWith;
 
 import java.lang.reflect.Field;
 import java.util.List;
-import java.util.Set;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
@@ -45,35 +44,31 @@ public class ReflectionUtilsTest extends BaseTest {
     }
 
     @Test
-    public void testGetDeclaredColumnFields() throws NoSuchFieldException {
-        Set<Field> columnFields = ReflectionUtils.getDeclaredColumnFields(TestModel.class);
-        Field[] columnFieldsArray = columnFields.toArray(new Field[columnFields.size()]);
+    public void testGetDeclaredFields() throws NoSuchFieldException {
+        List<Field> declaredFields = ReflectionUtils.getDeclaredFields(TestModel.class);
 
-        assertEquals(5, columnFieldsArray.length);
-        //shouldn't include field without @Column annotation
-        assertFalse(columnFields.contains(TestModel.class.getField("nonColumnField")));
-        //the fields are sorted alphabetically in reverse order
-        assertEquals(columnFieldsArray[0], TestModel.class.getField("stringField"));
-        assertEquals(columnFieldsArray[1], TestModel.class.getField("intField"));
-        assertEquals(columnFieldsArray[2], TestModel.class.getField("doubleField"));
-        assertEquals(columnFieldsArray[3], TestModel.class.getField("dateField"));
-        assertEquals(columnFieldsArray[4], TestModel.class.getField("booleanField"));
+        assertTrue(declaredFields.contains(TestModel.class.getField("nonColumnField")));
+        assertTrue(declaredFields.contains(TestModel.class.getField("stringField")));
+        assertTrue(declaredFields.contains(TestModel.class.getField("intField")));
+        assertTrue(declaredFields.contains(TestModel.class.getField("doubleField")));
+        assertTrue(declaredFields.contains(TestModel.class.getField("dateField")));
+        assertTrue(declaredFields.contains(TestModel.class.getField("booleanField")));
     }
 
     @Test
     public void testGetDatabaseModelClasses() throws NoSuchFieldException {
-        List<Class> allClasses = ReflectionUtils.getAllClasses(TestUtils.getApplication());
-        List<Class> testDatabaseModelClasses = ReflectionUtils.getDatabaseModelClasses(allClasses, TestDatabase.class);
-        List<Class> emptyDatabaseModelClasses = ReflectionUtils.getDatabaseModelClasses(allClasses, EmptyDatabase.class);
+        List<Class<?>> allClasses = ReflectionUtils.getAllClasses(TestUtils.getApplication());
+        List<Class<?>> testDatabaseModelClasses = ReflectionUtils.getDatabaseTableClasses(allClasses, TestDatabase.class);
+        List<Class<?>> emptyDatabaseModelClasses = ReflectionUtils.getDatabaseTableClasses(allClasses, EmptyDatabase.class);
 
-        assertEquals(10, testDatabaseModelClasses.size());
+        assertEquals(13, testDatabaseModelClasses.size());
         assertEquals(0, emptyDatabaseModelClasses.size());
     }
 
     @Test
     public void testGetDatabaseQueryModelClasses() throws NoSuchFieldException {
-        List<Class> allClasses = ReflectionUtils.getAllClasses(TestUtils.getApplication());
-        List<Class> testDatabaseQueryClasses = ReflectionUtils.getDatabaseQueryModelClasses(allClasses, TestDatabase.class);
+        List<Class<?>> allClasses = ReflectionUtils.getAllClasses(TestUtils.getApplication());
+        List<Class<?>> testDatabaseQueryClasses = ReflectionUtils.getDatabaseQueryModelClasses(allClasses, TestDatabase.class);
 
         assertEquals(1, testDatabaseQueryClasses.size());
     }

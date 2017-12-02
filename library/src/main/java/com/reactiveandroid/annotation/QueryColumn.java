@@ -6,16 +6,15 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Creates an index for this column. A single column can belong to multiple
- * indexes within the same table if you wish.
+ *
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Index {
+public @interface QueryColumn {
 
-    /**
-     * Marks this column as part of a index group.
-     */
-    int[] indexGroups();
+	/**
+	 * Specifies column name
+	 */
+	String name();
 
 }

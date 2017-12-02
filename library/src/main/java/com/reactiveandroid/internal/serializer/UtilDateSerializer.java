@@ -1,22 +1,19 @@
 package com.reactiveandroid.internal.serializer;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import java.util.Date;
 
 public final class UtilDateSerializer extends TypeSerializer<Date, Long> {
 
-	public Long serialize(Date data) {
-		if (data == null) {
-			return null;
-		}
-
+	@Nullable
+    public Long serialize(@NonNull Date data) {
 		return data.getTime();
 	}
 
-	public Date deserialize(Long data) {
-		if (data == null) {
-			return null;
-		}
-
+	@Nullable
+	public Date deserialize(@NonNull Long data) {
 		return new Date(data);
 	}
 

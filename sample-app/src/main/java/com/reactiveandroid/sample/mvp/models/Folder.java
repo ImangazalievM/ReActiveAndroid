@@ -1,9 +1,10 @@
-package com.reactiveandroid.sample.models;
+package com.reactiveandroid.sample.mvp.models;
 
 import com.reactiveandroid.Model;
 import com.reactiveandroid.annotation.Column;
 import com.reactiveandroid.annotation.PrimaryKey;
 import com.reactiveandroid.annotation.Table;
+import com.reactiveandroid.query.Delete;
 import com.reactiveandroid.sample.AppDatabase;
 
 @Table(name = "Folders", database = AppDatabase.class)
@@ -14,6 +15,7 @@ public class Folder extends Model {
     @Column(name = "name")
     private String name;
 
+    //ReActiveAndroid requires empty constructor
     public Folder() {
     }
 

@@ -1,5 +1,6 @@
 package com.reactiveandroid.internal.utils;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
@@ -9,6 +10,7 @@ import android.util.SparseArray;
 import com.reactiveandroid.ReActiveAndroid;
 import com.reactiveandroid.annotation.Collate;
 import com.reactiveandroid.annotation.Unique;
+import com.reactiveandroid.internal.ModelAdapter;
 import com.reactiveandroid.internal.database.ReActiveMasterTable;
 import com.reactiveandroid.internal.database.table.ColumnInfo;
 import com.reactiveandroid.internal.database.table.IndexGroupInfo;
@@ -18,6 +20,7 @@ import com.reactiveandroid.annotation.Column;
 import com.reactiveandroid.internal.database.table.UniqueGroupInfo;
 import com.reactiveandroid.internal.log.LogLevel;
 import com.reactiveandroid.internal.log.ReActiveLog;
+import com.reactiveandroid.internal.serializer.TypeSerializer;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -62,7 +65,7 @@ public final class SQLiteUtils {
     @NonNull
     public static String createTableDefinition(TableInfo tableInfo) {
         ArrayList<String> definitions = new ArrayList<>();
-        for (Field field : tableInfo.getFields()) {
+        for (Field field : tableInfo.getColumnFields()) {
             String definition = createColumnDefinition(tableInfo, field);
             if (!TextUtils.isEmpty(definition)) {
                 definitions.add(definition);
@@ -169,6 +172,72 @@ public final class SQLiteUtils {
         return definitions;
     }
 
+    public static void fillContentValuesForUpdate(Object model,
+                                                  ModelAdapter modelAdapter,
+                                                  ContentValues contentValues) {
+        TableInfo tableInfo = modelAdapter.getTableInfo();
+        Field primaryKeyField = tableInfo.getPrimaryKeyField();
+        String primaryKeyColumnName = tableInfo.getColumnInfo(primaryKeyField).name;
+        contentValues.put(primaryKeyColumnName, modelAdapter.getModelId(model));
+        fillContentValuesForInsert(model, modelAdapter, contentValues);
+    }
+
+    public static void fillContentValuesForInsert(Object model,
+                                                  ModelAdapter modelAdapter,
+                                                  ContentValues contentValues) {
+        TableInfo tableInfo = modelAdapter.getTableInfo();
+        for (Field field : tableInfo.getColumnFields()) {
+            //do not include the primary key, since this one autoincrement
+            if (field == tableInfo.getPrimaryKeyField()) {
+                continue;
+            }
+
+            field.setAccessible(true);
+            String columnName = tableInfo.getColumnInfo(field).name;
+            Class<?> fieldType = field.getType();
+
+            try {
+                Object value = field.get(model);
+                if (value != null) {
+                    TypeSerializer typeSerializer = ReActiveAndroid.getSerializerForType(tableInfo.getModelClass(), fieldType);
+                    if (typeSerializer != null) {
+                        // serialize data
+                        value = typeSerializer.serialize(value);
+                        // set new object type
+                        fieldType = value.getClass();
+                    }
+                }
+                if (value == null) {
+                    contentValues.putNull(columnName);
+                } else if (fieldType.equals(Byte.class) || fieldType.equals(byte.class)) {
+                    contentValues.put(columnName, (Byte) value);
+                } else if (fieldType.equals(Short.class) || fieldType.equals(short.class)) {
+                    contentValues.put(columnName, (Short) value);
+                } else if (fieldType.equals(Integer.class) || fieldType.equals(int.class)) {
+                    contentValues.put(columnName, (Integer) value);
+                } else if (fieldType.equals(Long.class) || fieldType.equals(long.class)) {
+                    contentValues.put(columnName, (Long) value);
+                } else if (fieldType.equals(Float.class) || fieldType.equals(float.class)) {
+                    contentValues.put(columnName, (Float) value);
+                } else if (fieldType.equals(Double.class) || fieldType.equals(double.class)) {
+                    contentValues.put(columnName, (Double) value);
+                } else if (fieldType.equals(Boolean.class) || fieldType.equals(boolean.class)) {
+                    contentValues.put(columnName, (Boolean) value);
+                } else if (fieldType.equals(Character.class) || fieldType.equals(char.class)) {
+                    contentValues.put(columnName, value.toString());
+                } else if (fieldType.equals(String.class)) {
+                    contentValues.put(columnName, value.toString());
+                } else if (fieldType.equals(Byte[].class) || fieldType.equals(byte[].class)) {
+                    contentValues.put(columnName, (byte[]) value);
+                } else if (ReflectionUtils.isModel(fieldType)) {
+                    ModelAdapter foreignModelAdapter = ReActiveAndroid.getModelAdapter(fieldType);
+                    contentValues.put(columnName, foreignModelAdapter.getModelId(value));
+                }
+            } catch (IllegalArgumentException | IllegalAccessException e) {
+                ReActiveLog.e(LogLevel.BASIC, e.getClass().getName(), e);
+            }
+        }
+    }
 
     private static boolean isInternalTable(String tableName) {
         return tableName.equals("android_metadata")

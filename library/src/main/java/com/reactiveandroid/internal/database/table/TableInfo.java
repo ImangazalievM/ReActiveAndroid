@@ -17,6 +17,7 @@ import com.reactiveandroid.internal.utils.ReflectionUtils;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -30,7 +31,8 @@ public final class TableInfo {
     private Class<?> databaseClass;
     private Class<?> modelClass;
     private String tableName;
-    private List<Field> modelFields = new ArrayList<>();
+    private List<Field> modelFields;
+    private List<Field> modelColumnFields = new ArrayList<>();
     private Field primaryKeyField;
     private String primaryKeyColumnName;
 
@@ -45,30 +47,29 @@ public final class TableInfo {
     public TableInfo(Class<?> modelClass,
                      Map<Class<?>, TypeSerializer> typeSerializers) {
         Table tableAnnotation = modelClass.getAnnotation(Table.class);
-
-        this.modelClass = modelClass;
         this.databaseClass = tableAnnotation.database();
+        this.modelClass = modelClass;
         this.tableName = tableAnnotation.name().isEmpty() ? modelClass.getSimpleName() : tableAnnotation.name();
         this.cachingEnabled = tableAnnotation.cachingEnabled();
         this.cacheSize = tableAnnotation.cacheSize();
         createUniqueGroups(tableAnnotation);
         createIndexGroups(tableAnnotation);
 
-        // Manually addColumn the id column since it is not declared like the other columns.
-        primaryKeyField = findPrimaryKeyField(modelClass);
-        columns.put(primaryKeyField, new ColumnInfo(primaryKeyColumnName, SQLiteType.INTEGER, true));
-        modelFields.add(primaryKeyField);
-
-        List<Field> modelFields = new LinkedList<>(ReflectionUtils.getDeclaredColumnFields(modelClass));
-        Collections.reverse(modelFields);
-
-        for (Field field : modelFields) {
+        modelFields = ReflectionUtils.getDeclaredFields(modelClass);
+        modelColumnFields.addAll(filterAndSortColumnFields(modelFields));
+        Collections.reverse(modelColumnFields);
+        for (Field field : modelColumnFields) {
             ColumnInfo columnInfo = createColumnInfo(field, typeSerializers);
             createColumnUnique(field, columnInfo);
             createColumnIndex(field, columnInfo);
-            this.modelFields.add(field);
+            modelFields.add(field);
             columns.put(field, columnInfo);
         }
+
+        // Manually addColumn the primary key column since it is not declared like the other columns.
+        primaryKeyField = findPrimaryKeyField(modelClass);
+        columns.put(primaryKeyField, new ColumnInfo(primaryKeyColumnName, SQLiteType.INTEGER, true));
+        modelColumnFields.add(0, primaryKeyField);
     }
 
     @NonNull
@@ -94,6 +95,11 @@ public final class TableInfo {
     @NonNull
     public List<Field> getFields() {
         return modelFields;
+    }
+
+    @NonNull
+    public List<Field> getColumnFields() {
+        return modelColumnFields;
     }
 
     @NonNull
@@ -124,6 +130,22 @@ public final class TableInfo {
         return cacheSize;
     }
 
+    private List<Field> filterAndSortColumnFields(List<Field> modelFields) {
+        List<Field> modelColumnFields = new ArrayList<>();
+        for (Field field : modelFields) {
+            if (field.isAnnotationPresent(Column.class)) {
+                modelColumnFields.add(field);
+            }
+        }
+        Collections.sort(modelColumnFields, new Comparator<Field>() {
+            @Override
+            public int compare(Field field1, Field field2) {
+                return field2.getName().compareTo(field1.getName());
+            }
+        });
+        return modelColumnFields;
+    }
+
     private void createUniqueGroups(Table tableAnnotation) {
         UniqueGroup[] uniqueGroupAnnotations = tableAnnotation.uniqueGroups();
         for (UniqueGroup uniqueGroup : uniqueGroupAnnotations) {
@@ -144,7 +166,8 @@ public final class TableInfo {
         for (Field field : modelClass.getDeclaredFields()) {
             PrimaryKey primaryKeyAnnotation = field.getAnnotation(PrimaryKey.class);
             if (primaryKeyAnnotation != null) {
-                if (!(field.getType().equals(Long.class))) {
+                Class<?> fieldType = field.getType();
+                if (!(fieldType.equals(long.class) || fieldType.equals(Long.class))) {
                     throw new IllegalArgumentException("Primary key field should be Long type");
                 }
 
@@ -168,7 +191,7 @@ public final class TableInfo {
 
     private ColumnInfo createColumnInfo(Field field, Map<Class<?>, TypeSerializer> typeSerializers) {
         Column columnAnnotation = field.getAnnotation(Column.class);
-        String columnName = TextUtils.isEmpty(columnAnnotation.name()) ? field.getName() : columnAnnotation.name();
+        String columnName = !TextUtils.isEmpty(columnAnnotation.name()) ? columnAnnotation.name() : field.getName();
         SQLiteType sqliteType = getFieldSQLiteType(field, typeSerializers);
         boolean notNull = columnAnnotation.notNull();
         return new ColumnInfo(columnName, sqliteType, notNull);

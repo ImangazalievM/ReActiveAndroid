@@ -1,22 +1,19 @@
 package com.reactiveandroid.internal.serializer;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import java.util.UUID;
 
 public final class UUIDSerializer extends TypeSerializer<UUID, String> {
 
-    public String serialize(UUID data) {
-        if (data == null) {
-            return null;
-        }
-
+    @Nullable
+    public String serialize(@NonNull UUID data) {
         return data.toString();
     }
 
-    public UUID deserialize(String data) {
-        if (data == null) {
-            return null;
-        }
-
+    @Nullable
+    public UUID deserialize(@NonNull String data) {
         return UUID.fromString(data);
     }
 

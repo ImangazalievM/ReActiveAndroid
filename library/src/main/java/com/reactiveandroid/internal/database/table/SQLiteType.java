@@ -43,15 +43,6 @@ public enum SQLiteType {
         }
     };
 
-    public static SQLiteType getTypeByName(String name) {
-        for (SQLiteType type : values()) {
-            if (type.name.equals(name)) {
-                return type;
-            }
-        }
-        return null;
-    }
-
     public static boolean containsType(Class<?> type) {
         return TYPE_MAP.containsKey(type);
     }

@@ -1,4 +1,4 @@
-package com.reactiveandroid.sample.models;
+package com.reactiveandroid.sample.mvp.models;
 
 import android.support.annotation.NonNull;
 
@@ -28,6 +28,7 @@ public class Note extends Model {
     private Date updatedAt;
     private List<Folder> folders;
 
+    //ReActiveAndroid requires empty constructor
     public Note() {
     }
 
@@ -87,4 +88,5 @@ public class Note extends Model {
         updatedAt = new Date();
         return super.save();
     }
+
 }

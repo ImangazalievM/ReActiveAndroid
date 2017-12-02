@@ -24,7 +24,7 @@ public class DataBaseTestRule implements TestRule {
                         .build();
 
                 ReActiveAndroid.init(new ReActiveConfig.Builder(TestUtils.getApplication())
-                        .addDatabaseConfig(testDatabaseConfig)
+                        .addDatabaseConfigs(testDatabaseConfig)
                         .build());
                 try {
                     base.evaluate();

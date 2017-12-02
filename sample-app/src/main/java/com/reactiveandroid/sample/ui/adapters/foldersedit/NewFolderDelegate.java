@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 
 import com.hannesdorfmann.adapterdelegates3.AdapterDelegate;
 import com.reactiveandroid.sample.R;
-import com.reactiveandroid.sample.models.Folder;
+import com.reactiveandroid.sample.mvp.models.Folder;
 
 import java.util.List;
 

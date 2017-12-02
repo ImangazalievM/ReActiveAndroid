@@ -28,6 +28,26 @@ public class TestModel extends Model {
 
     public int nonColumnField;
 
+    public TestModel() {
+    }
+
+    public TestModel(Long id) {
+        this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return "TestModel{" +
+                "id=" + id +
+                ", dateField=" + dateField +
+                ", stringField='" + stringField + '\'' +
+                ", doubleField=" + doubleField +
+                ", intField=" + intField +
+                ", booleanField=" + booleanField +
+                ", nonColumnField=" + nonColumnField +
+                '}';
+    }
+
     public static List<TestModel> createEmptyModels(int count) {
         ArrayList<TestModel> models = new ArrayList<>();
         for (int i = 0; i < count; i++) {

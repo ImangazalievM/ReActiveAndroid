@@ -2,7 +2,6 @@ package com.reactiveandroid.query;
 
 import android.database.Cursor;
 
-import com.reactiveandroid.ReActiveAndroid;
 import com.reactiveandroid.internal.utils.QueryUtils;
 
 import java.util.List;
@@ -14,8 +13,9 @@ public abstract class ResultQueryBase<TableClass> extends QueryBase<TableClass> 
 
     private boolean disableCacheForThisQuery = false;
 
-    public void disableCaching() {
+    public ResultQueryBase disableCaching() {
         this.disableCacheForThisQuery = true;
+        return this;
     }
 
     public ResultQueryBase(Query parent, Class<TableClass> table) {
@@ -23,11 +23,11 @@ public abstract class ResultQueryBase<TableClass> extends QueryBase<TableClass> 
     }
 
     public List<TableClass> fetch() {
-        return QueryUtils.rawQuery(table, getSql(), getArgs(), disableCacheForThisQuery);
+        return QueryUtils.fetchModels(table, getSql(), getArgs(), disableCacheForThisQuery);
     }
 
     public TableClass fetchSingle() {
-        List<TableClass> results = QueryUtils.rawQuery(table, getSingleSql(), getArgs(), disableCacheForThisQuery);
+        List<TableClass> results = QueryUtils.fetchModels(table, getSingleSql(), getArgs(), disableCacheForThisQuery);
         if (!results.isEmpty()) {
             return results.get(0);
         }
@@ -35,11 +35,11 @@ public abstract class ResultQueryBase<TableClass> extends QueryBase<TableClass> 
     }
 
     public <CustomClass> List<CustomClass> fetchCustom(Class<CustomClass> customType) {
-        return QueryUtils.rawQueryCustom(customType, getSql(), getArgs());
+        return QueryUtils.fetchQueryModels(customType, getSql(), getArgs());
     }
 
     public <CustomClass> CustomClass fetchCustomSingle(Class<CustomClass> customType) {
-        List<CustomClass> results = QueryUtils.rawQueryCustom(customType, getSingleSql(), getArgs());
+        List<CustomClass> results = QueryUtils.fetchQueryModels(customType, getSingleSql(), getArgs());
         if (!results.isEmpty()) {
             return results.get(0);
         }
@@ -47,7 +47,7 @@ public abstract class ResultQueryBase<TableClass> extends QueryBase<TableClass> 
     }
 
     public Cursor fetchCursor() {
-        return ReActiveAndroid.getWritableDatabaseForTable(table).rawQuery(getSql(), getArgs());
+        return  QueryUtils.rawQueryForTable(table, getSql(), getArgs());
     }
 
     public Single<List<TableClass>> fetchAsync() {

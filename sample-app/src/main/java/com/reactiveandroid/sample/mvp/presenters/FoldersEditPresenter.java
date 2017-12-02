@@ -2,11 +2,10 @@ package com.reactiveandroid.sample.mvp.presenters;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
-import com.reactiveandroid.internal.notifications.OnModelChangedListener;
 import com.reactiveandroid.query.Delete;
 import com.reactiveandroid.query.Select;
-import com.reactiveandroid.sample.models.Folder;
-import com.reactiveandroid.sample.models.Note;
+import com.reactiveandroid.sample.mvp.models.Folder;
+import com.reactiveandroid.sample.mvp.models.Note;
 import com.reactiveandroid.sample.mvp.views.FoldersEditView;
 
 import java.util.List;

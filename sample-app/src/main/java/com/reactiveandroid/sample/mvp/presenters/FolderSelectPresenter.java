@@ -4,9 +4,9 @@ import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import com.reactiveandroid.query.Delete;
 import com.reactiveandroid.query.Select;
-import com.reactiveandroid.sample.models.Folder;
-import com.reactiveandroid.sample.models.Note;
-import com.reactiveandroid.sample.models.NoteFolderRelation;
+import com.reactiveandroid.sample.mvp.models.Folder;
+import com.reactiveandroid.sample.mvp.models.Note;
+import com.reactiveandroid.sample.mvp.models.NoteFolderRelation;
 import com.reactiveandroid.sample.mvp.views.AddToFoldersView;
 
 import java.util.List;

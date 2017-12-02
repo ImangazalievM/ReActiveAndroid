@@ -3,7 +3,7 @@ package com.reactiveandroid.sample.ui.adapters.foldersedit;
 import android.content.Context;
 
 import com.hannesdorfmann.adapterdelegates3.ListDelegationAdapter;
-import com.reactiveandroid.sample.models.Folder;
+import com.reactiveandroid.sample.mvp.models.Folder;
 
 import java.util.List;
 

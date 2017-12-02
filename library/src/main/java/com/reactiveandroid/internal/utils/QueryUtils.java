@@ -1,15 +1,14 @@
 package com.reactiveandroid.internal.utils;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 
-import com.reactiveandroid.internal.QueryModelAdapter;
 import com.reactiveandroid.ReActiveAndroid;
 import com.reactiveandroid.internal.ModelAdapter;
+import com.reactiveandroid.internal.QueryModelAdapter;
+import com.reactiveandroid.internal.cache.ModelCache;
 import com.reactiveandroid.internal.database.DatabaseInfo;
 import com.reactiveandroid.internal.database.table.TableInfo;
-import com.reactiveandroid.internal.cache.ModelCache;
 import com.reactiveandroid.internal.log.LogLevel;
 import com.reactiveandroid.internal.log.ReActiveLog;
 
@@ -29,21 +28,30 @@ public class QueryUtils {
     }
 
     @NonNull
-    public static <TableClass> List<TableClass> rawQuery(Class<TableClass> table,
-                                                         String sql, String[] selectionArgs,
-                                                         boolean disableCacheForThisQuery) {
-        SQLiteDatabase database = ReActiveAndroid.getWritableDatabaseForTable(table);
-        Cursor cursor = database.rawQuery(sql, selectionArgs);
+    public static Cursor rawQuery(Class<?> database, String sql, String[] selectionArgs) {
+        return ReActiveAndroid.getDatabase(database).getWritableDatabase().rawQuery(sql, selectionArgs);
+    }
+
+    @NonNull
+    public static Cursor rawQueryForTable(Class<?> table, String sql, String[] selectionArgs) {
+        return ReActiveAndroid.getWritableDatabaseForTable(table).rawQuery(sql, selectionArgs);
+    }
+
+    @NonNull
+    public static <TableClass> List<TableClass> fetchModels(Class<TableClass> table,
+                                                            String sql, String[] selectionArgs,
+                                                            boolean disableCacheForThisQuery) {
+        Cursor cursor = rawQueryForTable(table, sql, selectionArgs);
         List<TableClass> entities = processCursor(table, cursor, disableCacheForThisQuery);
         cursor.close();
         return entities;
     }
 
     @NonNull
-    public static <CustomClass> List<CustomClass> rawQueryCustom(Class<CustomClass> customType,
-                                                                 String sql, String[] selectionArgs) {
+    public static <CustomClass> List<CustomClass> fetchQueryModels(Class<CustomClass> customType,
+                                                                   String sql, String[] selectionArgs) {
         DatabaseInfo databaseInfo = ReActiveAndroid.getDatabaseForTable(customType);
-        QueryModelAdapter<CustomClass> queryModelAdapter = databaseInfo.getQueryModelManager(customType);
+        QueryModelAdapter<CustomClass> queryModelAdapter = databaseInfo.getQueryModelAdapter(customType);
         Cursor cursor = databaseInfo.getWritableDatabase().rawQuery(sql, selectionArgs);
         cursor.moveToFirst();
         List<CustomClass> entities = new ArrayList<>();
@@ -58,29 +66,35 @@ public class QueryUtils {
     private static <TableClass> List<TableClass> processCursor(Class<TableClass> table,
                                                                Cursor cursor,
                                                                boolean disableCacheForThisQuery) {
-        ModelAdapter modelAdapter = ReActiveAndroid.getTableManager(table);
+        ModelAdapter modelAdapter = ReActiveAndroid.getModelAdapter(table);
         TableInfo tableInfo = modelAdapter.getTableInfo();
         ModelCache modelCache = modelAdapter.getModelCache();
         String idName = tableInfo.getPrimaryKeyColumnName();
         List<TableClass> entities = new ArrayList<>();
 
+        if (cursor.moveToFirst()) {
+            int idColumnIndex = cursor.getColumnIndex(idName);
+            do {
+                long entityId = cursor.getLong(idColumnIndex);
+                TableClass entity = tableInfo.isCachingEnabled() ? (TableClass) modelCache.get(entityId) : null;
+                if (entity == null) {
+                    entity = createModelInstance(table);
+                    modelAdapter.loadFromCursor(entity, cursor);
+                    entities.add(entity);
+
+                    if (!disableCacheForThisQuery) {
+                        modelCache.addModel(entityId, entity);
+                    }
+                }
+            } while (cursor.moveToNext());
+        }
+        return entities;
+    }
+
+    private static <TableClass> TableClass createModelInstance(Class<TableClass> table) {
         try {
             Constructor<TableClass> entityConstructor = table.getConstructor();
-            if (cursor.moveToFirst()) {
-                int idColumnIndex = cursor.getColumnIndex(idName);
-                do {
-                    long entityId = cursor.getLong(idColumnIndex);
-                    TableClass entity = tableInfo.isCachingEnabled() ? (TableClass) modelCache.get(entityId) : null;
-                    if (entity == null) {
-                        entity = entityConstructor.newInstance();
-                        modelAdapter.loadFromCursor(entity, cursor);
-                        entities.add(entity);
-                        if (!disableCacheForThisQuery) {
-                            modelCache.addModel(entityId, entity);
-                        }
-                    }
-                } while (cursor.moveToNext());
-            }
+            return entityConstructor.newInstance();
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(
                     "Your model " + table.getName() + " does not define a default " +
@@ -92,8 +106,7 @@ public class QueryUtils {
         } catch (Exception e) {
             ReActiveLog.e(LogLevel.BASIC, "Failed to process cursor.", e);
         }
-
-        return entities;
+        return null;
     }
 
 }

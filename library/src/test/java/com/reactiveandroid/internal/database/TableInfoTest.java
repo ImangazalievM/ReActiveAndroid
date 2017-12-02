@@ -44,8 +44,8 @@ public class TableInfoTest extends BaseTest {
 
     @Test
     public void testGetFields() {
-        assertEquals(6, testTableInfo.getFields().size());
-        assertEquals(4, categoryTestTableInfo.getFields().size());
+        assertEquals(6, testTableInfo.getColumnFields().size());
+        assertEquals(4, categoryTestTableInfo.getColumnFields().size());
     }
 
     @Test

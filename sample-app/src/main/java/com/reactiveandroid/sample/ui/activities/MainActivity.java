@@ -1,8 +1,6 @@
 package com.reactiveandroid.sample.ui.activities;
 
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -13,7 +11,7 @@ import android.view.View;
 import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.reactiveandroid.sample.R;
-import com.reactiveandroid.sample.models.Note;
+import com.reactiveandroid.sample.mvp.models.Note;
 import com.reactiveandroid.sample.mvp.presenters.NotesListPresenter;
 import com.reactiveandroid.sample.mvp.views.NotesListView;
 import com.reactiveandroid.sample.ui.adapters.NotesAdapter;

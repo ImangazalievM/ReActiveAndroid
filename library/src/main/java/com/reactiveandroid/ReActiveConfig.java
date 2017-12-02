@@ -28,8 +28,10 @@ public class ReActiveConfig {
             this.databaseConfigMap = new HashMap<>();
         }
 
-        public Builder addDatabaseConfig(@NonNull DatabaseConfig databaseConfig) {
-            databaseConfigMap.put(databaseConfig.databaseClass, databaseConfig);
+        public Builder addDatabaseConfigs(@NonNull DatabaseConfig... configs) {
+            for (DatabaseConfig config : configs) {
+                databaseConfigMap.put(config.databaseClass, config);
+            }
             return this;
         }
 

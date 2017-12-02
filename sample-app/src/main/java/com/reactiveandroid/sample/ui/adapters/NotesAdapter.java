@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.reactiveandroid.sample.R;
-import com.reactiveandroid.sample.models.Note;
+import com.reactiveandroid.sample.mvp.models.Note;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

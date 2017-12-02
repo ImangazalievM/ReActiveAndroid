@@ -1,8 +1,9 @@
 
 package com.reactiveandroid.internal.utils;
 
-import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+
+import com.reactiveandroid.ReActiveAndroid;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -11,16 +12,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class AssetsSqlMigation {
+public class AssetsSqlMigration {
 
-    public final static int STATE_NONE = 0;
-    public final static int STATE_STRING = 1;
-    public final static int STATE_COMMENT = 2;
-    public final static int STATE_COMMENT_BLOCK = 3;
+    private final static int STATE_NONE = 0;
+    private final static int STATE_STRING = 1;
+    private final static int STATE_COMMENT = 2;
+    private final static int STATE_COMMENT_BLOCK = 3;
 
-    private void executeSqlScript(SQLiteDatabase db, Context context, String sqlFilePath) {
+    public static void executeSqlScript(SQLiteDatabase db, String sqlFilePath) {
         try {
-            List<String> commands = parse(context.getAssets().open(sqlFilePath));
+            List<String> commands = parse(ReActiveAndroid.getContext().getAssets().open(sqlFilePath));
             for (String command : commands) {
                 db.execSQL(command);
             }
@@ -46,33 +47,26 @@ public class AssetsSqlMigation {
                         state = STATE_NONE;
                     }
                     continue;
-
                 } else if (state == STATE_COMMENT) {
                     if (isNewLine(c)) {
                         state = STATE_NONE;
                     }
                     continue;
-
                 } else if (state == STATE_NONE && tokenizer.skip("/*")) {
                     state = STATE_COMMENT_BLOCK;
                     continue;
-
                 } else if (state == STATE_NONE && tokenizer.skip("--")) {
                     state = STATE_COMMENT;
                     continue;
-
                 } else if (state == STATE_NONE && c == ';') {
                     final String command = sb.toString().trim();
                     commands.add(command);
                     sb.setLength(0);
                     continue;
-
                 } else if (state == STATE_NONE && c == '\'') {
                     state = STATE_STRING;
-
                 } else if (state == STATE_STRING && c == '\'') {
                     state = STATE_NONE;
-
                 }
 
                 if (state == STATE_NONE || state == STATE_STRING) {

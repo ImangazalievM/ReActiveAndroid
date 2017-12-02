@@ -1,22 +1,19 @@
 package com.reactiveandroid.internal.serializer;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import java.io.File;
 
 public final class FileSerializer extends TypeSerializer<File, String> {
 
-    public String serialize(File data) {
-        if (data == null) {
-            return null;
-        }
-
+    @Nullable
+    public String serialize(@NonNull File data) {
         return data.toString();
     }
 
-    public File deserialize(String data) {
-        if (data == null) {
-            return null;
-        }
-
+    @Nullable
+    public File deserialize(@NonNull String data) {
         return new File(data);
     }
 

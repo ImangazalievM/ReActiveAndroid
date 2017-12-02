@@ -25,17 +25,16 @@ In the plans:
 - SQL Cipher support
 - AutoValue support
 
-# Usage
 
-## Gradle dependency
+## Installation
 
 Add this to your app **build.gradle**:
 
 ```gradle
-compile 'com.reactiveandroid:reactiveandroid:1.1.0'
+compile 'com.reactiveandroid:reactiveandroid:1.2.1'
 ```
 
-## Initial setup
+## Initial setup and usage
 
 First, we need to create a database class:
 
@@ -94,7 +93,7 @@ In the `@Table` annotation we specify the name of the table, as well as the clas
 Next, we need to initialize the library in the `onCreate` method of the Application class:
 
 ```java
-DatabaseConfig appDatabase = new DatabaseConfig.Builder(MainActivity.AppDatabase.class)
+DatabaseConfig appDatabase = new DatabaseConfig.Builder(AppDatabase.class)
         .build();
 
 ReActiveAndroid.init(new ReActiveConfig.Builder(this)
@@ -137,9 +136,9 @@ Delete.from(Note.class).where("id = ?", 1).execute();
 
 ## Documentation
 
-More information about the library's features can be found in our [Wiki](https://github.com/ImangazalievM/ReActiveAndroid/wiki).
+More information about the library features can be found in ReActiveAndroid [documentation](https://imangazalievm.gitbooks.io/reactiveandroid/content/).
 
-# License
+## License
 
 ```
 The MIT License

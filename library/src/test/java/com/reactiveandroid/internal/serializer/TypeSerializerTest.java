@@ -1,5 +1,8 @@
 package com.reactiveandroid.internal.serializer;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import com.reactiveandroid.test.BaseTest;
 
 import org.junit.Test;
@@ -28,13 +31,15 @@ public class TypeSerializerTest extends BaseTest {
 
     private class TestDeserializer extends TypeSerializer<Date, Long> {
 
+        @Nullable
         @Override
-        public Long serialize(Date data) {
+        public Long serialize(@NonNull Date data) {
             return null;
         }
 
+        @Nullable
         @Override
-        public Date deserialize(Long data) {
+        public Date deserialize(@NonNull Long data) {
             return null;
         }
 
@@ -42,13 +47,15 @@ public class TypeSerializerTest extends BaseTest {
 
     private class IncorrectTestDeserializer extends TypeSerializer {
 
+        @Nullable
         @Override
-        public Date serialize(Object data) {
+        public Date serialize(@NonNull Object data) {
             return null;
         }
 
+        @Nullable
         @Override
-        public Long deserialize(Object data) {
+        public Long deserialize(@NonNull Object data) {
             return null;
         }
 

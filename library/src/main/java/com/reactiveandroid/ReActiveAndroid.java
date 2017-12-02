@@ -7,17 +7,22 @@ import android.support.annotation.Nullable;
 
 import com.reactiveandroid.internal.database.DatabaseConfig;
 import com.reactiveandroid.internal.database.DatabaseInfo;
-import com.reactiveandroid.internal.database.table.QueryTableInfo;
+import com.reactiveandroid.internal.database.table.QueryModelInfo;
 import com.reactiveandroid.internal.database.table.TableInfo;
 import com.reactiveandroid.internal.ModelAdapter;
 import com.reactiveandroid.internal.QueryModelAdapter;
 import com.reactiveandroid.internal.log.LogLevel;
 import com.reactiveandroid.internal.log.ReActiveLog;
+import com.reactiveandroid.internal.notifications.ModelChangeNotifier;
+import com.reactiveandroid.internal.notifications.OnModelChangedListener;
+import com.reactiveandroid.internal.notifications.OnTableChangedListener;
 import com.reactiveandroid.internal.serializer.TypeSerializer;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 
 public final class ReActiveAndroid {
 
@@ -52,8 +57,8 @@ public final class ReActiveAndroid {
                 tableDatabaseMap.put(tableInfo.getModelClass(), reActiveDatabase);
             }
 
-            for (QueryTableInfo queryTableInfo : reActiveDatabase.getQueryTableInfos()) {
-                tableDatabaseMap.put(queryTableInfo.getModelClass(), reActiveDatabase);
+            for (QueryModelInfo queryModelInfo : reActiveDatabase.getQueryModelInfos()) {
+                tableDatabaseMap.put(queryModelInfo.getModelClass(), reActiveDatabase);
             }
         }
 
@@ -138,8 +143,8 @@ public final class ReActiveAndroid {
      * @return {@link ModelAdapter} for specified table
      */
     @NonNull
-    public static ModelAdapter getTableManager(Class<?> table) {
-        return getDatabaseForTable(table).getTableManager(table);
+    public static ModelAdapter getModelAdapter(Class<?> table) {
+        return getDatabaseForTable(table).getModelAdapter(table);
     }
 
     /**
@@ -147,8 +152,8 @@ public final class ReActiveAndroid {
      * @return {@link QueryModelAdapter} for specified table
      */
     @NonNull
-    public static QueryModelAdapter getQueryTableManager(Class<?> table) {
-        return getDatabaseForTable(table).getQueryModelManager(table);
+    public static QueryModelAdapter getQueryModelAdapter(Class<?> table) {
+        return getDatabaseForTable(table).getQueryModelAdapter(table);
     }
 
     /**
@@ -177,6 +182,26 @@ public final class ReActiveAndroid {
     @NonNull
     public static String getTableName(Class<?> table) {
         return getDatabaseForTable(table).getTableInfo(table).getTableName();
+    }
+
+    public static <T> void registerForModelChanges(@NonNull Class<T> table,
+                                                   @NonNull OnModelChangedListener<T> listener) {
+        ModelChangeNotifier.get().registerForModelChanges(table, listener);
+    }
+
+    public static <T> void unregisterForModelStateChanges(@NonNull Class<T> table,
+                                                          @NonNull OnModelChangedListener<T> listener) {
+        ModelChangeNotifier.get().unregisterForModelStateChanges(table, listener);
+    }
+
+    public <T> void registerForTableChanges(@NonNull Class<T> table,
+                                            @NonNull OnTableChangedListener listener) {
+        ModelChangeNotifier.get().registerForTableChanges(table, listener);
+    }
+
+    public <T> void unregisterForTableChanges(@NonNull Class<T> table,
+                                              @NonNull OnTableChangedListener listener) {
+        ModelChangeNotifier.get().unregisterForTableChanges(table, listener);
     }
 
 }

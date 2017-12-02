@@ -19,7 +19,7 @@ public class ReActiveAndroidTest extends BaseTest {
     public void testGetTableInfos() {
         assertNotNull(ReActiveAndroid.getContext());
         Collection<TableInfo> tableInfos = ReActiveAndroid.getDatabaseTablesInfos(TestDatabase.class);
-        assertEquals(10, tableInfos.size());
+        assertEquals(13, tableInfos.size());
 
         TableInfo testModelTableInfo = ReActiveAndroid.getTableInfo(CacheTestModel.class);
         assertNotNull(testModelTableInfo);

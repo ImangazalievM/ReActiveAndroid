@@ -4,13 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
-import android.view.Menu;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.reactiveandroid.sample.R;
-import com.reactiveandroid.sample.models.Folder;
+import com.reactiveandroid.sample.mvp.models.Folder;
 import com.reactiveandroid.sample.mvp.presenters.FolderSelectPresenter;
 import com.reactiveandroid.sample.mvp.views.AddToFoldersView;
 import com.reactiveandroid.sample.ui.adapters.FoldersSelectAdapter;

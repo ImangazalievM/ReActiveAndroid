@@ -1,6 +1,7 @@
 package com.reactiveandroid.query;
 
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 
 import com.reactiveandroid.test.BaseTest;
 import com.reactiveandroid.test.TestUtils;
@@ -99,28 +100,6 @@ public class SelectTest extends BaseTest {
     }
 
     @Test
-    public void testExecuteCursorOnSelectQuery() {
-        List<TestModel> models = TestModel.createFilledModels(10);
-        TestUtils.saveModels(models);
-
-        Cursor cursor = Select.from(TestModel.class).fetchCursor();
-
-        assertEquals(6, cursor.getColumnCount());
-        assertEquals(10, cursor.getCount());
-    }
-
-    @Test
-    public void testFetchCurorWithSpecifiedColumns() {
-        List<TestModel> models = TestModel.createFilledModels(10);
-        TestUtils.saveModels(models);
-
-        Cursor cursor = Select.columns("id", "stringField").from(TestModel.class).fetchCursor();
-
-        assertEquals(2, cursor.getColumnCount());
-        assertEquals(10, cursor.getCount());
-    }
-
-    @Test
     public void testAllOperators() {
         final String expectedSql = SELECT_PREFIX + "AS a JOIN JoinModelCustomer USING (id) WHERE id > 5 GROUP BY id HAVING id < 10 LIMIT 5 OFFSET 10";
 
@@ -134,6 +113,53 @@ public class SelectTest extends BaseTest {
                 .having("id < 10")
                 .limit(5)
                 .offset(10));;
+    }
+
+    @Test
+    public void testFetchCursor() {
+        List<TestModel> models = TestModel.createFilledModels(10);
+        TestUtils.saveModels(models);
+
+        Cursor cursor = Select.from(TestModel.class).fetchCursor();
+
+        assertEquals(6, cursor.getColumnCount());
+        assertEquals(10, cursor.getCount());
+    }
+
+    @Test
+    public void testFetchCursorWithSpecifiedColumns() {
+        List<TestModel> models = TestModel.createFilledModels(10);
+        TestUtils.saveModels(models);
+
+        Cursor cursor = Select.columns("id", "stringField").from(TestModel.class).fetchCursor();
+
+        assertEquals(2, cursor.getColumnCount());
+        assertEquals(10, cursor.getCount());
+    }
+
+    @Test
+    public void testFetch() {
+        for (int i = 0; i < 10; i++) {
+            TestModel model = new TestModel();
+            model.stringField = "Random text";
+            model.save();
+        }
+
+        List<TestModel> resultModels = Select.from(TestModel.class).fetch();
+
+        assertEquals(10, resultModels.size());
+    }
+
+    @Test
+    public void testFetchSelectSingle() {
+        TestModel model = new TestModel();
+        model.stringField = "Random text";
+        model.save();
+
+        TestModel resultModel = Select.from(TestModel.class).fetchSingle();
+
+        assertEquals(model.id, resultModel.id);
+        assertEquals(model.stringField, resultModel.stringField);
     }
 
     private Select.From from() {

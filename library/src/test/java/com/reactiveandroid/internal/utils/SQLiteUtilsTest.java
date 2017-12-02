@@ -26,7 +26,7 @@ public class SQLiteUtilsTest extends BaseTest {
         DatabaseInfo testDatabase = ReActiveAndroid.getDatabase(TestDatabase.class);
         List<String> tableNames = SQLiteUtils.getAllTableNames(testDatabase.getWritableDatabase());
 
-        assertEquals(10, tableNames.size());
+        assertEquals(13, tableNames.size());
         assertTrue(tableNames.contains("TestModel") && tableNames.contains("Categories"));
         assertFalse(tableNames.contains(ReActiveMasterTable.TABLE_NAME));
     }
@@ -45,7 +45,7 @@ public class SQLiteUtilsTest extends BaseTest {
     @Test
     public void testCreateColumnDefinition() throws NoSuchFieldException {
         TableInfo testModelTableInfo = ReActiveAndroid.getTableInfo(FullTestModel.class);
-        Field idField = testModelTableInfo.getFields().get(0);
+        Field idField = testModelTableInfo.getColumnFields().get(0);
         Field stringField = FullTestModel.class.getField("stringField");
         Field booleanField = FullTestModel.class.getField("booleanField");
 

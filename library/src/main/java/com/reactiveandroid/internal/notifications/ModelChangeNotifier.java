@@ -53,7 +53,14 @@ public class ModelChangeNotifier {
             modelChangedListenerMap.put(table, listeners);
         }
         listeners.add(listener);
+    }
 
+    public <T> void unregisterForModelStateChanges(@NonNull Class<T> table,
+                                                   @NonNull OnModelChangedListener<T> listener) {
+        Set<OnModelChangedListener> listeners = modelChangedListenerMap.get(table);
+        if (listeners != null) {
+            listeners.remove(listener);
+        }
     }
 
     public <T> void registerForTableChanges(@NonNull Class<T> table,
@@ -64,14 +71,6 @@ public class ModelChangeNotifier {
             tableChangedListenerMap.put(table, listeners);
         }
         listeners.add(listener);
-    }
-
-    public <T> void unregisterForModelStateChanges(@NonNull Class<T> table,
-                                                   @NonNull OnModelChangedListener<T> listener) {
-        Set<OnModelChangedListener> listeners = modelChangedListenerMap.get(table);
-        if (listeners != null) {
-            listeners.remove(listener);
-        }
     }
 
     public <T> void unregisterForTableChanges(@NonNull Class<T> table,

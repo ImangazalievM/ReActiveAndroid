@@ -4,8 +4,8 @@ import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import com.reactiveandroid.query.Select;
-import com.reactiveandroid.sample.models.Note;
-import com.reactiveandroid.sample.models.NoteFolderRelation;
+import com.reactiveandroid.sample.mvp.models.Note;
+import com.reactiveandroid.sample.mvp.models.NoteFolderRelation;
 import com.reactiveandroid.sample.mvp.views.NoteDetailsView;
 
 import io.reactivex.Observable;

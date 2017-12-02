@@ -16,8 +16,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@Table(database = TestDatabase.class, uniqueGroups = {@UniqueGroup(groupNumber = 1),
-        @UniqueGroup(groupNumber = 2, onUniqueConflict = ConflictAction.ROLLBACK)},
+@Table(database = TestDatabase.class,
+        uniqueGroups = {
+                @UniqueGroup(groupNumber = 1),
+                @UniqueGroup(groupNumber = 2, onUniqueConflict = ConflictAction.ROLLBACK)
+        },
         indexGroups = @IndexGroup(groupNumber = 1, name = "index_1"))
 public class FullTestModel extends Model {
 
@@ -28,7 +31,6 @@ public class FullTestModel extends Model {
     @Column
     public Date dateField;
 
-    @Index
     @Unique(onUniqueConflict = ConflictAction.IGNORE)
     @Column(collate = Collate.BINARY)
     public String stringField;

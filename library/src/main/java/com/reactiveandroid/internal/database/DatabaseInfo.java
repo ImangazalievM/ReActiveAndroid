@@ -7,9 +7,8 @@ import android.support.annotation.Nullable;
 
 import com.reactiveandroid.internal.QueryModelAdapter;
 import com.reactiveandroid.internal.ModelAdapter;
-import com.reactiveandroid.internal.database.table.QueryTableInfo;
+import com.reactiveandroid.internal.database.table.QueryModelInfo;
 import com.reactiveandroid.internal.database.table.TableInfo;
-import com.reactiveandroid.internal.cache.ModelLruCache;
 import com.reactiveandroid.internal.log.LogLevel;
 import com.reactiveandroid.internal.log.ReActiveLog;
 import com.reactiveandroid.internal.serializer.CalendarSerializer;
@@ -33,8 +32,8 @@ public class DatabaseInfo {
     private ReActiveOpenHelper reActiveOpenHelper;
     private Map<Class<?>, TableInfo> tableInfos = new HashMap<>();
     private Map<Class<?>, ModelAdapter> tableManagerMap = new HashMap<>();
-    private Map<Class<?>, QueryTableInfo> queryTableInfos = new HashMap<>();
-    private Map<Class<?>, QueryModelAdapter> queryTableManagerMap = new HashMap<>();
+    private Map<Class<?>, QueryModelInfo> queryModelInfos = new HashMap<>();
+    private Map<Class<?>, QueryModelAdapter> queryModelManagerMap = new HashMap<>();
     private Map<Class<?>, TypeSerializer> typeSerializers = new HashMap<Class<?>, TypeSerializer>() {{
         put(Calendar.class, new CalendarSerializer());
         put(java.sql.Date.class, new SqlDateSerializer());
@@ -47,10 +46,8 @@ public class DatabaseInfo {
 
         //Runs tables creation
         //getWritableDatabase();
+        loadModelsInfo(context, databaseConfig);
 
-        if (!loadModelFromConfig(databaseConfig)) {
-            scanModelsInfo(context, databaseConfig.databaseClass);
-        }
 
         ReActiveLog.i(LogLevel.BASIC, "Tables info for database " + databaseConfig.databaseName + " loaded.");
     }
@@ -65,14 +62,22 @@ public class DatabaseInfo {
         return reActiveOpenHelper.getWritableDatabase();
     }
 
+    public void beginTransaction() {
+        reActiveOpenHelper.getWritableDatabase().beginTransaction();
+    }
+
+    public void endTransaction() {
+        reActiveOpenHelper.getWritableDatabase().endTransaction();
+    }
+
     @NonNull
     public Collection<TableInfo> getTableInfos() {
         return tableInfos.values();
     }
 
     @NonNull
-    public Collection<QueryTableInfo> getQueryTableInfos() {
-        return queryTableInfos.values();
+    public Collection<QueryModelInfo> getQueryModelInfos() {
+        return queryModelInfos.values();
     }
 
     @NonNull
@@ -85,7 +90,7 @@ public class DatabaseInfo {
     }
 
     @NonNull
-    public ModelAdapter getTableManager(Class<?> table) {
+    public ModelAdapter getModelAdapter(Class<?> table) {
         ModelAdapter modelAdapter = tableManagerMap.get(table);
         if (modelAdapter == null) {
             throw new IllegalArgumentException("Cannot find TableManager for " + table.getName());
@@ -94,8 +99,8 @@ public class DatabaseInfo {
     }
 
     @NonNull
-    public QueryModelAdapter getQueryModelManager(Class<?> table) {
-        QueryModelAdapter queryModelAdapter = queryTableManagerMap.get(table);
+    public QueryModelAdapter getQueryModelAdapter(Class<?> table) {
+        QueryModelAdapter queryModelAdapter = queryModelManagerMap.get(table);
         if (queryModelAdapter == null) {
             throw new IllegalArgumentException("Cannot find TableManager for " + table.getName());
         }
@@ -135,21 +140,37 @@ public class DatabaseInfo {
         return true;
     }
 
-    private void scanModelsInfo(Context context, Class<?> databaseClass) {
-        List<Class> allClasses = ReflectionUtils.getAllClasses(context);
-        List<Class> tableClasses = ReflectionUtils.getDatabaseModelClasses(allClasses, databaseClass);
-        List<Class> queryTableClasses = ReflectionUtils.getDatabaseQueryModelClasses(allClasses, databaseClass);
-
-        for (Class tableClass : tableClasses) {
-            TableInfo tableInfo = new TableInfo(tableClass, typeSerializers);
-            tableInfos.put(tableClass, tableInfo);
-            tableManagerMap.put(tableClass, new ModelAdapter(tableInfo, new ModelLruCache(tableInfo.getCacheSize())));
+    private void loadModelsInfo(Context context, DatabaseConfig databaseConfig) {
+        List<Class<?>> allClasses;
+        if (!databaseConfig.modelClasses.isEmpty()) {
+            allClasses = databaseConfig.modelClasses;
+        } else {
+            allClasses = ReflectionUtils.getAllClasses(context);
         }
 
-        for (Class queryTableClass : queryTableClasses) {
-            QueryTableInfo queryTableInfo = new QueryTableInfo(queryTableClass, typeSerializers);
-            queryTableInfos.put(queryTableClass, queryTableInfo);
-            queryTableManagerMap.put(queryTableClass, new QueryModelAdapter(queryTableInfo));
+        Class<?> databaseClass = databaseConfig.databaseClass;
+        List<Class<?>> modelClasses = ReflectionUtils.getDatabaseTableClasses(allClasses, databaseClass);
+        List<Class<?>> queryModelClasses = ReflectionUtils.getDatabaseQueryModelClasses(allClasses, databaseClass);
+
+        createTablesInfo(modelClasses);
+
+        createQueryModelsInfo(queryModelClasses);
+    }
+
+
+    private void createTablesInfo(List<Class<?>> tableClasses) {
+        for (Class<?> tableClass : tableClasses) {
+            TableInfo tableInfo = new TableInfo(tableClass, typeSerializers);
+            tableInfos.put(tableClass, tableInfo);
+            tableManagerMap.put(tableClass, new ModelAdapter(tableInfo));
+        }
+    }
+
+    private void createQueryModelsInfo(List<Class<?>> queryModelClasses) {
+        for (Class<?> queryModelClass : queryModelClasses) {
+            QueryModelInfo queryModelInfo = new QueryModelInfo(queryModelClass, typeSerializers);
+            queryModelInfos.put(queryModelClass, queryModelInfo);
+            queryModelManagerMap.put(queryModelClass, new QueryModelAdapter(queryModelInfo));
         }
     }
 

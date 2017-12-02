@@ -30,7 +30,6 @@
                 android:id="@+id/note_title"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_alignParentRight="true"
                 android:layout_weight="1"
                 android:ellipsize="end"
                 android:gravity="start|center"
@@ -45,10 +44,10 @@
                 android:id="@+id/note_updated_time"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight=".8"
+                android:layout_weight="0.8"
                 android:gravity="start|bottom"
                 android:padding="8dp"
-                android:text="Note updated time"
+                android:text="Dec 10, 2017, 8:00"
                 android:textColor="#727272"
                 android:textSize="12sp" />
         </LinearLayout>

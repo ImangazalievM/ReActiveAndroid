@@ -3,8 +3,6 @@ package com.reactiveandroid.sample.ui.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.support.annotation.Nullable;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -15,12 +13,10 @@ import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.greenfrvr.hashtagview.HashtagView;
 import com.reactiveandroid.sample.R;
-import com.reactiveandroid.sample.models.Folder;
-import com.reactiveandroid.sample.models.Note;
+import com.reactiveandroid.sample.mvp.models.Folder;
+import com.reactiveandroid.sample.mvp.models.Note;
 import com.reactiveandroid.sample.mvp.presenters.NoteDetailsPresenter;
-import com.reactiveandroid.sample.mvp.presenters.NotesListPresenter;
 import com.reactiveandroid.sample.mvp.views.NoteDetailsView;
-import com.reactiveandroid.sample.mvp.views.NotesListView;
 
 public class NoteDetailsActivity extends MvpAppCompatActivity implements NoteDetailsView {
 

@@ -16,7 +16,6 @@ public class MaxTest extends BaseTest {
 
     @Test
     public void testMax() {
-        cleanTable();
         populateTable();
 
         float max = Select
@@ -28,7 +27,6 @@ public class MaxTest extends BaseTest {
 
     @Test
     public void testMaxWhereClause() {
-        cleanTable();
         populateTable();
 
         float max = Select
@@ -41,7 +39,6 @@ public class MaxTest extends BaseTest {
 
     @Test
     public void testMaxEmptyResult() {
-        cleanTable();
         populateTable();
 
         float max = Select
@@ -54,7 +51,6 @@ public class MaxTest extends BaseTest {
 
     @Test
     public void testMaxOrderBy() {
-        cleanTable();
         populateTable();
 
         float max = Select
@@ -68,7 +64,6 @@ public class MaxTest extends BaseTest {
 
     @Test
     public void testMaxGroupBy() {
-        cleanTable();
         populateTable();
 
         float max = Select
@@ -79,10 +74,6 @@ public class MaxTest extends BaseTest {
         //Should return maximal value which belong to the first category in selection
         //May seem weird, just test it in an SQL browser
         assertEquals(3f, max, 0);
-    }
-
-    private void cleanTable() {
-        Delete.from(TestModel.class).execute();
     }
 
     private void populateTable() {

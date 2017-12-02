@@ -4,12 +4,12 @@ import android.util.Log;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
-import com.reactiveandroid.internal.notifications.ModelChangeNotifier;
+import com.reactiveandroid.ReActiveAndroid;
 import com.reactiveandroid.internal.notifications.OnModelChangedListener;
 import com.reactiveandroid.query.Delete;
 import com.reactiveandroid.query.Select;
 import com.reactiveandroid.sample.Constants;
-import com.reactiveandroid.sample.models.Note;
+import com.reactiveandroid.sample.mvp.models.Note;
 import com.reactiveandroid.sample.mvp.views.NotesListView;
 
 import java.util.ArrayList;
@@ -44,7 +44,7 @@ public class NotesListPresenter extends MvpPresenter<NotesListView> {
             getViewState().updateNotesList(notes);
         };
 
-        ModelChangeNotifier.get().registerForModelChanges(Note.class, onNoteChangedListener);
+        ReActiveAndroid.registerForModelChanges(Note.class, onNoteChangedListener);
 
         loadNotes();
     }
@@ -52,8 +52,7 @@ public class NotesListPresenter extends MvpPresenter<NotesListView> {
     @Override
     public void onDestroy() {
         super.onDestroy();
-
-        ModelChangeNotifier.get().unregisterForModelStateChanges(Note.class, onNoteChangedListener);
+        ReActiveAndroid.unregisterForModelStateChanges(Note.class, onNoteChangedListener);
     }
 
     public void onNewNoteButtonClicked() {

@@ -4,8 +4,8 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 
-import com.reactiveandroid.Model;
 import com.reactiveandroid.annotation.Column;
+import com.reactiveandroid.annotation.QueryColumn;
 import com.reactiveandroid.annotation.QueryModel;
 import com.reactiveandroid.annotation.Table;
 import com.reactiveandroid.internal.log.LogLevel;
@@ -18,12 +18,10 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 public final class ReflectionUtils {
 
@@ -40,43 +38,31 @@ public final class ReflectionUtils {
     }
 
     public static boolean isModel(Class<?> type) {
-        return isSubclassOf(type, Model.class) && (!Modifier.isAbstract(type.getModifiers()));
+        return type.isAnnotationPresent(Table.class) && (!Modifier.isAbstract(type.getModifiers()));
     }
 
     public static boolean isTypeSerializer(Class<?> type) {
         return isSubclassOf(type, TypeSerializer.class);
     }
 
-
-    public static Set<Field> getDeclaredColumnFields(Class<?> type) {
-        Set<Field> declaredColumnFields = new LinkedHashSet<>();
-        Field[] fields = type.getDeclaredFields();
-        Arrays.sort(fields, new Comparator<Field>() {
-            @Override
-            public int compare(Field field1, Field field2) {
-                return field2.getName().compareTo(field1.getName());
-            }
-        });
-
-        for (Field field : fields) {
-            if (field.isAnnotationPresent(Column.class)) {
-                declaredColumnFields.add(field);
-            }
-        }
+    public static List<Field> getDeclaredFields(Class<?> type) {
+        List<Field> declaredFields = new ArrayList<>();
+        Collections.addAll(declaredFields, type.getDeclaredFields());
 
         Class<?> parentType = type.getSuperclass();
-        if (parentType != null) {
-            declaredColumnFields.addAll(getDeclaredColumnFields(parentType));
+        while (parentType != null) {
+            Collections.addAll(declaredFields, parentType.getDeclaredFields());
+            parentType = parentType.getSuperclass();
         }
-        return declaredColumnFields;
+        return declaredFields;
     }
 
-    public static List<Class> getDatabaseModelClasses(List<Class> allClasses, Class<?> databaseClass) {
-        List<Class> modelClasses = new ArrayList<>();
-        for (Class modelClass : allClasses) {
+    public static List<Class<?>> getDatabaseTableClasses(List<Class<?>> allClasses, Class<?> databaseClass) {
+        List<Class<?>> modelClasses = new ArrayList<>();
+        for (Class<?> modelClass : allClasses) {
             if (isModel(modelClass)) {
                 ReActiveLog.e(LogLevel.BASIC, "Model loaded: " + modelClass.getSimpleName());
-                Table tableAnnotation = getTableAnnotationOrThrow(modelClass);
+                Table tableAnnotation = modelClass.getAnnotation(Table.class);
                 if (tableAnnotation.database() == databaseClass) {
                     modelClasses.add(modelClass);
                 }
@@ -86,22 +72,22 @@ public final class ReflectionUtils {
     }
 
     @NonNull
-    public static List<Class> getDatabaseQueryModelClasses(List<Class> allClasses, Class<?> databaseClass) {
-        List<Class> queryTableClasses = new ArrayList<>();
+    public static List<Class<?>> getDatabaseQueryModelClasses(List<Class<?>> allClasses, Class<?> databaseClass) {
+        List<Class<?>> queryModelClasses = new ArrayList<>();
         for (Class<?> targetClass : allClasses) {
             QueryModel queryModelAnnotation = targetClass.getAnnotation(QueryModel.class);
             if (queryModelAnnotation == null) {
                 continue;
             }
             if (queryModelAnnotation.database() == databaseClass) {
-                queryTableClasses.add(targetClass);
+                queryModelClasses.add(targetClass);
             }
         }
-        return queryTableClasses;
+        return queryModelClasses;
     }
 
     @NonNull
-    public static List<Class> getAllClasses(Context context) {
+    public static List<Class<?>> getAllClasses(Context context) {
         try {
             List<String> allClassNames = getAllClassNames(context);
             return loadClasses(context, allClassNames);
@@ -163,9 +149,9 @@ public final class ReflectionUtils {
         }
     }
 
-    private static List<Class> loadClasses(Context context, List<String> classNames) {
+    private static List<Class<?>> loadClasses(Context context, List<String> classNames) {
         String packageName = context.getPackageName();
-        List<Class> discoveredClasses = new ArrayList<>();
+        List<Class<?>> discoveredClasses = new ArrayList<>();
         for (String className : classNames) {
             try {
                 if (className.startsWith(packageName)) {
@@ -178,13 +164,6 @@ public final class ReflectionUtils {
             }
         }
         return discoveredClasses;
-    }
-
-    private static Table getTableAnnotationOrThrow(Class<?> tableClass) {
-        if (!tableClass.isAnnotationPresent(Table.class)) {
-            throw new IllegalArgumentException("Table annotation not found  in class " + tableClass.getName());
-        }
-        return tableClass.getAnnotation(Table.class);
     }
 
 }

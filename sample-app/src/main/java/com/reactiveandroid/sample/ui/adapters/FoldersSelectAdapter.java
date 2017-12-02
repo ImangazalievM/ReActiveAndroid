@@ -9,9 +9,8 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.reactiveandroid.sample.R;
-import com.reactiveandroid.sample.models.Folder;
+import com.reactiveandroid.sample.mvp.models.Folder;
 
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class FoldersSelectAdapter extends RecyclerView.Adapter<FoldersSelectAdapter.SelectFolderHolder> {

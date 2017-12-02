@@ -1,4 +1,4 @@
-package com.reactiveandroid.sample.models;
+package com.reactiveandroid.sample.mvp.models;
 
 import com.reactiveandroid.Model;
 import com.reactiveandroid.annotation.Column;
@@ -11,13 +11,13 @@ import com.reactiveandroid.sample.AppDatabase;
 public class NoteFolderRelation extends Model {
 
     @PrimaryKey
-    private Long id;
+    private long id;
     @Column(name = "note", onDelete = ForeignKeyAction.CASCADE)
     private Note note;
     @Column(name = "folder", onDelete = ForeignKeyAction.CASCADE)
     private Folder folder;
 
-
+    //ReActiveAndroid requires empty constructor
     public NoteFolderRelation() {
     }
 
