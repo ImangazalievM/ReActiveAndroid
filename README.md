@@ -11,6 +11,7 @@ New features in ReActiveAndroid in comparison with ActiveAndroid:
 - multiple databases support
 - more convenient migration mechanism
 - a new and improved syntax for creating SQL queries
+- One-to-Many relation
 - table/model change notifications
 - RxJava 2 support
 - fixed bugs and more
@@ -20,7 +21,6 @@ In the plans:
 - Annotation Processing instead Java Reflection
 - improved compatibility with Kotlin
 - composite primary key support
-- "One to Many" relation
 - inherited models
 - SQL Cipher support
 - AutoValue support
@@ -88,7 +88,7 @@ public class Note extends Model {
 }
 ```
 
-In the `@Table` annotation we specify the name of the table, as well as the class of the database in which the table belongs. Also you can crete model class without inheritance from the `Model`, but then you will not have access to the `save()` and `delete()` methods.
+In the `@Table` annotation we specify table name and the database class in which the table belongs. Also you can create a model class without inheritance from the `Model`, but then you will not have access to `save()` and `delete()` methods.
 
 Next, we need to initialize the library in the `onCreate` method of the Application class:
 
