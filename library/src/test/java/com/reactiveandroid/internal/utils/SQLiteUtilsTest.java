@@ -26,7 +26,7 @@ public class SQLiteUtilsTest extends BaseTest {
         DatabaseInfo testDatabase = ReActiveAndroid.getDatabase(TestDatabase.class);
         List<String> tableNames = SQLiteUtils.getAllTableNames(testDatabase.getWritableDatabase());
 
-        assertEquals(13, tableNames.size());
+        assertEquals(12, tableNames.size());
         assertTrue(tableNames.contains("TestModel") && tableNames.contains("Categories"));
         assertFalse(tableNames.contains(ReActiveMasterTable.TABLE_NAME));
     }

@@ -61,7 +61,7 @@ public class ReflectionUtilsTest extends BaseTest {
         List<Class<?>> testDatabaseModelClasses = ReflectionUtils.getDatabaseTableClasses(allClasses, TestDatabase.class);
         List<Class<?>> emptyDatabaseModelClasses = ReflectionUtils.getDatabaseTableClasses(allClasses, EmptyDatabase.class);
 
-        assertEquals(13, testDatabaseModelClasses.size());
+        assertEquals(12, testDatabaseModelClasses.size());
         assertEquals(0, emptyDatabaseModelClasses.size());
     }
 
