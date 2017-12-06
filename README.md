@@ -97,7 +97,7 @@ DatabaseConfig appDatabase = new DatabaseConfig.Builder(AppDatabase.class)
         .build();
 
 ReActiveAndroid.init(new ReActiveConfig.Builder(this)
-        .addDatabaseConfig(appDatabase)
+        .addDatabaseConfigs(appDatabase)
         .build());
 ```
 
