@@ -12,6 +12,7 @@ New features in ReActiveAndroid in comparison with ActiveAndroid:
 - more convenient migration mechanism
 - a new and improved syntax for creating SQL queries
 - One-to-Many relation
+- inherited models
 - table/model change notifications
 - RxJava 2 support
 - fixed bugs and more
@@ -21,7 +22,6 @@ In the plans:
 - Annotation Processing instead Java Reflection
 - improved compatibility with Kotlin
 - composite primary key support
-- inherited models
 - SQL Cipher support
 - AutoValue support
 
@@ -31,7 +31,7 @@ In the plans:
 Add this to your app **build.gradle**:
 
 ```gradle
-compile 'com.reactiveandroid:reactiveandroid:1.2.1'
+compile 'com.reactiveandroid:reactiveandroid:1.2.2'
 ```
 
 ## Initial setup and usage

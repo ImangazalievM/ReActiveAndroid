@@ -65,7 +65,7 @@ public class DatabaseConfig {
             this.modelClasses = new ArrayList<>();
             this.typeSerializers = new ArrayList<>();
             this.migrationContainer = new MigrationContainer();
-            this.requireMigration = false;
+            this.requireMigration = true;
         }
 
         public Builder addModelClasses(Class<?>... modelClasses) {
@@ -83,8 +83,8 @@ public class DatabaseConfig {
             return this;
         }
 
-        public Builder setRequireMigration(boolean requireMigration) {
-            this.requireMigration = requireMigration;
+        public Builder disableMigrationsChecking() {
+            this.requireMigration = false;
             return this;
         }
 

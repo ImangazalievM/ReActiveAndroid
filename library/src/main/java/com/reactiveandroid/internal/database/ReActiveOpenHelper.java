@@ -60,8 +60,6 @@ public final class ReActiveOpenHelper extends SQLiteOpenHelper {
                 for (Migration migration : migrations) {
                     migration.migrate(db);
                 }
-                //ToDo: addColumn validation
-                //validateMigration(db);
                 currentIdentityHash = getNewSchemaHash(databaseConfig.databaseClass);
                 updateIdentity(db);
                 migrated = true;
@@ -71,8 +69,8 @@ public final class ReActiveOpenHelper extends SQLiteOpenHelper {
             if (databaseConfig == null || databaseConfig.requireMigration) {
                 throw new IllegalStateException("A migration from " + oldVersion + " to "
                         + newVersion + " is necessary. Please provide a Migration in the builder or call"
-                        + " fallbackToDestructiveMigration in the builder in which case Room will"
-                        + " re-build all of the tables.");
+                        + " disableMigrationsChecking in the builder in which case ReActiveAndroid will"
+                        + " re-create all of the tables.");
             }
             dropAllTables(db);
             createAllTables(db);
