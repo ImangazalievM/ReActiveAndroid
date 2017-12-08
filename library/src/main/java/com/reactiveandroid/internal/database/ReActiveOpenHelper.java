@@ -122,8 +122,6 @@ public final class ReActiveOpenHelper extends SQLiteOpenHelper {
         String newDatabaseIdentityHash = getNewSchemaHash(databaseConfig.databaseClass);
 
         createMasterTableIfNotExists(db);
-        getCurrentDatabaseIdentityHash(db);
-
         currentIdentityHash = getCurrentDatabaseIdentityHash(db);
 
         //first database version
