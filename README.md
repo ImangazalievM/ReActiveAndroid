@@ -4,6 +4,10 @@
 [![minSdkVersion 14](https://img.shields.io/badge/minSdkVersion-14-blue.svg)]()
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
+<p align="center">
+  <strong>Full Documentation: <a href="https://imangazalievm.gitbooks.io/reactiveandroid">ReActiveAndroid</a></strong>
+</p>
+
 ReActiveAndroid is Android ORM based on popular library [ActiveAndroid](https://github.com/pardom/ActiveAndroid). Unfortunately, the author of the library stopped maintaining it, so I decided to continue maintain the library instead of him.
 
 New features in ReActiveAndroid in comparison with ActiveAndroid:
@@ -31,7 +35,7 @@ In the plans:
 Add this to your app **build.gradle**:
 
 ```gradle
-compile 'com.reactiveandroid:reactiveandroid:1.2.2'
+compile 'com.reactiveandroid:reactiveandroid:1.3.0'
 ```
 
 ## Initial setup and usage
@@ -133,10 +137,6 @@ Update.table(Note.class).set("title = ?", "New title").where("id = ?", 1).execut
 //deleting record
 Delete.from(Note.class).where("id = ?", 1).execute();
 ```
-
-## Documentation
-
-More information about the library features can be found in ReActiveAndroid [documentation](https://imangazalievm.gitbooks.io/reactiveandroid/content/).
 
 ## License
 
