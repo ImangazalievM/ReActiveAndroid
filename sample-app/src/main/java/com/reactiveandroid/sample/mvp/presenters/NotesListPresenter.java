@@ -15,6 +15,8 @@ import com.reactiveandroid.sample.mvp.views.NotesListView;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.schedulers.Schedulers;
+
 @InjectViewState
 public class NotesListPresenter extends MvpPresenter<NotesListView> {
 
@@ -69,8 +71,11 @@ public class NotesListPresenter extends MvpPresenter<NotesListView> {
     }
 
     public void onDeleteAllNotesClicked() {
+        Delete.from(Note.class).executeAsync()
+                .subscribeOn(Schedulers.io())
+                .subscribe();
+
         notes.clear();
-        Delete.from(Note.class).executeAsync().subscribe();
         updateNotesScreenState();
         getViewState().updateNotesList(notes);
     }
@@ -101,6 +106,7 @@ public class NotesListPresenter extends MvpPresenter<NotesListView> {
     private void loadNotes() {
         Select.from(Note.class)
                 .fetchAsync()
+                .observeOn(Schedulers.io())
                 .subscribe(this::onNotesLoaded);
     }
 

@@ -10,6 +10,8 @@ import com.reactiveandroid.sample.mvp.views.NoteDetailsView;
 
 import io.reactivex.Observable;
 import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 @InjectViewState
 public class NoteDetailsPresenter extends MvpPresenter<NoteDetailsView> {
@@ -37,7 +39,10 @@ public class NoteDetailsPresenter extends MvpPresenter<NoteDetailsView> {
             note = new Note(title, text, ColorGenerator.MATERIAL.getRandomColor());
         }
 
-        note.saveAsync().subscribe(noteId -> getViewState().showNoteSavedMessage());
+        note.saveAsync()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(noteId -> getViewState().showNoteSavedMessage());
     }
 
     public void onDeleteNoteClicked() {
@@ -46,10 +51,13 @@ public class NoteDetailsPresenter extends MvpPresenter<NoteDetailsView> {
             return;
         }
 
-        note.deleteAsync().subscribe(() -> {
-            getViewState().showNoteDeletedMessage();
-            getViewState().closeScreen();
-        });
+        note.deleteAsync()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(() -> {
+                    getViewState().showNoteDeletedMessage();
+                    getViewState().closeScreen();
+                });
     }
 
     public void onShowNoteInfoClicked() {
@@ -78,7 +86,10 @@ public class NoteDetailsPresenter extends MvpPresenter<NoteDetailsView> {
                 .zipWith(noteSingle, (folders, note) -> {
                     note.setFolders(folders);
                     return note;
-                }).subscribe(this::onNotesLoaded);
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::onNotesLoaded);
     }
 
     private void onNotesLoaded(Note note) {
