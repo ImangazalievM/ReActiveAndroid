@@ -23,7 +23,7 @@ New features in ReActiveAndroid in comparison with ActiveAndroid:
 
 In the plans:
 
-- Annotation Processing instead Java Reflection
+- Annotation Processing instead of Java Reflection
 - improved compatibility with Kotlin
 - composite primary key support
 - SQL Cipher support
