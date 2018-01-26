@@ -1,21 +1,15 @@
 package com.reactiveandroid.query;
 
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 
 import com.reactiveandroid.test.BaseTest;
-import com.reactiveandroid.test.DataBaseTestRule;
 import com.reactiveandroid.test.models.TestModel;
 
-import org.junit.Rule;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
 public class AvgTest extends BaseTest {
-
-    @Rule
-    public DataBaseTestRule dataBaseTestRule = DataBaseTestRule.create();
 
     @Test
     public void testAvg() {

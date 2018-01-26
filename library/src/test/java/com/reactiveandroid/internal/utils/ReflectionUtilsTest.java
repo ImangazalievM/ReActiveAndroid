@@ -56,7 +56,7 @@ public class ReflectionUtilsTest extends BaseTest {
     }
 
     @Test
-    public void testGetDatabaseModelClasses() throws NoSuchFieldException {
+    public void testGetDatabaseModelClasses() {
         List<Class<?>> allClasses = ReflectionUtils.getAllClasses(TestUtils.getApplication());
         List<Class<?>> testDatabaseModelClasses = ReflectionUtils.getDatabaseTableClasses(allClasses, TestDatabase.class);
         List<Class<?>> emptyDatabaseModelClasses = ReflectionUtils.getDatabaseTableClasses(allClasses, EmptyDatabase.class);
@@ -66,7 +66,7 @@ public class ReflectionUtilsTest extends BaseTest {
     }
 
     @Test
-    public void testGetDatabaseQueryModelClasses() throws NoSuchFieldException {
+    public void testGetDatabaseQueryModelClasses() {
         List<Class<?>> allClasses = ReflectionUtils.getAllClasses(TestUtils.getApplication());
         List<Class<?>> testDatabaseQueryClasses = ReflectionUtils.getDatabaseQueryModelClasses(allClasses, TestDatabase.class);
 
