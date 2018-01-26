@@ -1,1 +1,1 @@
-include ':reactiveandroid', ':sample-app'
+include ':reactiveandroid', ':sample-app', ':reactiveandroid-compiler'
