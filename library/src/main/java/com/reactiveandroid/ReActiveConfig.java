@@ -13,7 +13,7 @@ public class ReActiveConfig {
     public final Context context;
     public final Map<Class<?>, DatabaseConfig> databaseConfigMap;
 
-    public ReActiveConfig(Context context, Map<Class<?>, DatabaseConfig> databaseConfigMap) {
+    private ReActiveConfig(Context context, Map<Class<?>, DatabaseConfig> databaseConfigMap) {
         this.context = context;
         this.databaseConfigMap = databaseConfigMap;
     }

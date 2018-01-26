@@ -22,7 +22,7 @@ public class DatabaseConfig {
     public final MigrationContainer migrationContainer;
     public final boolean requireMigration;
 
-    public DatabaseConfig(Class<?> databaseClass,
+    private DatabaseConfig(Class<?> databaseClass,
                           String databaseName,
                           int databaseVersion,
                           List<Class<?>> modelClasses,
@@ -50,7 +50,7 @@ public class DatabaseConfig {
         private List<Class<?>> modelClasses;
         private List<Class<? extends TypeSerializer>> typeSerializers;
         private MigrationContainer migrationContainer;
-        private boolean requireMigration = false;
+        private boolean requireMigration;
 
         public Builder(Class<?> databaseClass) {
             if (!databaseClass.isAnnotationPresent(Database.class)) {
