@@ -30,7 +30,7 @@ import java.util.Map;
 public class DatabaseInfo {
 
     private ReActiveOpenHelper reActiveOpenHelper;
-    private Map<Class<?>, TableInfo> tableInfos = new HashMap<>();
+    private final Map<Class<?>, TableInfo> tableInfos = new HashMap<>();
     private Map<Class<?>, ModelAdapter> tableManagerMap = new HashMap<>();
     private Map<Class<?>, QueryModelInfo> queryModelInfos = new HashMap<>();
     private Map<Class<?>, QueryModelAdapter> queryModelManagerMap = new HashMap<>();
@@ -42,14 +42,17 @@ public class DatabaseInfo {
     }};
 
     public DatabaseInfo(Context context, @NonNull DatabaseConfig databaseConfig) {
-        this.reActiveOpenHelper = new ReActiveOpenHelper(context, databaseConfig);
+        loadModels(context, databaseConfig);
+        loadTypeSerializers(databaseConfig);
 
-        //Runs tables creation
-        //getWritableDatabase();
-        loadModelsInfo(context, databaseConfig);
-
+        this.reActiveOpenHelper = new ReActiveOpenHelper(context, databaseConfig, tableInfos.values());
 
         ReActiveLog.i(LogLevel.BASIC, "Tables info for database " + databaseConfig.databaseName + " loaded.");
+    }
+
+    public void initDatabase() {
+        //Runs tables creation
+        getWritableDatabase();
     }
 
     @NonNull
@@ -112,35 +115,7 @@ public class DatabaseInfo {
         return typeSerializers.get(type);
     }
 
-    private boolean loadModelFromConfig(DatabaseConfig databaseConfig) {
-        if (!databaseConfig.isValid()) {
-            return false;
-        }
-
-        List<Class<? extends TypeSerializer>> customTypeSerializers = databaseConfig.typeSerializers;
-        if (customTypeSerializers != null) {
-            for (Class<? extends TypeSerializer> typeSerializer : customTypeSerializers) {
-                try {
-                    TypeSerializer instance = typeSerializer.newInstance();
-                    typeSerializers.put(instance.getDeserializedType(), instance);
-                } catch (InstantiationException e) {
-                    ReActiveLog.e(LogLevel.BASIC, "Couldn't instantiate TypeSerializer.", e);
-                } catch (IllegalAccessException e) {
-                    ReActiveLog.e(LogLevel.BASIC, "IllegalAccessException", e);
-                }
-            }
-        }
-
-        List<Class<?>> models = databaseConfig.modelClasses;
-        if (models != null) {
-            for (Class<?> model : models) {
-                tableInfos.put(model, new TableInfo(model, typeSerializers));
-            }
-        }
-        return true;
-    }
-
-    private void loadModelsInfo(Context context, DatabaseConfig databaseConfig) {
+    private void loadModels(Context context, DatabaseConfig databaseConfig) {
         List<Class<?>> allClasses;
         if (!databaseConfig.modelClasses.isEmpty()) {
             allClasses = databaseConfig.modelClasses;
@@ -153,10 +128,25 @@ public class DatabaseInfo {
         List<Class<?>> queryModelClasses = ReflectionUtils.getDatabaseQueryModelClasses(allClasses, databaseClass);
 
         createTablesInfo(modelClasses);
-
         createQueryModelsInfo(queryModelClasses);
     }
 
+    private void loadTypeSerializers(DatabaseConfig databaseConfig) {
+        List<Class<? extends TypeSerializer>> customTypeSerializers = databaseConfig.typeSerializers;
+        if (customTypeSerializers != null) {
+            for (Class<? extends TypeSerializer> typeSerializer : customTypeSerializers) {
+                try {
+                    TypeSerializer instance = typeSerializer.newInstance();
+                    typeSerializers.put(instance.getDeserializedType(), instance);
+                } catch (InstantiationException e) {
+                    ReActiveLog.e(LogLevel.BASIC, "Couldn't instantiate TypeSerializer.", e);
+                } catch (IllegalAccessException e) {
+                    ReActiveLog.e(LogLevel.BASIC, "IllegalAccessException while instantiating "
+                            + typeSerializer.getClass().getCanonicalName(), e);
+                }
+            }
+        }
+    }
 
     private void createTablesInfo(List<Class<?>> tableClasses) {
         for (Class<?> tableClass : tableClasses) {

@@ -60,6 +60,8 @@ public final class ReActiveAndroid {
             for (QueryModelInfo queryModelInfo : reActiveDatabase.getQueryModelInfos()) {
                 tableDatabaseMap.put(queryModelInfo.getModelClass(), reActiveDatabase);
             }
+
+            reActiveDatabase.initDatabase();
         }
 
         isInitialized = true;

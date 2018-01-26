@@ -38,10 +38,6 @@ public class DatabaseConfig {
         this.requireMigration = requireMigration;
     }
 
-    public boolean isValid() {
-        return modelClasses != null && modelClasses.size() > 0;
-    }
-
     public static class Builder {
 
         private Class<?> databaseClass;
