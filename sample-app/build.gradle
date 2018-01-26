@@ -27,7 +27,7 @@ android {
 }
 
 dependencies {
-    compile project(':library')
+    compile project(':reactiveandroid')
 
     compile 'com.android.support:appcompat-v7:26.+'
     compile 'com.android.support:design:26.+'
