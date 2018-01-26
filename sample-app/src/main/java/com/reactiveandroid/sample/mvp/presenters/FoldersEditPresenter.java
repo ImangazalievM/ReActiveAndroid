@@ -24,6 +24,8 @@ public class FoldersEditPresenter extends MvpPresenter<FoldersEditView> {
     }
 
     public void onFolderCreate(String folderName) {
+        if (folders == null) return;
+
         Folder newFolder = new Folder(folderName);
         folders.add(newFolder);
         getViewState().updateFoldersList(folders);
@@ -33,6 +35,8 @@ public class FoldersEditPresenter extends MvpPresenter<FoldersEditView> {
     }
 
     public void onFolderUpdate(String folderName, int position) {
+        if (folders == null) return;
+
         Folder updatedFolder = folders.get(position);
         updatedFolder.setName(folderName);
         getViewState().updateFoldersList(folders);
@@ -42,6 +46,8 @@ public class FoldersEditPresenter extends MvpPresenter<FoldersEditView> {
     }
 
     public void onFolderDelete(int position) {
+        if (folders == null) return;
+
         Folder deletedFolder = folders.remove(position);
         getViewState().updateFoldersList(folders);
         deletedFolder.deleteAsync()
@@ -54,12 +60,10 @@ public class FoldersEditPresenter extends MvpPresenter<FoldersEditView> {
                 .fetchAsync()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::onFoldersLoaded);
-    }
-
-    private void onFoldersLoaded(List<Folder> folders) {
-        this.folders = folders;
-        getViewState().updateFoldersList(folders);
+                .subscribe(folders -> {
+                    this.folders = folders;
+                    getViewState().updateFoldersList(folders);
+                });
     }
 
     public void onDeleteAllFoldersClicked() {

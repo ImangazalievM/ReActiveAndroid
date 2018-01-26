@@ -57,6 +57,7 @@ public class FolderSelectPresenter extends MvpPresenter<AddToFoldersView> {
                 .where("id=?", noteId)
                 .fetchSingleAsync()
                 .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(note -> {
                     this.note = note;
                     loadNoteFolders();
@@ -71,6 +72,7 @@ public class FolderSelectPresenter extends MvpPresenter<AddToFoldersView> {
                 .filter(this::isNoteInFolder)
                 .toList()
                 .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(folders -> {
                     this.noteFolders = folders;
                     showFoldersList();
