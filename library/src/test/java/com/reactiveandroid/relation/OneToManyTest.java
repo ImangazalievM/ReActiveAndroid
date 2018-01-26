@@ -1,6 +1,5 @@
 package com.reactiveandroid.relation;
 
-import com.reactiveandroid.query.Delete;
 import com.reactiveandroid.query.Select;
 import com.reactiveandroid.test.BaseTest;
 import com.reactiveandroid.test.models.OneToManyModel;
@@ -9,9 +8,7 @@ import com.reactiveandroid.test.models.OneToManyRelationModel;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public class OneToManyTest extends BaseTest {
 
