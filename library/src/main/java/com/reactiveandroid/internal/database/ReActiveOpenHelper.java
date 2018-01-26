@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.support.annotation.NonNull;
 
 import com.reactiveandroid.ReActiveAndroid;
 import com.reactiveandroid.internal.database.migration.Migration;
@@ -20,7 +21,7 @@ public final class ReActiveOpenHelper extends SQLiteOpenHelper {
     private DatabaseConfig databaseConfig;
     private String currentIdentityHash;
 
-    public ReActiveOpenHelper(Context context, DatabaseConfig databaseConfig) {
+    public ReActiveOpenHelper(Context context, @NonNull DatabaseConfig databaseConfig) {
         super(context, databaseConfig.databaseName, null, databaseConfig.databaseVersion);
         this.databaseConfig = databaseConfig;
     }
@@ -53,20 +54,18 @@ public final class ReActiveOpenHelper extends SQLiteOpenHelper {
 
     private void executeMigrations(SQLiteDatabase db, int oldVersion, int newVersion) {
         boolean migrated = false;
-        if (databaseConfig != null) {
-            List<Migration> migrations = databaseConfig.migrationContainer.findMigrationPath(oldVersion, newVersion);
-
-            if (migrations != null) {
-                for (Migration migration : migrations) {
-                    migration.migrate(db);
-                }
-                currentIdentityHash = getNewSchemaHash(databaseConfig.databaseClass);
-                updateIdentity(db);
-                migrated = true;
+        List<Migration> migrations = databaseConfig.migrationContainer.findMigrationPath(oldVersion, newVersion);
+        if (migrations != null) {
+            for (Migration migration : migrations) {
+                migration.migrate(db);
             }
+            currentIdentityHash = getNewSchemaHash(databaseConfig.databaseClass);
+            updateIdentity(db);
+            migrated = true;
         }
+
         if (!migrated) {
-            if (databaseConfig == null || databaseConfig.requireMigration) {
+            if (databaseConfig.requireMigration) {
                 throw new IllegalStateException("A migration from " + oldVersion + " to "
                         + newVersion + " is necessary. Please provide a Migration in the builder or call"
                         + " disableMigrationsChecking in the builder in which case ReActiveAndroid will"

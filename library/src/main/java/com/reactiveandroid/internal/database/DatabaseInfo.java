@@ -41,7 +41,7 @@ public class DatabaseInfo {
         put(java.io.File.class, new FileSerializer());
     }};
 
-    public DatabaseInfo(Context context, DatabaseConfig databaseConfig) {
+    public DatabaseInfo(Context context, @NonNull DatabaseConfig databaseConfig) {
         this.reActiveOpenHelper = new ReActiveOpenHelper(context, databaseConfig);
 
         //Runs tables creation
