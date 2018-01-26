@@ -31,7 +31,7 @@ public class DatabaseInfo {
 
     private ReActiveOpenHelper reActiveOpenHelper;
     private final Map<Class<?>, TableInfo> tableInfos = new HashMap<>();
-    private Map<Class<?>, ModelAdapter> tableManagerMap = new HashMap<>();
+    private Map<Class<?>, ModelAdapter> tableModelrMap = new HashMap<>();
     private Map<Class<?>, QueryModelInfo> queryModelInfos = new HashMap<>();
     private Map<Class<?>, QueryModelAdapter> queryModelManagerMap = new HashMap<>();
     private Map<Class<?>, TypeSerializer> typeSerializers = new HashMap<Class<?>, TypeSerializer>() {{
@@ -94,9 +94,9 @@ public class DatabaseInfo {
 
     @NonNull
     public ModelAdapter getModelAdapter(Class<?> table) {
-        ModelAdapter modelAdapter = tableManagerMap.get(table);
+        ModelAdapter modelAdapter = tableModelrMap.get(table);
         if (modelAdapter == null) {
-            throw new IllegalArgumentException("Cannot find TableManager for " + table.getName());
+            throw new IllegalArgumentException("Cannot find ModelAdapter for " + table.getName());
         }
         return modelAdapter;
     }
@@ -105,7 +105,7 @@ public class DatabaseInfo {
     public QueryModelAdapter getQueryModelAdapter(Class<?> table) {
         QueryModelAdapter queryModelAdapter = queryModelManagerMap.get(table);
         if (queryModelAdapter == null) {
-            throw new IllegalArgumentException("Cannot find TableManager for " + table.getName());
+            throw new IllegalArgumentException("Cannot find ModelAdapter for " + table.getName());
         }
         return queryModelAdapter;
     }
@@ -152,7 +152,7 @@ public class DatabaseInfo {
         for (Class<?> tableClass : tableClasses) {
             TableInfo tableInfo = new TableInfo(tableClass, typeSerializers);
             tableInfos.put(tableClass, tableInfo);
-            tableManagerMap.put(tableClass, new ModelAdapter(tableInfo));
+            tableModelrMap.put(tableClass, new ModelAdapter(tableInfo));
         }
     }
 
