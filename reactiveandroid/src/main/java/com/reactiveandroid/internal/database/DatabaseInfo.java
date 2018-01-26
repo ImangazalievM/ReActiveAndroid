@@ -33,7 +33,7 @@ public class DatabaseInfo {
     private final Map<Class<?>, TableInfo> tableInfos = new HashMap<>();
     private Map<Class<?>, ModelAdapter> tableModelrMap = new HashMap<>();
     private Map<Class<?>, QueryModelInfo> queryModelInfos = new HashMap<>();
-    private Map<Class<?>, QueryModelAdapter> queryModelManagerMap = new HashMap<>();
+    private Map<Class<?>, QueryModelAdapter> queryModelAdapterMap = new HashMap<>();
     private Map<Class<?>, TypeSerializer> typeSerializers = new HashMap<Class<?>, TypeSerializer>() {{
         put(Calendar.class, new CalendarSerializer());
         put(java.sql.Date.class, new SqlDateSerializer());
@@ -103,7 +103,7 @@ public class DatabaseInfo {
 
     @NonNull
     public QueryModelAdapter getQueryModelAdapter(Class<?> table) {
-        QueryModelAdapter queryModelAdapter = queryModelManagerMap.get(table);
+        QueryModelAdapter queryModelAdapter = queryModelAdapterMap.get(table);
         if (queryModelAdapter == null) {
             throw new IllegalArgumentException("Cannot find ModelAdapter for " + table.getName());
         }
@@ -160,7 +160,7 @@ public class DatabaseInfo {
         for (Class<?> queryModelClass : queryModelClasses) {
             QueryModelInfo queryModelInfo = new QueryModelInfo(queryModelClass, typeSerializers);
             queryModelInfos.put(queryModelClass, queryModelInfo);
-            queryModelManagerMap.put(queryModelClass, new QueryModelAdapter(queryModelInfo));
+            queryModelAdapterMap.put(queryModelClass, new QueryModelAdapter(queryModelInfo));
         }
     }
 
