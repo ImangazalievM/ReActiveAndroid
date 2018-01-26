@@ -38,7 +38,7 @@ Add this to your app **build.gradle**:
 compile 'com.reactiveandroid:reactiveandroid:1.3.1'
 ```
 
-## Initial setup and usage
+## Initial setup
 
 First, we need to create a database class:
 
@@ -50,6 +50,19 @@ public class AppDatabase {
 ```
 
 In the `@Database` annotation  we specified the name of the database without an extension and the version of the schema.
+
+Next, we need to initialize the library in the `onCreate` method of the Application class:
+
+```java
+DatabaseConfig appDatabase = new DatabaseConfig.Builder(AppDatabase.class)
+        .build();
+
+ReActiveAndroid.init(new ReActiveConfig.Builder(this)
+        .addDatabaseConfigs(appDatabase)
+        .build());
+```
+
+## Creating tables
 
 To create a table, we need to create a model class that inherits from the `Model` class and annotate it with `@Table`:
 
@@ -93,17 +106,6 @@ public class Note extends Model {
 ```
 
 In the `@Table` annotation we specify table name and the database class in which the table belongs. Also you can create a model class without inheritance from the `Model`, but then you will not have access to `save()` and `delete()` methods.
-
-Next, we need to initialize the library in the `onCreate` method of the Application class:
-
-```java
-DatabaseConfig appDatabase = new DatabaseConfig.Builder(AppDatabase.class)
-        .build();
-
-ReActiveAndroid.init(new ReActiveConfig.Builder(this)
-        .addDatabaseConfigs(appDatabase)
-        .build());
-```
 
 Now we can save, update and delete records:
 
