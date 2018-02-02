@@ -9,6 +9,7 @@ import com.reactiveandroid.annotation.QueryColumn;
 import com.reactiveandroid.annotation.QueryModel;
 import com.reactiveandroid.internal.serializer.TypeSerializer;
 import com.reactiveandroid.internal.utils.ReflectionUtils;
+import com.reactiveandroid.internal.utils.SQLiteUtils;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -67,26 +68,8 @@ public final class QueryModelInfo {
     private ColumnInfo createColumnInfo(Field field, Map<Class<?>, TypeSerializer> typeSerializers) {
         QueryColumn columnAnnotation = field.getAnnotation(QueryColumn.class);
         String columnName = !TextUtils.isEmpty(columnAnnotation.name()) ? columnAnnotation.name() : field.getName();
-        SQLiteType sqliteType = getFieldSQLiteType(field, typeSerializers);
+        SQLiteType sqliteType = SQLiteUtils.getFieldSQLiteType(field, typeSerializers);
         return new ColumnInfo(columnName, sqliteType, false);
-    }
-
-    private SQLiteType getFieldSQLiteType(Field field, Map<Class<?>, TypeSerializer> typeSerializers) {
-        SQLiteType sqliteType = null;
-        Class<?> fieldType = field.getType();
-
-        TypeSerializer typeSerializer = typeSerializers.get(field.getType());
-        if (typeSerializer != null) {
-            fieldType = typeSerializer.getSerializedType();
-        }
-
-        if (SQLiteType.containsType(fieldType)) {
-            sqliteType = SQLiteType.getSQLiteTypeForClass(fieldType);
-        } else if (ReflectionUtils.isModel(fieldType)) {
-            sqliteType = SQLiteType.INTEGER;
-        }
-
-        return sqliteType;
     }
 
     private List<Field> filterQueryColumnFields(List<Field> modelDeclaredFields) {

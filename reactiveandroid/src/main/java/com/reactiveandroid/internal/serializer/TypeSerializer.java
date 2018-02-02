@@ -37,9 +37,9 @@ public abstract class TypeSerializer<DeserializedType, SerializedType> {
     }
 
     @Nullable
-    public abstract SerializedType serialize(@NonNull DeserializedType data);
+    public abstract SerializedType serialize(@Nullable DeserializedType data);
 
     @Nullable
-    public abstract DeserializedType deserialize(@NonNull SerializedType data);
+    public abstract DeserializedType deserialize(@Nullable SerializedType data);
 
 }

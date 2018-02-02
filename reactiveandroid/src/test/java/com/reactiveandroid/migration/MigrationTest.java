@@ -11,10 +11,13 @@ import com.reactiveandroid.internal.database.DatabaseConfig;
 import com.reactiveandroid.test.ReActiveAndroidTestRunner;
 import com.reactiveandroid.test.TestUtils;
 
+import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
+
+import java.util.Date;
 
 @RunWith(ReActiveAndroidTestRunner.class)
 public class MigrationTest {
@@ -43,7 +46,6 @@ public class MigrationTest {
         initDatabase(TestDatabaseV1.class);
         ReActiveAndroid.destroy();
         initDatabase(TestDatabaseV2.class);
-
     }
 
     private void initDatabase(Class<?> databaseClass, Class<?>... modelClasses) {
@@ -54,6 +56,11 @@ public class MigrationTest {
         ReActiveAndroid.init(new ReActiveConfig.Builder(TestUtils.getApplication())
                 .addDatabaseConfigs(databaseConfig)
                 .build());
+    }
+
+    @After
+    public void destroyDatabase() {
+        ReActiveAndroid.destroy();
     }
 
     @Database(name = "TestDatabase", version = 1)
@@ -75,13 +82,21 @@ public class MigrationTest {
     }
 
     @Table(database = TestDatabaseV1.class)
-    public class Model2 extends Model {
+    public static class Model2 extends Model {
 
         @PrimaryKey
         public Long id;
         @Column
-        public int intField;
+        public Date intField;
 
+        public Model2() {
+        }
+
+        public Model2(Date intField) {
+            this.intField = intField;
+        }
     }
+
+
 
 }

@@ -1,9 +1,13 @@
 package com.reactiveandroid.internal.database;
 
+import com.reactiveandroid.Model;
+import com.reactiveandroid.annotation.Column;
+import com.reactiveandroid.annotation.PrimaryKey;
+import com.reactiveandroid.annotation.Table;
 import com.reactiveandroid.internal.database.table.TableInfo;
+import com.reactiveandroid.internal.serializer.TypeSerializer;
 import com.reactiveandroid.test.BaseTest;
-import com.reactiveandroid.test.models.CategoryTestModel;
-import com.reactiveandroid.test.models.TestModel;
+import com.reactiveandroid.test.databases.TestDatabase;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -16,63 +20,81 @@ import static junit.framework.Assert.assertEquals;
 public class TableInfoTest extends BaseTest {
 
     private TableInfo testTableInfo;
-    private TableInfo categoryTestTableInfo;
+    private TableInfo testCategoryTableInfo;
 
     @Before
-    public void setUp() throws Exception {
-        testTableInfo = new TableInfo(TestModel.class, Collections.EMPTY_MAP);
-        categoryTestTableInfo = new TableInfo(CategoryTestModel.class, Collections.EMPTY_MAP);
+    public void setUp() {
+        testTableInfo = new TableInfo(TestModel.class, Collections.<Class<?>, TypeSerializer>emptyMap());
+        testCategoryTableInfo = new TableInfo(CategoryTestModel.class, Collections.<Class<?>, TypeSerializer>emptyMap());
     }
 
     @Test
     public void testGetType() {
         assertEquals(TestModel.class, testTableInfo.getModelClass());
-        assertEquals(CategoryTestModel.class, categoryTestTableInfo.getModelClass());
+        assertEquals(CategoryTestModel.class, testCategoryTableInfo.getModelClass());
     }
 
     @Test
     public void testGetTableName(){
         assertEquals("TestModel", testTableInfo.getTableName());
-        assertEquals("Categories", categoryTestTableInfo.getTableName());
+        assertEquals("Categories", testCategoryTableInfo.getTableName());
     }
 
     @Test
     public void testGetIdName() {
         assertEquals("id", testTableInfo.getPrimaryKeyColumnName());
-        assertEquals("cat_id", categoryTestTableInfo.getPrimaryKeyColumnName());
+        assertEquals("cat_id", testCategoryTableInfo.getPrimaryKeyColumnName());
     }
 
     @Test
-    public void testGetFields() {
-        assertEquals(6, testTableInfo.getColumnFields().size());
-        assertEquals(4, categoryTestTableInfo.getColumnFields().size());
+    public void testGetFields_shouldReturnCorrectFieldsCount() {
+        assertEquals(5, testTableInfo.getColumnFields().size());
+        assertEquals(4, testCategoryTableInfo.getColumnFields().size());
     }
 
     @Test
-    public void testGetColumnInfo() throws NoSuchFieldException {
-        Field dateField = TestModel.class.getField("dateField");
+    public void testGetColumnName_shouldReturnCorrectColumnName() throws NoSuchFieldException {
+        Field dateField = TestModel.class.getField("stringField");
         Field isVisibleField = CategoryTestModel.class.getField("isVisible");
 
-        assertEquals("dateField", testTableInfo.getColumnInfo(dateField).name);
-        assertEquals("visible", categoryTestTableInfo.getColumnInfo(isVisibleField).name);
+        assertEquals("stringField", testTableInfo.getColumnInfo(dateField).name);
+        assertEquals("visible", testCategoryTableInfo.getColumnInfo(isVisibleField).name);
     }
 
-    @Test
-    public void testGetIndexGroups() throws NoSuchFieldException {
-        Field dateField = TestModel.class.getField("dateField");
-        Field isVisibleField = CategoryTestModel.class.getField("isVisible");
+    //ToDo: add tests for:
+    // 1. unique groups and index groups
+    // 2. inherited models
 
-        assertEquals("dateField", testTableInfo.getColumnInfo(dateField).name);
-        assertEquals("visible", categoryTestTableInfo.getColumnInfo(isVisibleField).name);
+    @Table(database = TestDatabase.class)
+    public class TestModel extends Model {
+
+        @PrimaryKey
+        public Long id;
+        @Column
+        public String stringField;
+        @Column
+        public double doubleField;
+        @Column
+        public int intField;
+        @Column
+        public boolean booleanField;
+
+        public int nonColumnField;
+
     }
 
-    @Test
-    public void testGetUniqueGroups() throws NoSuchFieldException {
-        Field dateField = TestModel.class.getField("dateField");
-        Field isVisibleField = CategoryTestModel.class.getField("isVisible");
+    @Table(name = "Categories", database = TestDatabase.class)
+    public class CategoryTestModel extends Model {
 
-        assertEquals("dateField", testTableInfo.getColumnInfo(dateField).name);
-        assertEquals("visible", categoryTestTableInfo.getColumnInfo(isVisibleField).name);
+        @PrimaryKey(name = "cat_id")
+        public Long id;
+        @Column
+        public String name;
+        @Column(name = "sort_order")
+        public int sortOrder;
+        @Column(name = "visible")
+        public boolean isVisible;
+
     }
 
 }

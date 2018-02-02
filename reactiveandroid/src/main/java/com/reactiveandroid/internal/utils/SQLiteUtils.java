@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public final class SQLiteUtils {
 
@@ -171,6 +172,27 @@ public final class SQLiteUtils {
         }
         return definitions;
     }
+
+    public static SQLiteType getFieldSQLiteType(Field field, Map<Class<?>, TypeSerializer> typeSerializers) {
+        SQLiteType sqliteType;
+        Class<?> fieldType = field.getType();
+
+        TypeSerializer typeSerializer = typeSerializers.get(field.getType());
+        if (typeSerializer != null) {
+            fieldType = typeSerializer.getSerializedType();
+        }
+
+        if (SQLiteType.containsType(fieldType)) {
+            sqliteType = SQLiteType.getSQLiteTypeForClass(fieldType);
+        } else if (ReflectionUtils.isModel(fieldType)) {
+            sqliteType = SQLiteType.INTEGER;
+        } else {
+            throw new IllegalStateException("Type serializer for type " + fieldType.getCanonicalName() + " not found");
+        }
+
+        return sqliteType;
+    }
+
 
     public static void fillContentValuesForUpdate(Object model,
                                                   ModelAdapter modelAdapter,

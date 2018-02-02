@@ -1,6 +1,5 @@
 package com.reactiveandroid.internal.serializer;
 
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import java.math.BigDecimal;
@@ -8,12 +7,14 @@ import java.math.BigDecimal;
 public final class BigDecimalSerializer extends TypeSerializer<BigDecimal, String> {
 
     @Nullable
-    public String serialize(@NonNull BigDecimal data) {
+    public String serialize(@Nullable BigDecimal data) {
+        if (data == null) return null;
         return data.toString();
     }
 
     @Nullable
-    public BigDecimal deserialize(@NonNull String data) {
+    public BigDecimal deserialize(@Nullable String data) {
+        if (data == null) return null;
         return new BigDecimal(data);
     }
 

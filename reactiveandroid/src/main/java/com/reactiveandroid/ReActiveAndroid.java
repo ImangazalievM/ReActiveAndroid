@@ -168,13 +168,13 @@ public final class ReActiveAndroid {
     }
 
     /**
-     * @param table Table class
+     * @param modelClass Model class
      * @param type  Deserialized type class
      * @return {@link TypeSerializer} for specified type
      */
     @Nullable
-    public static TypeSerializer getSerializerForType(Class<?> table, Class<?> type) {
-        return getDatabaseForTable(table).getTypeSerializer(type);
+    public static TypeSerializer getSerializerForType(Class<?> modelClass, Class<?> type) {
+        return getDatabaseForTable(modelClass).getTypeSerializer(type);
     }
 
     /**

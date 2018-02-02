@@ -42,8 +42,8 @@ public class DatabaseInfo {
     }};
 
     public DatabaseInfo(Context context, @NonNull DatabaseConfig databaseConfig) {
-        loadModels(context, databaseConfig);
         loadTypeSerializers(databaseConfig);
+        loadModels(context, databaseConfig);
 
         this.reActiveOpenHelper = new ReActiveOpenHelper(context, databaseConfig, tableInfos.values());
 
@@ -132,18 +132,20 @@ public class DatabaseInfo {
     }
 
     private void loadTypeSerializers(DatabaseConfig databaseConfig) {
-        List<Class<? extends TypeSerializer>> customTypeSerializers = databaseConfig.typeSerializers;
-        if (customTypeSerializers != null) {
-            for (Class<? extends TypeSerializer> typeSerializer : customTypeSerializers) {
-                try {
-                    TypeSerializer instance = typeSerializer.newInstance();
-                    typeSerializers.put(instance.getDeserializedType(), instance);
-                } catch (InstantiationException e) {
-                    ReActiveLog.e(LogLevel.BASIC, "Couldn't instantiate TypeSerializer.", e);
-                } catch (IllegalAccessException e) {
-                    ReActiveLog.e(LogLevel.BASIC, "IllegalAccessException while instantiating "
-                            + typeSerializer.getClass().getCanonicalName(), e);
+        for (Class<? extends TypeSerializer> typeSerializer : databaseConfig.typeSerializers) {
+            try {
+                TypeSerializer instance = typeSerializer.newInstance();
+                typeSerializers.put(instance.getDeserializedType(), instance);
+            } catch (Exception e) {
+                if (e instanceof InstantiationException | e instanceof IllegalAccessException) {
+                    ReActiveLog.e(LogLevel.BASIC, "Couldn't instantiate type " +
+                            "serializer " + typeSerializer.getCanonicalName() +
+                            "Please provide default constructor with public modifier", e);
+                } else  {
+                    ReActiveLog.e(LogLevel.BASIC, "Unknown error while instantiating "
+                             + typeSerializer.getCanonicalName(), e);
                 }
+                throw new RuntimeException(e);
             }
         }
     }

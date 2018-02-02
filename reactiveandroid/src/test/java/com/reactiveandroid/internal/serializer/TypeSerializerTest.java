@@ -39,7 +39,7 @@ public class TypeSerializerTest extends BaseTest {
 
         @Nullable
         @Override
-        public Date deserialize(@NonNull Long data) {
+        public Date deserialize(@Nullable Long data) {
             return null;
         }
 
@@ -49,13 +49,13 @@ public class TypeSerializerTest extends BaseTest {
 
         @Nullable
         @Override
-        public Date serialize(@NonNull Object data) {
+        public Date serialize(@Nullable Object data) {
             return null;
         }
 
         @Nullable
         @Override
-        public Long deserialize(@NonNull Object data) {
+        public Long deserialize(@Nullable Object data) {
             return null;
         }
 

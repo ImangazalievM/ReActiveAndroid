@@ -13,6 +13,7 @@ import com.reactiveandroid.annotation.Unique;
 import com.reactiveandroid.annotation.UniqueGroup;
 import com.reactiveandroid.internal.serializer.TypeSerializer;
 import com.reactiveandroid.internal.utils.ReflectionUtils;
+import com.reactiveandroid.internal.utils.SQLiteUtils;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -192,7 +193,7 @@ public final class TableInfo {
     private ColumnInfo createColumnInfo(Field field, Map<Class<?>, TypeSerializer> typeSerializers) {
         Column columnAnnotation = field.getAnnotation(Column.class);
         String columnName = !TextUtils.isEmpty(columnAnnotation.name()) ? columnAnnotation.name() : field.getName();
-        SQLiteType sqliteType = getFieldSQLiteType(field, typeSerializers);
+        SQLiteType sqliteType = SQLiteUtils.getFieldSQLiteType(field, typeSerializers);
         boolean notNull = columnAnnotation.notNull();
         return new ColumnInfo(columnName, sqliteType, notNull);
     }
@@ -229,24 +230,6 @@ public final class TableInfo {
                 throw new IllegalArgumentException("Index group with number " + group + " not found");
             }
         }
-    }
-
-    private SQLiteType getFieldSQLiteType(Field field, Map<Class<?>, TypeSerializer> typeSerializers) {
-        SQLiteType sqliteType = null;
-        Class<?> fieldType = field.getType();
-
-        TypeSerializer typeSerializer = typeSerializers.get(field.getType());
-        if (typeSerializer != null) {
-            fieldType = typeSerializer.getSerializedType();
-        }
-
-        if (SQLiteType.containsType(fieldType)) {
-            sqliteType = SQLiteType.getSQLiteTypeForClass(fieldType);
-        } else if (ReflectionUtils.isModel(fieldType)) {
-            sqliteType = SQLiteType.INTEGER;
-        }
-
-        return sqliteType;
     }
 
 }

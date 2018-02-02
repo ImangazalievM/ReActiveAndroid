@@ -23,7 +23,7 @@ public class DatabaseInfoTest extends BaseTest {
         DatabaseConfig config = new DatabaseConfig.Builder(TestDatabase.class).build();
         DatabaseInfo databaseInfo = new DatabaseInfo(TestUtils.getApplication(), config);
 
-        assertEquals(12, databaseInfo.getTableInfos().size());
+        assertEquals(14, databaseInfo.getTableInfos().size());
     }
 
     @Test
