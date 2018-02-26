@@ -42,7 +42,7 @@ public abstract class AggregateQueryBase<TableClass> extends ResultQueryBase<Tab
     }
 
     public String groupConcat(String columnName) {
-        return getAsString("GROUP_CONCAT(" + columnName + ") ");
+        return getAsString(getAggregateFunctionSql("GROUP_CONCAT(" + columnName + ") "));
     }
 
     public Single<Integer> countAsync() {
@@ -110,7 +110,7 @@ public abstract class AggregateQueryBase<TableClass> extends ResultQueryBase<Tab
 
     private String getAggregateFunctionSql(String aggregateFunction) {
         String originalSql = getSql();
-        int fromIndex = originalSql.indexOf(" FROM");
+        int fromIndex = originalSql.indexOf("FROM");
         return "SELECT " + aggregateFunction + originalSql.substring(fromIndex);
     }
 
