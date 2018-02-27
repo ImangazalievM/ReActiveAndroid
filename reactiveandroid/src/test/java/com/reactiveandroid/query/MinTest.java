@@ -1,17 +1,9 @@
 package com.reactiveandroid.query;
 
-import android.database.Cursor;
-
-import com.reactiveandroid.ReActiveAndroid;
-import com.reactiveandroid.internal.database.table.ColumnInfo;
-import com.reactiveandroid.internal.database.table.TableInfo;
 import com.reactiveandroid.test.BaseTest;
 import com.reactiveandroid.test.models.TestModel;
 
 import org.junit.Test;
-
-import java.lang.reflect.Field;
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
