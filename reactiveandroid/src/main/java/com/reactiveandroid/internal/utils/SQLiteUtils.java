@@ -253,6 +253,7 @@ public final class SQLiteUtils {
                     contentValues.put(columnName, (byte[]) value);
                 } else if (ReflectionUtils.isModel(fieldType)) {
                     ModelAdapter foreignModelAdapter = ReActiveAndroid.getModelAdapter(fieldType);
+                    foreignModelAdapter.save(value);
                     contentValues.put(columnName, foreignModelAdapter.getModelId(value));
                 }
             } catch (IllegalArgumentException | IllegalAccessException e) {
