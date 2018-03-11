@@ -61,7 +61,7 @@ public final class ReflectionUtils {
         List<Class<?>> modelClasses = new ArrayList<>();
         for (Class<?> modelClass : allClasses) {
             if (isModel(modelClass)) {
-                ReActiveLog.e(LogLevel.BASIC, "Model loaded: " + modelClass.getSimpleName());
+                ReActiveLog.i(LogLevel.BASIC, "Model " + modelClass.getSimpleName() + " loaded");
                 Table tableAnnotation = modelClass.getAnnotation(Table.class);
                 if (tableAnnotation.database() == databaseClass) {
                     modelClasses.add(modelClass);

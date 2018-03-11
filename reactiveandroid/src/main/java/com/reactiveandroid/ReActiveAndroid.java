@@ -65,7 +65,7 @@ public final class ReActiveAndroid {
         }
 
         isInitialized = true;
-        ReActiveLog.v(LogLevel.BASIC, "ReActiveAndroid initialized successfully.");
+        ReActiveLog.i(LogLevel.BASIC, "ReActiveAndroid initialized successfully.");
     }
 
     /**
