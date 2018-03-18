@@ -76,7 +76,7 @@ public class AvgTest extends BaseTest {
                 .groupBy("stringField")
                 .fetchCursor();
 
-        avgCursor.moveToFirst(); //avg for "Category 1"
+        avgCursor.moveToNext(); //avg for "Category 1"
         assertEquals(2f, avgCursor.getFloat(0), 0);
         avgCursor.moveToNext(); //avg for "Category 2"
         assertEquals(4f, avgCursor.getFloat(0), 0);

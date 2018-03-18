@@ -53,11 +53,10 @@ public class QueryUtils {
         DatabaseInfo databaseInfo = ReActiveAndroid.getDatabaseForTable(customType);
         QueryModelAdapter<CustomClass> queryModelAdapter = databaseInfo.getQueryModelAdapter(customType);
         Cursor cursor = databaseInfo.getWritableDatabase().rawQuery(sql, selectionArgs);
-        cursor.moveToFirst();
         List<CustomClass> entities = new ArrayList<>();
-        do {
+        while (cursor.moveToNext()){
             entities.add(queryModelAdapter.createFromCursor(cursor));
-        } while (cursor.moveToNext());
+        }
         cursor.close();
         return entities;
     }

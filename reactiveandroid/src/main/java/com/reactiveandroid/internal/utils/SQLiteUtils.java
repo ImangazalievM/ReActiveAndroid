@@ -50,15 +50,14 @@ public final class SQLiteUtils {
         Cursor cursor = database.rawQuery("SELECT name FROM sqlite_master  WHERE type='table' ORDER BY name;", new String[]{});
         int nameColumnIndex = cursor.getColumnIndex("name");
 
-        cursor.moveToFirst();
         ArrayList<String> tableNames = new ArrayList<>();
-        do {
+        while (cursor.moveToNext()) {
             String tableName = cursor.getString(nameColumnIndex);
             if (!isInternalTable(tableName)) {
                 tableNames.add(cursor.getString(nameColumnIndex));
             }
 
-        } while (cursor.moveToNext());
+        }
 
         return tableNames;
     }

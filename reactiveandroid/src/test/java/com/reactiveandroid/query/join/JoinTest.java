@@ -84,6 +84,20 @@ public class JoinTest extends BaseTest {
         assertEquals("London", orderInfos.get(1).cityName);
     }
 
+    @Test
+    public void testJoinWithEmptyResults() {
+        List<OrderInfoQueryModel> orderInfos = Select.columns("OrderItem.id AS order_id",
+                "OrderItem.name AS order_name",
+                "Customer.name AS customer_name",
+                "City.name AS city_name")
+                .from(OrderModel.class).as("OrderItem")
+                .join(CustomerModel.class).as("Customer")
+                .on("OrderItem.customer_id = Customer.id")
+                .join(CityModel.class).as("City")
+                .on("City.id = Customer.id")
+                .fetchCustom(OrderInfoQueryModel.class);
+    }
+
     private Select.From from() {
         return Select.from(OrderModel.class);
     }
