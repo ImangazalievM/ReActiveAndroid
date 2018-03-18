@@ -1,13 +1,10 @@
 package com.reactiveandroid.internal.notifications;
 
-import android.support.annotation.NonNull;
-import android.util.Log;
-
 import com.reactiveandroid.query.Delete;
 import com.reactiveandroid.query.Insert;
 import com.reactiveandroid.query.Update;
 import com.reactiveandroid.test.BaseTest;
-import com.reactiveandroid.test.models.TestModel;
+import com.reactiveandroid.test.TestModel;
 
 import org.junit.Test;
 

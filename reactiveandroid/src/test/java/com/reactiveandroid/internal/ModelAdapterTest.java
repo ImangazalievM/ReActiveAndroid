@@ -3,7 +3,7 @@ package com.reactiveandroid.internal;
 import com.reactiveandroid.ReActiveAndroid;
 import com.reactiveandroid.query.Select;
 import com.reactiveandroid.test.BaseTest;
-import com.reactiveandroid.test.models.TestModel;
+import com.reactiveandroid.test.TestModel;
 
 import org.junit.Before;
 import org.junit.Test;
