@@ -20,6 +20,7 @@ import com.reactiveandroid.annotation.Column;
 import com.reactiveandroid.internal.database.table.UniqueGroupInfo;
 import com.reactiveandroid.internal.log.LogLevel;
 import com.reactiveandroid.internal.log.ReActiveLog;
+import com.reactiveandroid.internal.serializer.Blob;
 import com.reactiveandroid.internal.serializer.TypeSerializer;
 
 import java.lang.reflect.Field;
@@ -192,6 +193,46 @@ public final class SQLiteUtils {
         return sqliteType;
     }
 
+    public static Object getColumnFieldValue(Class<?> modelClass,
+                                             Class<?> fieldType,
+                                             Cursor cursor,
+                                             int columnIndex) {
+        TypeSerializer typeSerializer = ReActiveAndroid.getSerializerForType(modelClass, fieldType);
+        if (typeSerializer != null) {
+            fieldType = typeSerializer.getSerializedType();
+        }
+
+        Object value = null;
+        if (fieldType.equals(Byte.class) || fieldType.equals(byte.class)) {
+            value = cursor.getInt(columnIndex);
+        } else if (fieldType.equals(Short.class) || fieldType.equals(short.class)) {
+            value = cursor.getInt(columnIndex);
+        } else if (fieldType.equals(Integer.class) || fieldType.equals(int.class)) {
+            value = cursor.getInt(columnIndex);
+        } else if (fieldType.equals(Long.class) || fieldType.equals(long.class)) {
+            value = cursor.getLong(columnIndex);
+        } else if (fieldType.equals(Float.class) || fieldType.equals(float.class)) {
+            value = cursor.getFloat(columnIndex);
+        } else if (fieldType.equals(Double.class) || fieldType.equals(double.class)) {
+            value = cursor.getDouble(columnIndex);
+        } else if (fieldType.equals(Boolean.class) || fieldType.equals(boolean.class)) {
+            value = cursor.getInt(columnIndex) != 0;
+        } else if (fieldType.equals(Character.class) || fieldType.equals(char.class)) {
+            value = cursor.getString(columnIndex).charAt(0);
+        } else if (fieldType.equals(String.class)) {
+            value = cursor.getString(columnIndex);
+        } else if (fieldType.equals(Byte[].class) || fieldType.equals(byte[].class)) {
+            value = cursor.getBlob(columnIndex);
+        } else if (fieldType.equals(Blob.class)) {
+            value = new Blob(cursor.getBlob(columnIndex));
+        }
+
+        if (typeSerializer != null && value != null) {
+            value = typeSerializer.deserialize(value);
+        }
+
+        return value;
+    }
 
     public static void fillContentValuesForUpdate(Object model,
                                                   ModelAdapter modelAdapter,
@@ -250,6 +291,8 @@ public final class SQLiteUtils {
                     contentValues.put(columnName, value.toString());
                 } else if (fieldType.equals(Byte[].class) || fieldType.equals(byte[].class)) {
                     contentValues.put(columnName, (byte[]) value);
+                } else if (fieldType.equals(Blob.class)) {
+                    contentValues.put(columnName, ((Blob) value).getBlob());
                 } else if (ReflectionUtils.isModel(fieldType)) {
                     ModelAdapter foreignModelAdapter = ReActiveAndroid.getModelAdapter(fieldType);
                     foreignModelAdapter.save(value);

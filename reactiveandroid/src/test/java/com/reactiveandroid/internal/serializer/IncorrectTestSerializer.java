@@ -4,7 +4,7 @@ import android.support.annotation.Nullable;
 
 import java.util.Date;
 
-class IncorrectTestDeserializer extends TypeSerializer {
+class IncorrectTestSerializer extends TypeSerializer {
 
     @Nullable
     @Override

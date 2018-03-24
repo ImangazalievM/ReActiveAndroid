@@ -12,15 +12,15 @@ public class TypeSerializerTest extends BaseTest {
 
     @Test
     public void testClassesOfGeneric_shouldReturnSerializeAndDeserializeClasses() {
-        TestDeserializer testDeserializer = new TestDeserializer();
-        assertEquals(Date.class, testDeserializer.getDeserializedType());
-        assertEquals(Long.class, testDeserializer.getSerializedType());
+        TestSerializer testSerializer = new TestSerializer();
+        assertEquals(Date.class, testSerializer.getDeserializedType());
+        assertEquals(Long.class, testSerializer.getSerializedType());
     }
 
     @Test
     public void testGenericTypeNotSpecified_shouldThrowException() {
         try {
-            new IncorrectTestDeserializer();
+            new IncorrectTestSerializer();
         } catch (IllegalArgumentException e) {
             assertEquals("Please specify deserialized and serialized types via generic", e.getMessage());
         }

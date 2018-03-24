@@ -27,7 +27,7 @@ public class TypeSerializerIntegrationTest {
 
     @Test
     public void testModelSavingWithCustomFieldPredefinedType_shouldCorrectlySaveAndLoadModel() {
-        initDatabase(CustomTypeDeserializer.class);
+        initDatabase(CustomTypeSerializer.class);
 
         Date currentTime = new Date();
         long modelId = new ModelWithDateField(currentTime).save();
@@ -37,7 +37,7 @@ public class TypeSerializerIntegrationTest {
 
     @Test
     public void testModelSavingWithCustomFieldType_shouldCorrectlySaveAndLoadModel() {
-        initDatabase(CustomTypeDeserializer.class);
+        initDatabase(CustomTypeSerializer.class);
 
         long modelId = new ModelWithCustomField(ModelWithCustomField.MyCustomType.TWO).save();
         ModelWithCustomField model = Select.from(ModelWithCustomField.class).where("id = ?", modelId).fetchSingle();

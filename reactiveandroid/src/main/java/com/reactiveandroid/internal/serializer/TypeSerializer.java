@@ -22,7 +22,7 @@ public abstract class TypeSerializer<DeserializedType, SerializedType> {
         this.serializedTypeClass = (Class<SerializedType>) parameterizedType.getActualTypeArguments()[1];
 
         if (!SQLiteType.containsType(serializedTypeClass)) {
-            throw new IllegalArgumentException("Serialized type should be one of those: Byte, Short, Integer, Long, Float, Double, Boolean, Character, String, Byte[]");
+            throw new IllegalArgumentException("Serialized type should be one of those: Byte, Short, Integer, Long, Float, Double, Boolean, Character, String, Blob");
         }
     }
 

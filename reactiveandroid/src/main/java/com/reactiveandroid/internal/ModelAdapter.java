@@ -5,7 +5,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 
 import com.reactiveandroid.annotation.Column;
 import com.reactiveandroid.annotation.OneToMany;
@@ -13,7 +12,6 @@ import com.reactiveandroid.annotation.PrimaryKey;
 import com.reactiveandroid.internal.cache.ModelCache;
 import com.reactiveandroid.ReActiveAndroid;
 import com.reactiveandroid.internal.cache.ModelLruCache;
-import com.reactiveandroid.internal.serializer.TypeSerializer;
 import com.reactiveandroid.internal.database.table.ColumnInfo;
 import com.reactiveandroid.internal.database.table.TableInfo;
 import com.reactiveandroid.internal.log.LogLevel;
@@ -21,7 +19,6 @@ import com.reactiveandroid.internal.log.ReActiveLog;
 import com.reactiveandroid.internal.notifications.ChangeAction;
 import com.reactiveandroid.internal.notifications.ModelChangeNotifier;
 import com.reactiveandroid.internal.utils.SQLiteUtils;
-import com.reactiveandroid.query.Delete;
 import com.reactiveandroid.query.Select;
 import com.reactiveandroid.internal.utils.ReflectionUtils;
 
@@ -103,7 +100,7 @@ public class ModelAdapter<ModelClass> {
                 if (ReflectionUtils.isModel(fieldType)) {
                     value = getModelFieldValue(fieldType, cursor, columnIndex);
                 } else {
-                    value = getColumnFieldValue(fieldType, cursor, columnIndex);
+                    value = SQLiteUtils.getColumnFieldValue(tableInfo.getModelClass(), fieldType, cursor, columnIndex);
                 }
             } else if (field.isAnnotationPresent(PrimaryKey.class)) {
                 value = cursor.getLong(columnsOrdered.indexOf(tableInfo.getPrimaryKeyColumnName()));
@@ -173,42 +170,6 @@ public class ModelAdapter<ModelClass> {
             entity = Select.from(fieldType).where(foreignKeyIdName + "=?", entityId).fetchSingle();
         }
         return entity;
-    }
-
-    private Object getColumnFieldValue(Class<?> fieldType, Cursor cursor, int columnIndex) {
-        TypeSerializer typeSerializer = ReActiveAndroid.getSerializerForType(tableInfo.getModelClass(), fieldType);
-        if (typeSerializer != null) {
-            fieldType = typeSerializer.getSerializedType();
-        }
-
-        Object value = null;
-        if (fieldType.equals(Byte.class) || fieldType.equals(byte.class)) {
-            value = cursor.getInt(columnIndex);
-        } else if (fieldType.equals(Short.class) || fieldType.equals(short.class)) {
-            value = cursor.getInt(columnIndex);
-        } else if (fieldType.equals(Integer.class) || fieldType.equals(int.class)) {
-            value = cursor.getInt(columnIndex);
-        } else if (fieldType.equals(Long.class) || fieldType.equals(long.class)) {
-            value = cursor.getLong(columnIndex);
-        } else if (fieldType.equals(Float.class) || fieldType.equals(float.class)) {
-            value = cursor.getFloat(columnIndex);
-        } else if (fieldType.equals(Double.class) || fieldType.equals(double.class)) {
-            value = cursor.getDouble(columnIndex);
-        } else if (fieldType.equals(Boolean.class) || fieldType.equals(boolean.class)) {
-            value = cursor.getInt(columnIndex) != 0;
-        } else if (fieldType.equals(Character.class) || fieldType.equals(char.class)) {
-            value = cursor.getString(columnIndex).charAt(0);
-        } else if (fieldType.equals(String.class)) {
-            value = cursor.getString(columnIndex);
-        } else if (fieldType.equals(Byte[].class) || fieldType.equals(byte[].class)) {
-            value = cursor.getBlob(columnIndex);
-        }
-
-        if (typeSerializer != null && value != null) {
-            value = typeSerializer.deserialize(value);
-        }
-
-        return value;
     }
 
     private Object getOneToManyFieldValue(Field field, Class<?> fieldType, long modelId) {

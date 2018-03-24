@@ -1,5 +1,7 @@
 package com.reactiveandroid.internal.database.table;
 
+import com.reactiveandroid.internal.serializer.Blob;
+
 import java.util.HashMap;
 
 /**
@@ -40,6 +42,7 @@ public enum SQLiteType {
             put(Character.class, SQLiteType.TEXT);
             put(String.class, SQLiteType.TEXT);
             put(Byte[].class, SQLiteType.BLOB);
+            put(Blob.class, SQLiteType.BLOB);
         }
     };
 
