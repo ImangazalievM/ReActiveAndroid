@@ -43,6 +43,7 @@ public final class TableInfo {
 
     private boolean cachingEnabled;
     private int cacheSize;
+    private boolean createWithDatabase;
 
 
     public TableInfo(Class<?> modelClass,
@@ -53,6 +54,7 @@ public final class TableInfo {
         this.tableName = tableAnnotation.name().isEmpty() ? modelClass.getSimpleName() : tableAnnotation.name();
         this.cachingEnabled = tableAnnotation.cachingEnabled();
         this.cacheSize = tableAnnotation.cacheSize();
+        this.createWithDatabase = tableAnnotation.createWithDatabase();
         createUniqueGroups(tableAnnotation);
         createIndexGroups(tableAnnotation);
 
@@ -129,6 +131,10 @@ public final class TableInfo {
 
     public int getCacheSize() {
         return cacheSize;
+    }
+
+    public boolean createWithDatabase() {
+        return createWithDatabase;
     }
 
     private List<Field> filterAndSortColumnFields(List<Field> modelFields) {

@@ -104,8 +104,10 @@ public final class ReActiveOpenHelper extends SQLiteOpenHelper {
         db.beginTransaction();
         try {
             for (TableInfo tableInfo : tableInfos) {
-                String tableDefinition = SQLiteUtils.createTableDefinition(tableInfo);
-                db.execSQL(tableDefinition);
+                if (tableInfo.createWithDatabase()) {
+                    String tableDefinition = SQLiteUtils.createTableDefinition(tableInfo);
+                    db.execSQL(tableDefinition);
+                }
             }
             db.setTransactionSuccessful();
         } finally {

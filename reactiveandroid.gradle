@@ -1,6 +1,6 @@
 ext.reactiveandroid = [
-        libraryVersion          : '1.4.0',
-        libraryVersionCode      : 12,
+        libraryVersion          : '1.4.1',
+        libraryVersionCode      : 13,
         group                   : 'com.reactiveandroid',
 
         minSdk                  : 14,

@@ -35,7 +35,7 @@ In the plans:
 Add this to your app **build.gradle**:
 
 ```gradle
-compile 'com.reactiveandroid:reactiveandroid:1.4.0'
+compile 'com.reactiveandroid:reactiveandroid:1.4.1'
 ```
 
 ## Initial setup

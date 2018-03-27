@@ -6,7 +6,7 @@ import com.reactiveandroid.annotation.PrimaryKey;
 import com.reactiveandroid.annotation.Table;
 import com.reactiveandroid.test.TestDatabase;
 
-@Table(database = TestDatabase.class)
+@Table(database = TestDatabase.class, createWithDatabase = false)
 public class TestModelOne extends Model {
 
     @PrimaryKey

@@ -16,12 +16,12 @@ public @interface Table {
     int DEFAULT_CACHE_SIZE = 50;
 
     /**
-     * Specifies a name of the table
+     * @return Specifies a name of the table
      */
     String name() default "";
 
     /**
-     * Specifies a database for the table
+     * @return Specifies a database for the table
      */
     Class<?> database();
 
@@ -30,13 +30,18 @@ public @interface Table {
     IndexGroup[] indexGroups() default {};
 
     /**
-     * Enables caching mechanism if "true"
+     * @return Enables caching mechanism if "true"
      */
     boolean cachingEnabled() default false;
 
     /**
-     * Cache size for this table
+     * @return Cache size for this table
      */
     int cacheSize() default DEFAULT_CACHE_SIZE;
+
+    /**
+     * @return Create table upon startup
+     */
+    boolean createWithDatabase() default true;
 
 }
