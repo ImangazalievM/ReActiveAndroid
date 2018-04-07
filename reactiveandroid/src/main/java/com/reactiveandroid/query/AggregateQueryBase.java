@@ -22,27 +22,27 @@ public abstract class AggregateQueryBase<TableClass> extends ResultQueryBase<Tab
     }
 
     public float avg(String columnName) {
-        return getAsFloat(getAggregateFunctionSql("AVG(" + columnName + ") "));
+        return getAsFloat(getAggregateFunctionSql("AVG(" + columnName + ")"));
     }
 
     public float min(String columnName) {
-        return getAsFloat(getAggregateFunctionSql("MIN(" + columnName + ") "));
+        return getAsFloat(getAggregateFunctionSql("MIN(" + columnName + ")"));
     }
 
     public float max(String columnName) {
-        return getAsFloat(getAggregateFunctionSql("MAX(" + columnName + ") "));
+        return getAsFloat(getAggregateFunctionSql("MAX(" + columnName + ")"));
     }
 
     public float sum(String columnName) {
-        return getAsFloat(getAggregateFunctionSql("SUM(" + columnName + ") "));
+        return getAsFloat(getAggregateFunctionSql("SUM(" + columnName + ")"));
     }
 
     public float total(String columnName) {
-        return getAsFloat(getAggregateFunctionSql("TOTAL(" + columnName + ") "));
+        return getAsFloat(getAggregateFunctionSql("TOTAL(" + columnName + ")"));
     }
 
     public String groupConcat(String columnName) {
-        return getAsString(getAggregateFunctionSql("GROUP_CONCAT(" + columnName + ") "));
+        return getAsString(getAggregateFunctionSql("GROUP_CONCAT(" + columnName + ")"));
     }
 
     public Single<Integer> countAsync() {
@@ -110,7 +110,7 @@ public abstract class AggregateQueryBase<TableClass> extends ResultQueryBase<Tab
 
     private String getAggregateFunctionSql(String aggregateFunction) {
         String originalSql = getSql();
-        int fromIndex = originalSql.indexOf("FROM");
+        int fromIndex = originalSql.indexOf(" FROM");
         return "SELECT " + aggregateFunction + originalSql.substring(fromIndex);
     }
 
