@@ -1,8 +1,11 @@
 ![logo][logo]
-[![Build Status](https://travis-ci.org/ImangazalievM/ReActiveAndroid.svg?branch=master)](https://travis-ci.org/ImangazalievM/ReActiveAndroid)
-[![Download](https://api.bintray.com/packages/imangazaliev/maven/reactiveandroid/images/download.svg)](https://bintray.com/imangazaliev/maven/reactiveandroid/_latestVersion)
-[![minSdkVersion 14](https://img.shields.io/badge/minSdkVersion-14-blue.svg)]()
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+
+<p align="center">
+<a href="https://travis-ci.org/ImangazalievM/ReActiveAndroid"><img alt="Build Status" src="https://api.travis-ci.org/ImangazalievM/ReActiveAndroid.svg?branch=master"/></a>
+<a href="https://bintray.com/imangazaliev/maven/reactiveandroid/_latestVersion"><img alt="Download" src="https://api.bintray.com/packages/imangazaliev/maven/reactiveandroid/images/download.svg"/></a>
+<img alt="minSdkVersion 14" src="https://img.shields.io/badge/minSdkVersion-14-blue.svg"/>
+<a href="https://opensource.org/licenses/MIT"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-blue.svg"/></a>
+</p>
 
 <p align="center">
   <strong>Full Documentation: <a href="https://imangazalievm.gitbooks.io/reactiveandroid">ReActiveAndroid</a></strong>
