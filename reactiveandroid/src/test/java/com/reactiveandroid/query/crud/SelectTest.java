@@ -85,12 +85,15 @@ public class SelectTest extends BaseTest {
     @Test
     public void testWhereWithArguments() {
         Select.Where query = from().where("id = ?", 5);
-        assertArrayEquals(query.getArgs(), new String[]{"5"});
+        assertArrayEquals(new String[]{"5"}, query.getArgs());
         assertSqlEquals(SELECT_PREFIX + "WHERE id = ?", query);
 
         query = from().where("id > ? AND id < ?", 5, 10);
-        assertArrayEquals(query.getArgs(), new String[]{"5", "10"});
+        assertArrayEquals(new String[]{"5", "10"}, query.getArgs());
         assertSqlEquals(SELECT_PREFIX + "WHERE id > ? AND id < ?", query);
+
+        query = from().where("any_clause", true, false);
+        assertArrayEquals(new String[]{"1", "0"}, query.getArgs());
     }
 
     @Test

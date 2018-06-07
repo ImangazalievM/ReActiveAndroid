@@ -9,6 +9,7 @@ import android.util.SparseArray;
 
 import com.reactiveandroid.ReActiveAndroid;
 import com.reactiveandroid.annotation.Collate;
+import com.reactiveandroid.annotation.Column;
 import com.reactiveandroid.annotation.Unique;
 import com.reactiveandroid.internal.ModelAdapter;
 import com.reactiveandroid.internal.database.ReActiveMasterTable;
@@ -16,7 +17,6 @@ import com.reactiveandroid.internal.database.table.ColumnInfo;
 import com.reactiveandroid.internal.database.table.IndexGroupInfo;
 import com.reactiveandroid.internal.database.table.SQLiteType;
 import com.reactiveandroid.internal.database.table.TableInfo;
-import com.reactiveandroid.annotation.Column;
 import com.reactiveandroid.internal.database.table.UniqueGroupInfo;
 import com.reactiveandroid.internal.log.LogLevel;
 import com.reactiveandroid.internal.log.ReActiveLog;

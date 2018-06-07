@@ -47,7 +47,14 @@ public abstract class QueryBase<TableClass> implements Query {
 		}
 		String[] transformedArray = new String[array.length];
 		for (int i = 0; i < array.length; i++) {
-			transformedArray[i] = String.valueOf(array[i]);
+			Object argument = array[i];
+			if (argument instanceof Boolean) {
+				Boolean boooleanArgument = (Boolean) argument;
+				transformedArray[i] = boooleanArgument ? "1" : "0";
+			} else {
+				transformedArray[i] = String.valueOf(argument);
+			}
+
 		}
 		return transformedArray;
 	}
