@@ -134,7 +134,10 @@ Insert.into(Note.class).columns("title", "text").values("Title", "Text").execute
 List<Note> notes = Select.from(Note.class).fetch();
 
 //getting a specific record
-Note note = Select.from(Note.class).where("id=", 1).fetchSingle();
+Note note = Select.from(Note.class).where("id = ?", 1).fetchSingle();
+
+//getting a selection of records
+List<Note> notes = Select.from(Note.class).where("title = ?", "title").fetch();
 
 //updating record
 Update.table(Note.class).set("title = ?", "New title").where("id = ?", 1).execute();
