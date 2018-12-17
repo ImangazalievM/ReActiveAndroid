@@ -23,21 +23,21 @@ android {
 }
 
 dependencies {
-    compile "com.android.support:support-annotations:25.3.1"
-    compile "io.reactivex.rxjava2:rxjava:2.1.5"
+    implementation 'com.android.support:support-annotations:28.0.0'
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.2'
 
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.mockito:mockito-core:1.10.19'
-    testCompile 'org.assertj:assertj-core:2.5.0'
-    testCompile 'org.robolectric:robolectric:3.1.2'
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'org.mockito:mockito-core:1.10.19'
+    testImplementation 'org.assertj:assertj-core:2.9.1'
+    testImplementation 'org.robolectric:robolectric:3.8'
 }
 
 // this block will be processed by the bintray-release plugin
 publish {
-    groupId = reactiveandroid.group
+    userOrg = 'reactiveandroid'
+    groupId = 'com.reactiveandroid'
     artifactId = 'reactiveandroid'
     publishVersion = reactiveandroid.libraryVersion
-    desc = 'Active record ORM for Android '
-    licences = ['MIT']
-    website = reactiveandroid.website
+    desc = '🚀 Simple and powerful ORM for Android'
+    website = 'https://github.com/ImangazalievM/ReActiveAndroid'
 }

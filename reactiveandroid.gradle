@@ -4,8 +4,8 @@ ext.reactiveandroid = [
         group                   : 'com.reactiveandroid',
 
         minSdk                  : 14,
-        targetSdk               : 26,
-        compileSdk              : 26,
-        buildTools              : '26.0.2',
+        targetSdk               : 28,
+        compileSdk              : 28,
+        buildTools              : '28.0.2',
         website                 : 'https://github.com/ImangazalievM/ReActiveAndroid'
 ]
