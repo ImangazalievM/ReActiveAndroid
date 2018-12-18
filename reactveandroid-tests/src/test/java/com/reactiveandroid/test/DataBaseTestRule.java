@@ -13,9 +13,11 @@ import java.util.List;
 
 public class DataBaseTestRule implements TestRule {
 
-    public static DataBaseTestRule create(Class<?> databaseClass,
-                                          List<Class<?>> databaseModels,
-                                          List<Class<? extends TypeSerializer>> typeSerializers) {
+    public static DataBaseTestRule create(
+            Class<?> databaseClass,
+            List<Class<?>> databaseModels,
+            List<Class<? extends TypeSerializer>> typeSerializers
+    ) {
         return new DataBaseTestRule(databaseClass, databaseModels, typeSerializers);
     }
 
@@ -23,9 +25,11 @@ public class DataBaseTestRule implements TestRule {
     private List<Class<?>> databaseModels;
     private List<Class<? extends TypeSerializer>> typeSerializers;
 
-    private DataBaseTestRule(Class<?> databaseClass,
-                             List<Class<?>> databaseModels,
-                             List<Class<? extends TypeSerializer>> typeSerializers) {
+    private DataBaseTestRule(
+            Class<?> databaseClass,
+            List<Class<?>> databaseModels,
+            List<Class<? extends TypeSerializer>> typeSerializers
+    ) {
         this.databaseClass = databaseClass;
         this.databaseModels = databaseModels;
         this.typeSerializers = typeSerializers;

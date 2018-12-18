@@ -1,1 +1,1 @@
-include ':reactiveandroid', ':sample-app'
+include ':reactiveandroid', ':reactiveandroid-sample-app', ':reactveandroid-tests'
