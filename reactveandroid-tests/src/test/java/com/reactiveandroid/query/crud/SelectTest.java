@@ -5,8 +5,8 @@ import android.database.Cursor;
 import com.reactiveandroid.query.Select;
 import com.reactiveandroid.query.join.CustomerModel;
 import com.reactiveandroid.test.BaseTest;
-import com.reactiveandroid.test.TestUtils;
 import com.reactiveandroid.test.TestModel;
+import com.reactiveandroid.test.TestUtils;
 
 import org.junit.Test;
 
@@ -48,7 +48,7 @@ public class SelectTest extends BaseTest {
 
     @Test
     public void testAllDistinct() {
-        assertSqlEquals("SELECT ALL" , Select.all());
+        assertSqlEquals("SELECT ALL", Select.all());
         assertSqlEquals("SELECT DISTINCT", Select.distinct());
     }
 
@@ -115,7 +115,8 @@ public class SelectTest extends BaseTest {
                 .groupBy("id")
                 .having("id < 10")
                 .limit(5)
-                .offset(10));;
+                .offset(10));
+        ;
     }
 
     @Test
